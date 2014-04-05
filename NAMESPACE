@@ -6,14 +6,16 @@ importFrom(coda, "as.mcmc", "mcmc", "as.mcmc.list", "traceplot")
 
 import(parallel)
 
-#exportClasses(
+exportClasses(
+              "simplejags"
 #            
-#              )
+              )
 
 #exportMethods(
 # 
 #)
 
 export(
-        "simplejags"
+        "simplejags",
+        "print.simplejags"
 )
