@@ -1,0 +1,7 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+example.R
+.Rhistory
+.RData
+simplejags.Rproj
+.gitignore
