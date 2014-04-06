@@ -5,4 +5,4 @@ example.R
 .RData
 simplejags.Rproj
 .gitignore
-*.txt
+modeltest.txt
