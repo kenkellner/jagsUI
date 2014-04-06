@@ -3,3 +3,4 @@
 .RData
 .simplejags.Rproj
 example.R
+*.txt

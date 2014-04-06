@@ -1,21 +1,14 @@
-importFrom(rjags, "jags.model",
-                  "coda.samples"
-                  )
+importFrom(methods, "setOldClass")
 
-importFrom(coda, "as.mcmc", "mcmc", "as.mcmc.list", "traceplot")
+importFrom(rjags, "jags.model", "coda.samples")
 
-import(parallel)
+#import(parallel)
 
-exportClasses(
-              "simplejags"
-#            
-              )
+exportClasses("simplejags")
 
-#exportMethods(
-# 
-#)
+export("simplejags", "print.simplejags", "process.output", "traceplots", "postPredCheck")
 
-export(
-        "simplejags",
-        "print.simplejags"
-)
+S3method("plot", "simplejags")
+S3method("xyplot", "simplejags")
+S3method("densityplot", "simplejags")
+

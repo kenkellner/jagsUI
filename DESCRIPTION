@@ -5,10 +5,8 @@ Title: Run JAGS from R (a wrapper for rjags)
 Author: Ken Kellner <ken.kellner@gmail.com>
 Maintainer: Ken Kellner <ken.kellner@gmail.com>
 Depends: R (>= 2.14.0), rjags (>= 3-3)
-Imports: rjags, coda (>= 0.13), parallel
+Imports: rjags, coda (>= 0.13)
 SystemRequirements: jags (>= 3.3.0)
-Description: Run JAGS from R using a simple wrapper for rjags.
+Description: This package runs JAGS (Just Another Gibbs Sampler) analyses from within R. It acts as a wrapper and alternative interface for the functions in the rjags package and adds some custom output and graphical options.
 License: GPL (>= 2)
-Packaged: 
 NeedsCompilation: no
-Repository:

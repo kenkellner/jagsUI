@@ -6,7 +6,7 @@
 \alias{simplejags}
 
 
-\title{Run JAGS within R}
+\title{Call JAGS from R}
 \description{
   The \code{simplejags} function is a basic wrapper for running JAGS analyses in package \code{rjags}.  
   The user provides a model file, data, initial values (optional), and parameters to save. The function
@@ -14,7 +14,7 @@
 }
 
 \usage{
-jags(data, inits, parameters.to.save, model.file,
+simplejags(data, inits, parameters.to.save, model.file,
   n.chains, n.adapt, n.iter, n.burnin=0, n.thin=1)}
 
 \arguments{
@@ -33,4 +33,8 @@ jags(data, inits, parameters.to.save, model.file,
   \item{n.burnin}{length of burn in, i.e. number of iterations to
     discard at the beginning}
   \item{n.thin}{thinning rate. Must be a positive integer}
+}
+
+\author{ 
+  Ken Kellner \email{ken@kenkellner.com}.
 }
