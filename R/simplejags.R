@@ -41,7 +41,7 @@ simplejags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
   names(mcmc.info) <- c('n.chains','n.adapt','n.iter','n.burnin','n.thin','n.samples','elapsed.mins')
   
   #For calculating n.eff
-  n <- (n.iter - n.burnin)
+  n <- (n.iter - n.burnin) / n.thin
   
   #Get output stats
   
