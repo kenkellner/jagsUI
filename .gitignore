@@ -1,6 +1,7 @@
 .Rproj.user
 .Rhistory
 .RData
-.simplejags.Rproj
+simplejags.Rproj
 example.R
 *.txt
+example2.R
