@@ -15,7 +15,7 @@
 
 \usage{
 simplejags(data, inits, parameters.to.save, model.file,
-  n.chains, n.adapt, n.iter, n.burnin=0, n.thin=1)}
+  n.chains, n.adapt=0, n.iter, n.burnin=0, n.thin=1)}
 
 \arguments{
   \item{data}{A named list of the data objects required by the model.}
