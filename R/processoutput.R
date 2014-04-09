@@ -30,8 +30,8 @@ process.output <- function(x,n.chains=n.chains,n=n){
     }   
   }
   
-  means <- unlist(lapply(sims.list,mean))
-  se <- unlist(lapply(sims.list,sd))
+  means <- lapply(sims.list,mean)
+  se <- lapply(sims.list,sd)
   qs <- function(x,y){as.numeric(quantile(x,y))}
   q2.5 <- unlist(lapply(sims.list,qs,0.025))
   q50 <- unlist(lapply(sims.list,qs,0.5))
@@ -47,5 +47,6 @@ process.output <- function(x,n.chains=n.chains,n=n){
     }else{f[i] <- mean(unlist(x[,i])<0)}
   }
 
-  return(list(sims.list=sims.list,means=means,se=se,q2.5=q2.5,q50=q50,q97.5=q97.5,overlap0=overlap0,f=f,Rhat=rhat,n.eff=n.eff))
+  return(list(sims.list=sims.list,means=means,se=se,q2.5=as.list(q2.5),q50=as.list(q50),q97.5=as.list(q97.5),overlap0=as.list(overlap0),
+              f=as.list(f),Rhat=as.list(rhat),n.eff=as.list(n.eff)))
 }

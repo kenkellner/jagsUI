@@ -16,11 +16,12 @@ traceplots <- function(x){
   
   for (i in 1:nparams){
     ymax <- range(samples[,i])
-    title <- paste('Trace of ',params[i],', Rhat = ',round(rhat[i],2),sep="")
+    title <- paste('Trace of ',params[i],', Rhat = ',round(rhat[[i]],2),sep="")
     plot(x = 1:xmax, y = samples[,i][[1]], main = title, xlab="Iterations", ylab="Value",type="l", col=col[1])
+    if(nchains>1){
     for (j in 2:nchains){
       lines(x = 1:xmax, y = samples[,i][[j]],type="l", col=col[j])
-    }
+    }}
   }
   
   devAskNewPage(ask=FALSE)

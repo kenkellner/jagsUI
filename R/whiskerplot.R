@@ -4,7 +4,7 @@ whiskerplot <- function(x,parameters,quantiles=c(0.025,0.975),zeroline=TRUE){
   
   n <- length(parameters)
   
-  if(sum(parameters%in%names(x$means))!=n){stop('One or more specified parameters are not in model')}
+  if(sum(parameters%in%names(x$means))!=n){stop('One or more specified parameters are not in model output')}
   
   xstructure <- c(1:n)
   

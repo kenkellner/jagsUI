@@ -5,12 +5,14 @@ print.simplejags <- function(x,digits=3){
   cat(' burn-in = ',round(x$mcmc.info[[4]],0),' and thin rate = ',round(x$mcmc.info[[5]],0),':','\n',sep="")
   cat(round(x$mcmc.info[[6]],0),'total samples from the joint posterior','\n')
   cat('MCMC ran for',x$mcmc.info[[7]],'minutes at time',paste(x$run.date),'\n','\n')
-  if(x$mcmc.info[[1]]>1){
-  y = data.frame(x$mean,x$se,x$q2.5,x$q50,x$q97.5,x$overlap0,x$f,x$Rhat,x$n.eff)
+
+  y = data.frame(unlist(x$mean),unlist(x$se),unlist(x$q2.5),unlist(x$q50),unlist(x$q97.5),
+                 unlist(x$overlap0),unlist(x$f),unlist(x$Rhat),unlist(x$n.eff))
   names(y) = c('Mean','SE','2.5%','50%','97.5%','0inCI?','f','Rhat','n.eff')
-  } else {
-  y = data.frame(x$mean,x$se,x$q2.5,x$q50,x$q97.5,x$overlap0,x$f)
-  names(y) = c('Mean','SE','2.5%','50%','97.5%','0inCI?','f')  
+  if(x$mcmc.info[[1]]==1){
+  y = y[,-c(8,9)]
   }
   print(y,digits=digits)
+  if(max(unlist(x$Rhat))>1.1){cat('\n','**WARNING** Rhat values indicate convergence failure')
+  }else{cat('\n','Successful convergence based on Rhat values')}
 }

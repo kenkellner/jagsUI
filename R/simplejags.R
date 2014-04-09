@@ -1,6 +1,7 @@
 
 
-simplejags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=0,n.iter,n.burnin=0,n.thin=1){
+simplejags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=0,n.iter,n.burnin=0,n.thin=1,
+                       store.data=TRUE){
   
   start.time <- Sys.time()
   
@@ -37,7 +38,7 @@ simplejags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
   
   #Combine mcmc info
   n.samples <- (n.iter-n.burnin) / n.thin * n.chains
-  mcmc.info <- data.frame(n.chains,n.adapt,n.iter,n.burnin,n.thin,n.samples,time)
+  mcmc.info <- list(n.chains,n.adapt,n.iter,n.burnin,n.thin,n.samples,time)
   names(mcmc.info) <- c('n.chains','n.adapt','n.iter','n.burnin','n.thin','n.samples','elapsed.mins')
   
   #For calculating n.eff
@@ -49,10 +50,16 @@ simplejags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
   
   output$samples <- samples
   output$modfile <- model.file
+  if(store.data){
+    output$inits <- inits
+    output$data <- data
+  }
+  
   output$model <- m
   output$parameters <- parameters.to.save
   output$mcmc.info <- mcmc.info
   output$run.date <- date
+  
   
   class(output) <- 'simplejags'
   
