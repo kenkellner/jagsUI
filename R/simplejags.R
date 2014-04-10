@@ -1,9 +1,11 @@
 
 
-simplejags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=0,n.iter,n.burnin=0,n.thin=1,
-                       store.data=TRUE){
+simplejags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=100,n.iter,n.burnin=0,n.thin=1,
+                       store.data=TRUE,seed=floor(runif(1,1,10000))){
   
   start.time <- Sys.time()
+  set.seed(seed)
+  r.seed <- .Random.seed
   
   #Compile model
   
@@ -59,6 +61,7 @@ simplejags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
   output$parameters <- parameters.to.save
   output$mcmc.info <- mcmc.info
   output$run.date <- date
+  output$random.seed <- r.seed
   
   
   class(output) <- 'simplejags'
