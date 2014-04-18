@@ -1,10 +1,14 @@
 
 whiskerplot <- function(x,parameters,quantiles=c(0.025,0.975),zeroline=TRUE){
   if(class(x)!="simplejags"){stop('Requires simplejags object as input')}
-  
+  devAskNewPage(ask=FALSE)
   n <- length(parameters)
   
   if(sum(parameters%in%names(x$means))!=n){stop('One or more specified parameters are not in model output')}
+  
+  for(i in 1:n){
+    if(is.array(x$means[parameters[i]][[1]])){stop('Cannot specify an indexed parameter as part of whiskerplot')}
+  }
   
   xstructure <- c(1:n)
   

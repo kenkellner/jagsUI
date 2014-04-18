@@ -7,7 +7,7 @@ importFrom(rjags, "jags.model", "coda.samples")
 exportClasses("simplejags")
 
 export("simplejags", "print.simplejags", "process.output", "traceplots", "postPredCheck",
-       "whiskerplot")
+       "whiskerplot", "get.dim")
 
 S3method("plot", "simplejags")
 S3method("xyplot", "simplejags")
