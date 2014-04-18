@@ -56,9 +56,13 @@ process.output <- function(x,n.chains=n.chains,n=n){
 
       
       if(n.chains > 1){
-      rhat[[i]] <- array(as.numeric(gelman.diag(hold)$psrf[,1]),
-                         dim=dims[[i]])}
-      
+        #Iterate through all values individually to avoid calculation errors
+        rhat.temp <- vector(length=dim(hold[[1]])[2])
+        for (j in 1:(dim(hold[[1]])[2])){
+          rhat.temp[j] <- gelman.diag(hold[,j])$psrf[1]
+        }
+        rhat[[i]] <- array(rhat.temp,dim=dims[[i]])
+      }
       combined <- do.call("rbind",hold)
       sims.list[[i]] <- array(combined,dim=c(iter,dims[[i]]))
       ld <- length(dim(sims.list[[i]]))
