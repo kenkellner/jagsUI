@@ -14,5 +14,5 @@ print.simplejags <- function(x,digits=3){
   }
   print(y,digits=digits)
   if(max(unlist(x$Rhat))>1.1){cat('\n','**WARNING** Rhat values indicate convergence failure')
-  }else{cat('\n','Successful convergence based on Rhat values')}
+  }else{cat('\n','Successful convergence based on Rhat values','\n')}
 }

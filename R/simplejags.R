@@ -14,24 +14,28 @@ simplejags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
   #Adaptive phase
   
   if(n.adapt>0){
-  cat('Adaptive phase','\n')
+  cat('Adaptive phase,',n.adapt,'iterations x',n.chains,'chains','\n')
   cat('If no progress bar appears JAGS has decided not to adapt','\n','\n')
-  x <- adapt(object=m,n.iter=n.adapt,progress.bar="text")
-  } else{cat('No adaptive period specified','\n','\n')}
+  x <- adapt(object=m,n.iter=n.adapt,progress.bar="text",end.adaptation=TRUE)
+  } else{cat('No adaptive period specified','\n','\n')
+  #Force JAGS to not adapt (you have to allow it to adapt at least 1 iteration)
+  x <- adapt(object=m,n.iter=1,end.adaptation=TRUE)
+  }
   
   #Burn-in phase
   
   if(n.burnin>0){
-  cat('Burn-in phase','\n','\n')
+  cat('\n','Burn-in phase,',n.burnin,'iterations x',n.chains,'chains','\n','\n')
   update(object=m,n.iter=n.burnin,progress.bar="text")
   cat('\n')
   } else{cat('No burn-in specified','\n','\n')}
   
   #Sample from posterior
   
-  cat('Sampling from joint posterior','\n','\n')
+  cat('Sampling from joint posterior,',(n.iter-n.burnin),'iterations x',n.chains,'chains','\n','\n')
   samples <- coda.samples(model=m,variable.names=parameters.to.save,n.iter=(n.iter-n.burnin),thin=n.thin,
-                          progress.bar="text") 
+                          progress.bar="text")
+  cat('\n')
   
   end.time <- Sys.time()
   
