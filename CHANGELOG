@@ -1,3 +1,7 @@
+Changes from Version 0.01-2 to 0.01-3 [17-Apr-2014]
+
+Simplify output object so that indexed parameters are contained in their own array rather than many separate list objects. Adjust other functions to match this change. Clean up the printed text / progress bars in R console.
+
 Changes from Version 0.01-1 to 0.01-2 [8-Apr-2014]
 
 Fix problem where some components of output object were vectors instead of lists (and change print function accordingly). Add option for simplejags() to save input data and initial values in model output object for future use (store.data).

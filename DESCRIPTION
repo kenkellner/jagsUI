@@ -1,6 +1,6 @@
 Package: simplejags
-Version: 0.01-2
-Date: 2014-4-8
+Version: 0.01-3
+Date: 2014-4-17
 Title: Run JAGS from R (a wrapper for rjags)
 Author: Ken Kellner <ken@kenkellner.com>
 Maintainer: Ken Kellner <ken@kenkellner.com>
