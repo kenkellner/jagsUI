@@ -14,6 +14,7 @@ print.simplejags <- function(x,digits=3){
   y = y[,-c(8,9)]
   }
   print(y,digits=digits)
+  if(x$mcmc.info[[1]]>1){
   if(max(unlist(x$Rhat))>1.1){cat('\n','**WARNING** Rhat values indicate convergence failure')
-  }else{cat('\n','Successful convergence based on Rhat values','\n')}
+  }else{cat('\n','Successful convergence based on Rhat values','\n')}}
 }
