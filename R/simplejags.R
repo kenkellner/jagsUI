@@ -3,6 +3,8 @@
 simplejags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=100,n.iter,n.burnin=0,n.thin=1,
                        store.data=TRUE,seed=floor(runif(1,1,10000))){
   
+  data <- process.input(data,parameters.to.save)
+  
   start.time <- Sys.time()
   set.seed(seed)
   r.seed <- .Random.seed
