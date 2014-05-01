@@ -1,9 +1,13 @@
 
 
 simplejags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=100,n.iter,n.burnin=0,n.thin=1,
-                       store.data=TRUE,seed=floor(runif(1,1,10000))){
+                       DIC=FALSE,store.data=FALSE,seed=floor(runif(1,1,10000))){
   
-  data <- process.input(data,parameters.to.save)
+  data.check <- process.input(data,parameters.to.save,DIC=DIC)
+  
+  data <- data.check$data
+  
+  parameters.to.save <- data.check$params
   
   start.time <- Sys.time()
   set.seed(seed)
@@ -54,7 +58,7 @@ simplejags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
   
   #Get output stats
   
-  output <- process.output(samples,n.chains=n.chains,n=n)
+  output <- process.output(samples,n.chains=n.chains,n=n,DIC=DIC)
   
   output$samples <- samples
   output$modfile <- model.file

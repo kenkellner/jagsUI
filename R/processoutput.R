@@ -1,5 +1,5 @@
 
-process.output <- function(x,n.chains=n.chains,n=n){
+process.output <- function(x,n.chains=n.chains,n=n,DIC=FALSE){
   
   #Full set of parameter names (separate indexed parameters)
   params <- colnames(x[[1]])
@@ -40,7 +40,7 @@ process.output <- function(x,n.chains=n.chains,n=n){
     if ((W > 1.e-8) && (m > 1)) {
       B <- n*var(xdot)
       sig2hat <- ((n-1)*W + B)/n      
-      n.eff <- m*n*min(sig2hat/B,1)
+      n.eff <- round(m*n*min(sig2hat/B,1),0)
     } else {
       n.eff <- 1
     }
@@ -91,8 +91,25 @@ process.output <- function(x,n.chains=n.chains,n=n){
     }
         
   }
-
-
-  return(list(sims.list=sims.list,means=means,se=se,q2.5=q2.5,q50=q50,q97.5=q97.5,overlap0=overlap0,
+  
+  if(DIC){
+    dev <- matrix(data=unlist(x[,"deviance"]),ncol=n.chains,nrow=n)
+    
+    pd <- numeric(n.chains)
+    dic <- numeric(n.chains)
+    
+    for (i in 1:n.chains){
+      pd[i] <- var(dev[,i])/2
+      dic[i] <- mean(dev[,i]) + pd[i]
+    }
+    
+    pd <- mean(pd)
+    dic <- mean(dic)
+    
+    return(list(sims.list=sims.list,means=means,se=se,q2.5=q2.5,q50=q50,q97.5=q97.5,overlap0=overlap0,
+                f=f,Rhat=rhat,n.eff=n.eff,pD=pd,DIC=dic))
+  } else {
+      return(list(sims.list=sims.list,means=means,se=se,q2.5=q2.5,q50=q50,q97.5=q97.5,overlap0=overlap0,
               f=f,Rhat=rhat,n.eff=n.eff))
+  }
 }

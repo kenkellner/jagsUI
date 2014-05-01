@@ -1,10 +1,16 @@
 
-process.input = function(x,y){
+process.input = function(x,y,DIC=FALSE){
   cat('\n','Processing function input.......','\n')
   
   if((is.character(y)&is.vector(y))){
       } else{stop('The parameters to save must be a vector containing only character strings.')}
   
+  if(DIC){
+    load.module("dic",quiet=TRUE)
+    if(!'deviance'%in%y){
+      params <- c(y,"deviance")
+    } else {params <- y}    
+  } else {params <- y}
   
   if(is.list(x)||(is.character(x)&is.vector(x))){
   } else{stop('Input data must be a list of data objects OR a vector of data object names (as strings)')}
@@ -41,6 +47,6 @@ process.input = function(x,y){
     }
  
   cat('Done.','\n','\n')
-  return(x)
+  return(list(data=data,params=params))
    
 }

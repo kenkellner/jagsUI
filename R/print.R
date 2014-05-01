@@ -13,8 +13,22 @@ print.simplejags <- function(x,digits=3){
   if(x$mcmc.info[[1]]==1){
   y = y[,-c(8,9)]
   }
-  print(y,digits=digits)
+  #get the rounding to look clean
+  z = as.data.frame(round(as.matrix(y),digits))
+  z[,6] <- z[,6]==1
+  print(z)
+  
   if(x$mcmc.info[[1]]>1){
-  if(max(unlist(x$Rhat))>1.1){cat('\n','**WARNING** Rhat values indicate convergence failure')
-  }else{cat('\n','Successful convergence based on Rhat values','\n')}}
+  if(max(unlist(x$Rhat))>1.1){cat('\n**WARNING** Rhat values indicate convergence failure','\n')
+  }else{cat('\nSuccessful convergence based on Rhat values (all < 1.1)','\n')}
+  cat('Rhat is the potential scale reduction factor (at convergence, Rhat=1).','\n')
+  cat('For each parameter, n.eff is a crude measure of effective sample size.','\n')
+  }
+  
+  if(!is.null(x$DIC)){
+    
+    cat('\nDIC info: (pD = var(deviance)/2)','\npD =',round(x$pD,1),'and DIC =',round(x$DIC,digits),'\n')
+    cat('DIC is an estimate of expected predictive error (lower is better).')
+    
+  }
 }

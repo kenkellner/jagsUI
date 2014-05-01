@@ -19,7 +19,7 @@ simplejags(data, inits, parameters.to.save, model.file,
   seed=floor(runif(1,1,10000)))}
 
 \arguments{
-  \item{data}{A named list of the data objects required by the model.}
+  \item{data}{A named list of the data objects required by the model, or a character vector containing the names of the data objects required by the model.}
   \item{inits}{A list with \code{n.chains} elements; each element of the
     list is itself a list of starting values for the \code{BUGS} model,
     \emph{or} a function creating (possibly random) initial values. If inits is 
@@ -32,7 +32,8 @@ simplejags(data, inits, parameters.to.save, model.file,
   \item{n.iter}{Total number of iterations per chain (including burn-in).}
   \item{n.burnin}{Number of iterations at the beginning of the chain to discard (i.e., the burn-in). Does not include the adaptive phase iterations.}
   \item{n.thin}{Thinning rate. Must be a positive integer.}
-  \item{store.data}{Option to store the input dataset and initial values in the model output object for future use. Defaults to TRUE.}
+  \item{DIC}{Should simplejags calculate DIC and the estimated number of parameters (pD)? Defaults to FALSE.}
+  \item{store.data}{Option to store the input dataset and initial values in the model output object for future use. Defaults to FALSE.}
   \item{seed}{Set a custom seed for the R random number generator. The current state of the random number generator is saved in the model object.}
 }
 

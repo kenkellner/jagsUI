@@ -1,3 +1,7 @@
+Changes from Version 0.01-3 to 0.01-4 [1-May-2014]
+
+Improve processing of input data to avoid some common errors. Changed traceplots() function to traceplot() to be more consistent with similar packages. Added ability to calculate DIC and pD for JAGS models. Cleaned up the print method.
+
 Changes from Version 0.01-2 to 0.01-3 [17-Apr-2014]
 
 Simplify output object so that indexed parameters are contained in their own array rather than many separate list objects. Adjust other functions to match this change. Clean up the printed text / progress bars in R console.
