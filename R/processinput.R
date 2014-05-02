@@ -2,9 +2,12 @@
 process.input = function(x,y,DIC=FALSE){
   cat('\n','Processing function input.......','\n')
   
+  #Check if supplied parameter vector is the right format
   if((is.character(y)&is.vector(y))){
       } else{stop('The parameters to save must be a vector containing only character strings.')}
   
+  #If DIC requested, add deviance to parameters (if not already there)
+  #and start JAGS DIC module
   if(DIC){
     load.module("dic",quiet=TRUE)
     if(!'deviance'%in%y){
@@ -12,6 +15,7 @@ process.input = function(x,y,DIC=FALSE){
     } else {params <- y}    
   } else {params <- y}
   
+  #Check if supplied data object is the proper format
   if(is.list(x)||(is.character(x)&is.vector(x))){
   } else{stop('Input data must be a list of data objects OR a vector of data object names (as strings)')}
   
@@ -19,15 +23,14 @@ process.input = function(x,y,DIC=FALSE){
     stop('At least one of the elements in your data list does not have a name')
   }
   
-  if((is.character(x)&is.vector(x))){
-    
+  #Convert a supplied vector of characters to a list of data objects
+  if((is.character(x)&is.vector(x))){    
     temp = lapply(x,get)
     names(temp) = x
-    x = temp
-  
+    x = temp  
   }
   
-  
+  #Check each component of data object for issues and fix if possible
   for (i in 1:length(x)){
     
     if(is.list(x[[i]])&&length(x[[i]]==1)){
@@ -47,6 +50,6 @@ process.input = function(x,y,DIC=FALSE){
     }
  
   cat('Done.','\n','\n')
-  return(list(data=data,params=params))
+  return(list(data=x,params=params))
    
 }
