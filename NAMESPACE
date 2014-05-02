@@ -11,7 +11,7 @@ exportClasses("simplejags")
 exportMethods("traceplot")
 
 export("simplejags", "print.simplejags", "process.output", "postPredCheck",
-       "whiskerplot", "get.dim", "process.input", "traceplot")
+       "whiskerplot", "get.dim", "process.input", "traceplot", "print.simplebugs")
 
 S3method("plot", "simplejags")
 S3method("xyplot", "simplejags")

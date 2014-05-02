@@ -2,7 +2,6 @@
 process.output <- function(x,n.chains=n.chains,DIC=FALSE){
   
   #Full set of parameter names
-  #Each component of vector/matrix/array broken into separate indexed scalar
   params <- colnames(x[[1]])
   #Strip index from non-scalar parameter names
   expand <- sapply(strsplit(params, "\\["), "[", 1)
@@ -18,7 +17,7 @@ process.output <- function(x,n.chains=n.chains,DIC=FALSE){
 
   #Create empty named lists for statistics
   sims.list <- means <- rhat <- n.eff <- se <- as.list(params.simple)
-  q2.5 <- q50 <- q97.5 <- overlap0 <- f <- as.list(params.simple)
+  q2.5 <- q25 <- q50 <- q75 <- q97.5 <- overlap0 <- f <- as.list(params.simple)
   names(sims.list) <- names(means) <- names(rhat) <- names(n.eff) <- params.simple
   names(se) <- names(q2.5) <- names(q50) <- names(q97.5) <- params.simple
   names(overlap0) <- names(f) <- params.simple
@@ -81,7 +80,9 @@ process.output <- function(x,n.chains=n.chains,DIC=FALSE){
       means[[i]] <- colMeans(sims.list[[i]])
       se[[i]] <- apply(sims.list[[i]],c(2:ld),sd)
       q2.5[[i]] <- apply(sims.list[[i]],c(2:ld),qs,0.025)
+      q25[[i]] <- apply(sims.list[[i]],c(2:ld),qs,0.25)
       q50[[i]] <- apply(sims.list[[i]],c(2:ld),qs,0.5)
+      q75[[i]] <- apply(sims.list[[i]],c(2:ld),qs,0.75)
       q97.5[[i]] <- apply(sims.list[[i]],c(2:ld),qs,0.975)
       overlap0[[i]] <- apply(sims.list[[i]],c(2:ld),ov)
       f[[i]] <- apply(sims.list[[i]],c(2:ld),gf)
@@ -97,7 +98,9 @@ process.output <- function(x,n.chains=n.chains,DIC=FALSE){
       means[[i]] <- mean(sims.list[[i]])
       se[[i]] <- sd(sims.list[[i]])
       q2.5[[i]] <- qs(sims.list[[i]],0.025)
+      q25[[i]] <- qs(sims.list[[i]],0.25)
       q50[[i]] <- qs(sims.list[[i]],0.5)
+      q75[[i]] <- qs(sims.list[[i]],0.75)
       q97.5[[i]] <- qs(sims.list[[i]],0.975)
       overlap0[[i]] <- ov(sims.list[[i]])
       f[[i]] <- gf(sims.list[[i]])
@@ -119,11 +122,11 @@ process.output <- function(x,n.chains=n.chains,DIC=FALSE){
     dic <- mean(dic)
     
     #Return this list if DIC/pD requested
-    return(list(sims.list=sims.list,means=means,se=se,q2.5=q2.5,q50=q50,q97.5=q97.5,overlap0=overlap0,
+    return(list(sims.list=sims.list,means=means,se=se,q2.5=q2.5,q25=q25,q50=q50,q75=q75,q97.5=q97.5,overlap0=overlap0,
                 f=f,Rhat=rhat,n.eff=n.eff,pD=pd,DIC=dic))
   } else {
       #Otherwise return list without pD/DIC
-      return(list(sims.list=sims.list,means=means,se=se,q2.5=q2.5,q50=q50,q97.5=q97.5,overlap0=overlap0,
+      return(list(sims.list=sims.list,means=means,se=se,q2.5=q2.5,q25=q25,q50=q50,q75=q75,q97.5=q97.5,overlap0=overlap0,
               f=f,Rhat=rhat,n.eff=n.eff))
   }
 }

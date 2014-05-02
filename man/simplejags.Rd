@@ -15,8 +15,8 @@
 
 \usage{
 simplejags(data, inits, parameters.to.save, model.file,
-  n.chains, n.adapt=100, n.iter, n.burnin=0, n.thin=1, store.data=TRUE,
-  seed=floor(runif(1,1,10000)))}
+  n.chains, n.adapt=100, n.iter, n.burnin=0, n.thin=1, DIC=TRUE, store.data=FALSE,
+  seed=floor(runif(1,1,10000)), bugs.format=FALSE)}
 
 \arguments{
   \item{data}{A named list of the data objects required by the model, or a character vector containing the names of the data objects required by the model.}
@@ -35,6 +35,7 @@ simplejags(data, inits, parameters.to.save, model.file,
   \item{DIC}{Should simplejags calculate DIC and the estimated number of parameters (pD)? Defaults to FALSE.}
   \item{store.data}{Option to store the input dataset and initial values in the model output object for future use. Defaults to FALSE.}
   \item{seed}{Set a custom seed for the R random number generator. The current state of the random number generator is saved in the model object.}
+  \item{bugs.format}{Option to print JAGS output in classic R2WinBUGS format (default=FALSE)}
 }
 
 \author{ 

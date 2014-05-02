@@ -1,7 +1,7 @@
 
 
 simplejags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=100,n.iter,n.burnin=0,n.thin=1,
-                       DIC=FALSE,store.data=FALSE,seed=floor(runif(1,1,10000))){
+                       DIC=TRUE,store.data=FALSE,seed=floor(runif(1,1,10000)),bugs.format=FALSE){
   
   #Pass input data and parameter list through error check / processing
   data.check <- process.input(data,parameters.to.save,DIC=DIC)
@@ -58,6 +58,17 @@ simplejags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
   mcmc.info <- list(n.chains,n.adapt,n.iter,n.burnin,n.thin,n.samples,time)
   names(mcmc.info) <- c('n.chains','n.adapt','n.iter','n.burnin','n.thin','n.samples','elapsed.mins')
   
+  #Reorganize JAGS output to match input parameter order
+  params <- colnames(samples[[1]])
+  params <- params <- params[order(match(sapply(
+            strsplit(params, "\\["), "[", 1),parameters.to.save))]
+  if(DIC){
+    params <- c(params[params!='deviance'],'deviance')
+  } 
+  for (i in 1:n.chains){
+    samples[[i]] <- samples[[i]][,params]
+  }
+  
   #Convert rjags output to simplejags form 
   output <- process.output(samples,n.chains=n.chains,DIC=DIC)
   
@@ -74,6 +85,7 @@ simplejags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
   output$mcmc.info <- mcmc.info
   output$run.date <- date
   output$random.seed <- r.seed
+  output$bugs.format <- bugs.format
   
   #Classify final output object
   class(output) <- 'simplejags'
