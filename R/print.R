@@ -13,8 +13,12 @@ print.simplejags <- function(x,digits=3){
   if(x$mcmc.info[[1]]==1){
   y = y[,-c(8,9)]
   }
-  #get the rounding to look clean
-  z = as.data.frame(round(as.matrix(y),digits))
+  #get the rounding to look clean, move deviance to bottom
+  z <-  as.data.frame(round(as.matrix(y),digits))
+  if('deviance'%in%rownames(z)){
+  de <- z['deviance',]
+  z <- rbind(z[rownames(z)!='deviance',],de)
+  }
   z[,6] <- z[,6]==1
   print(z)
   
