@@ -2,24 +2,28 @@
 whiskerplot <- function(x,parameters,quantiles=c(0.025,0.975),zeroline=TRUE){
   if(class(x)!="simplejags"){stop('Requires simplejags object as input')}
   devAskNewPage(ask=FALSE)
+  
   n <- length(parameters)
   
-  if(sum(parameters%in%names(x$means))!=n){stop('One or more specified parameters are not in model output')}
+  fullset <- colnames(x$samples[[1]])
   
-  for(i in 1:n){
-    if(is.array(x$means[parameters[i]][[1]])){stop('Cannot specify an indexed parameter as part of whiskerplot')}
-  }
+  if(sum(parameters%in%fullset)!=n){stop('One or more specified parameters are not in model output.','\n',
+                                         'If parameter is not a scalar you must provide specific indexes, e.g. \'alpha[5]\' and not \'alpha\'.')}
   
   xstructure <- c(1:n)
   
-  means <- unlist(x$means[parameters])
-  
   qs <- function(x,y){as.numeric(quantile(x,y))}
-  tops <- unlist(lapply(x$sims.list[parameters],qs,quantiles[2]))
-  bottoms <- unlist(lapply(x$sims.list[parameters],qs,quantiles[1]))
-
-  ymin <- min(unlist(x$sims.list[parameters]))
-  ymax <- max(unlist(x$sims.list[parameters]))
+  
+  means <- tops <- bottoms <-ymin <- ymax <- vector(length=n)
+  for (i in 1:n){
+    hold <- unlist(x$samples[,parameters[i]])
+    means[i] <- mean(hold)
+    tops[i] <- qs(hold,quantiles[2])
+    bottoms[i] <- qs(hold,quantiles[1])   
+  }
+  
+  ymin <- min(bottoms)
+  ymax <- max(tops)
   
   plot(xstructure,means,xaxt="n",ylim=c(ymin,ymax),xlim=c(0,n+1),xlab="Parameters",ylab="Parameter Values",pch=19,cex=1.5,
        main=paste('Whisker plot, quantiles (',quantiles[1],' - ',quantiles[2],')',sep=""))
