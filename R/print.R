@@ -7,7 +7,7 @@ print.simplejags <- function(x,digits=3){
   cat(round(x$mcmc.info[[6]],0),'total samples from the joint posterior','\n')
   cat('MCMC ran for',x$mcmc.info[[7]],'minutes at time',paste(x$run.date),'\n','\n')
 
-  y = data.frame(unlist(x$mean),unlist(x$se),unlist(x$q2.5),unlist(x$q50),unlist(x$q97.5),
+  y = data.frame(unlist(x$mean),unlist(x$sd),unlist(x$q2.5),unlist(x$q50),unlist(x$q97.5),
                  unlist(x$overlap0),unlist(x$f),unlist(x$Rhat),unlist(x$n.eff)) 
   row.names(y) = colnames(x$samples[[1]])
   names(y) = c('Mean','SD','2.5%','50%','97.5%','0inCI?','f','Rhat','n.eff')

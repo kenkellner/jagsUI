@@ -32,10 +32,10 @@ simplejags(data, inits, parameters.to.save, model.file,
   \item{n.iter}{Total number of iterations per chain (including burn-in).}
   \item{n.burnin}{Number of iterations at the beginning of the chain to discard (i.e., the burn-in). Does not include the adaptive phase iterations.}
   \item{n.thin}{Thinning rate. Must be a positive integer.}
-  \item{DIC}{Should simplejags calculate DIC and the estimated number of parameters (pD)? Defaults to FALSE.}
+  \item{DIC}{Option to report DIC and the estimated number of parameters (pD). Defaults to TRUE.}
   \item{store.data}{Option to store the input dataset and initial values in the model output object for future use. Defaults to FALSE.}
   \item{seed}{Set a custom seed for the R random number generator. The current state of the random number generator is saved in the model object.}
-  \item{bugs.format}{Option to print JAGS output in classic R2WinBUGS format (default=FALSE)}
+  \item{bugs.format}{Option to print JAGS output in classic R2WinBUGS format. Default is FALSE yielding the default simplejags print method.}
 }
 
 \author{ 

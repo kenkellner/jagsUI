@@ -122,11 +122,11 @@ process.output <- function(x,n.chains=n.chains,DIC=FALSE){
     dic <- mean(dic)
     
     #Return this list if DIC/pD requested
-    return(list(sims.list=sims.list,means=means,se=se,q2.5=q2.5,q25=q25,q50=q50,q75=q75,q97.5=q97.5,overlap0=overlap0,
+    return(list(sims.list=sims.list,means=means,sd=se,q2.5=q2.5,q25=q25,q50=q50,q75=q75,q97.5=q97.5,overlap0=overlap0,
                 f=f,Rhat=rhat,n.eff=n.eff,pD=pd,DIC=dic))
   } else {
       #Otherwise return list without pD/DIC
-      return(list(sims.list=sims.list,means=means,se=se,q2.5=q2.5,q25=q25,q50=q50,q75=q75,q97.5=q97.5,overlap0=overlap0,
+      return(list(sims.list=sims.list,means=means,sd=se,q2.5=q2.5,q25=q25,q50=q50,q75=q75,q97.5=q97.5,overlap0=overlap0,
               f=f,Rhat=rhat,n.eff=n.eff))
   }
 }
