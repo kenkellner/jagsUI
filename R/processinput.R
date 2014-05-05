@@ -1,6 +1,6 @@
 
 process.input = function(x,y,DIC=FALSE){
-  cat('\n','Processing function input.......','\n')
+  cat('\nProcessing function input.......','\n')
   
   #Check if supplied parameter vector is the right format
   if((is.character(y)&is.vector(y))){
@@ -31,23 +31,23 @@ process.input = function(x,y,DIC=FALSE){
   }
   
   #Check each component of data object for issues and fix if possible
-  for (i in 1:length(x)){
+  #for (i in 1:length(x)){
     
-    if(is.list(x[[i]])&&length(x[[i]]==1)){
-      cat('Note: data component',names(x[i]),'is a 1-element list and is being converted to numeric.','\n')
-      x[[i]] = x[[i]][[1]]
-    }
+    #if(is.list(x[[i]])&&length(x[[i]]==1)&&!is.null(dim(x[[i]]))){
+    #  cat('Note: data component',names(x[i]),'is a 1-element list and is being converted to numeric.','\n')
+    #  x[[i]] = x[[i]][[1]]
+    #}
     
-    if(is.matrix(x[[i]])&&ncol(x[[i]])==1){
-      cat('Note: data component',names(x[i]),'is a 1-column matrix and is being converted to vector.','\n')
-      x[[i]] = x[[i]][,1]
-    }  
+    #if(is.matrix(x[[i]])&&ncol(x[[i]])==1){
+    #  cat('Note: data component',names(x[i]),'is a 1-column matrix and is being converted to vector.','\n')
+    #  x[[i]] = x[[i]][,1]
+    #}  
         
-    if(!is.numeric(x[[i]])){
-      stop('Data component ',names(x[i]),' is not numeric. Try coercing it with as.numeric().')
-    }
+    #if(!is.numeric(x[[i]])){
+    #  stop('Data component ',names(x[i]),' is not numeric. Try coercing it with as.numeric().')
+    #}
                 
-    }
+    #}
  
   cat('Done.','\n','\n')
   return(list(data=x,params=params))
