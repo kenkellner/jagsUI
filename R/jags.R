@@ -1,6 +1,6 @@
 
 
-simplejags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=100,n.iter,n.burnin=0,n.thin=1,
+simplejags <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=100,n.iter,n.burnin=0,n.thin=1,
                        DIC=TRUE,store.data=FALSE,seed=floor(runif(1,1,10000)),bugs.format=FALSE){
   
   #Pass input data and parameter list through error check / processing
@@ -73,6 +73,18 @@ simplejags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
   output <- process.output(samples,n.chains=n.chains,DIC=DIC)
   
   #Add additional information to output list
+  
+  #Summary
+  y = data.frame(unlist(output$mean),unlist(output$sd),unlist(output$q2.5),unlist(output$q25),
+                 unlist(output$q50),unlist(output$q75),unlist(output$q97.5),
+                 unlist(output$Rhat),unlist(output$n.eff),unlist(output$overlap0),unlist(output$f)) 
+  row.names(y) = colnames(samples[[1]])
+  names(y) = c('mean','sd','2.5%','25%','50%','75%','97.5%','Rhat','n.eff','overlap0','f')
+  if(mcmc.info[[1]]==1){
+    y = y[,-c(8,9)]
+  }  
+  output$summary <- y
+ 
   output$samples <- samples
   output$modfile <- model.file
   #If user wants to save input data/inits

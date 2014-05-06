@@ -10,7 +10,7 @@ print.simplejags <- function(x,digits=3){
   y = data.frame(unlist(x$mean),unlist(x$sd),unlist(x$q2.5),unlist(x$q50),unlist(x$q97.5),
                  unlist(x$overlap0),unlist(x$f),unlist(x$Rhat),unlist(x$n.eff)) 
   row.names(y) = colnames(x$samples[[1]])
-  names(y) = c('Mean','SD','2.5%','50%','97.5%','0inCI?','f','Rhat','n.eff')
+  names(y) = c('mean','sd','2.5%','50%','97.5%','overlap0','f','Rhat','n.eff')
   if(x$mcmc.info[[1]]==1){
   y = y[,-c(8,9)]
   }
