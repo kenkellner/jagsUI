@@ -1,3 +1,39 @@
+data.check <- function(x,name){
+  
+  test = FALSE
+    
+  if(is.data.frame(x)){
+    if(!is.null(dim(x))){
+      cat('\nConverting data frame \'',name,'\' to matrix.',sep="")
+      x = as.matrix(x)
+    } else {
+      cat('\nConverting data frame',name,'to vector.')
+      x = as.vector(x)}
+  }
+  
+  
+  if (is.numeric(x)&&is.matrix(x)){
+    if(1%in%dim(x)){
+      cat('\nConverting 1-column matrix \'',name,'\' to vector',sep="")
+      x = as.vector(x)
+    }
+    test = TRUE
+  }
+  
+  if(is.numeric(x)&&is.array(x)&&!test){
+    test = TRUE
+  }
+  
+  if (is.numeric(x)&&is.vector(x)&&!test){
+    test = TRUE
+  }
+  
+  if(test){
+    return(x)
+  } else{return('error')}
+  
+}
+
 
 process.input = function(x,y,DIC=FALSE){
   cat('\nProcessing function input.......','\n')
@@ -31,25 +67,21 @@ process.input = function(x,y,DIC=FALSE){
   }
   
   #Check each component of data object for issues and fix if possible
-  #for (i in 1:length(x)){
-    
-    #if(is.list(x[[i]])&&length(x[[i]]==1)&&!is.null(dim(x[[i]]))){
-    #  cat('Note: data component',names(x[i]),'is a 1-element list and is being converted to numeric.','\n')
-    #  x[[i]] = x[[i]][[1]]
-    #}
-    
-    #if(is.matrix(x[[i]])&&ncol(x[[i]])==1){
-    #  cat('Note: data component',names(x[i]),'is a 1-column matrix and is being converted to vector.','\n')
-    #  x[[i]] = x[[i]][,1]
-    #}  
-        
-    #if(!is.numeric(x[[i]])){
-    #  stop('Data component ',names(x[i]),' is not numeric. Try coercing it with as.numeric().')
-    #}
-                
-    #}
+  for (i in 1:length(x)){
+  
+    if(is.factor(x[[i]])){
+           
+      stop('\nElement \'',names(jags.data[i]) ,'\' in the data list is a factor.','\n','Convert it to a series of dummy/indicator variables or a numeric vector as appropriate.')
+            
+    }
+     
+    process <- data.check(x[[i]],name = names(jags.data[i]))
+    if(process[1]=="error"){stop('\nElement \'',names(jags.data[i]) ,'\' in the data list cannot be coerced to one of the','\n','allowed formats (numeric scalar, vector, matrix, or array)')
+    } else{x[[i]] <- process}
+
+  }
  
-  cat('Done.','\n','\n')
+  cat('\n\nDone.','\n','\n')
   return(list(data=x,params=params))
    
 }
