@@ -55,6 +55,13 @@ process.input = function(x,y,DIC=FALSE){
   if(is.list(x)||(is.character(x)&is.vector(x))){
   } else{stop('Input data must be a list of data objects OR a vector of data object names (as strings)')}
   
+  options( warn = -1 )
+  if(is.list(x)&&all(lapply(x,is.character))){
+    x = unlist(x)
+  }
+  options(warn=0)
+  
+  
   if((is.list(x)&&is.null(names(x)))||(is.list(x)&&any(names(x)==""))){
     stop('At least one of the elements in your data list does not have a name')
   }
