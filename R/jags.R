@@ -42,7 +42,7 @@ simplejags <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.c
   cat('Sampling from joint posterior,',(n.iter-n.burnin),'iterations x',n.chains,'chains','\n','\n')
   samples <- coda.samples(model=m,variable.names=parameters.to.save,n.iter=(n.iter-n.burnin),thin=n.thin,
                           progress.bar="text")
-  cat('\n')
+  cat('\n\n')
   
   ##########################
   ##End of rjags functions##
@@ -82,7 +82,8 @@ simplejags <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.c
   names(y) = c('mean','sd','2.5%','25%','50%','75%','97.5%','Rhat','n.eff','overlap0','f')
   if(mcmc.info[[1]]==1){
     y = y[,-c(8,9)]
-  }  
+  }
+  y <- as.matrix(y)
   output$summary <- y
  
   output$samples <- samples

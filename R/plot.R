@@ -1,5 +1,6 @@
 
 plot.simplejags <- function(x){
   devAskNewPage(ask=FALSE)
-  plot(x$samples)
+  plot(x$samples,ask=TRUE)
+  devAskNewPage(ask=FALSE)
 }

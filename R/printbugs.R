@@ -24,7 +24,7 @@ print.simplebugs <- function(x,digits=3){
   if(!is.null(x$DIC)){
     
     cat('\nDIC info (using the rule, pD = var(deviance)/2)','\npD =',round(x$pD,1),'and DIC =',round(x$DIC,digits),'\n')
-    cat('DIC is an estimate of expected predictive error (lower deviance is better).')
+    cat('DIC is an estimate of expected predictive error (lower deviance is better).\n')
     
   }
 }

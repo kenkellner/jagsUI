@@ -29,7 +29,7 @@ print.simplejags <- function(x,digits=3){
   if(!is.null(x$DIC)){
     
     cat('\nDIC info: (pD = var(deviance)/2)','\npD =',round(x$pD,1),'and DIC =',round(x$DIC,digits),'\n')
-    cat('DIC is an estimate of expected predictive error (lower is better).')
+    cat('DIC is an estimate of expected predictive error (lower is better).\n')
     
   }
   } else {print.simplebugs(x,digits=digits)}
