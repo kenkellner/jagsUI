@@ -1,5 +1,5 @@
 
-pp.check <- function(x, actual='fit', new='fit.new'){
+pp.check <- function(x, actual, new){
   if(class(x)!="simplejags"){stop('Requires simplejags object as input')}
   devAskNewPage(ask=FALSE)
   actual <- eval(parse(text=paste('x$sims.list$',actual,sep="")))

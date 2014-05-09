@@ -5,7 +5,7 @@
 \title{Posterior Predictive Checks for Bayesian Analyses fit in JAGS}
 
 \usage{
-  pp.check(x, actual="fit", new="fit.new")}
+  pp.check(x, actual, new)}
 
 \arguments{
   \item{x}{A simplejags object generated using the \code{jags} function}

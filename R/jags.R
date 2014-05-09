@@ -70,7 +70,7 @@ simplejags <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.c
   }
   
   #Convert rjags output to simplejags form 
-  output <- process.output(samples,n.chains=n.chains,DIC=DIC)
+  output <- process.output(samples,DIC=DIC)
   
   #Add additional information to output list
   
