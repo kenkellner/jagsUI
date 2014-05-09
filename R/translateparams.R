@@ -15,7 +15,7 @@ params.sub.1 <- sapply(strsplit(params.sub, "\\]"), "[", 1)
 params.2 <- sapply(strsplit(params.sub.1, "\\["), "[", 2)
 expand <- sapply(strsplit(params, "\\["), "[", 1)
 
-dim = get.dim(colnames(m3$samples[[1]]))
+dim = get.dim(params)
 
 gen.samp.mat <- function(x){
   out = x
@@ -41,7 +41,7 @@ index=1
 params.new = character()
 for (i in 1:length(params.sub)){
 
-  if(!is.na(mats.sub[i])){
+  if(!is.na(mats.sub[i])||!is.na(params.2[i])){
     if(params.sub[i]==params.simple.sub[i]){
       st = paste('mats.sub$',params.simple.sub[i],"[]",sep="")
     } else {
