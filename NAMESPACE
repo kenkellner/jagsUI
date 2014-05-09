@@ -1,8 +1,6 @@
 importFrom(methods, "setOldClass")
 
-importFrom(rjags, "jags.model", "coda.samples")
-
-importFrom(coda, "traceplot")
+importFrom(rjags, "jags.model", "coda.samples", "adapt")
 
 #import(parallel)
 
@@ -10,10 +8,11 @@ exportClasses("simplejags")
 
 exportMethods("traceplot")
 
-export("jags", "simplejags","print.simplejags", "process.output", "pp.check",
-       "whiskerplot", "get.dim", "process.input", "traceplot", "print.simplebugs")
+export("jags", "simplejags", "pp.check", "traceplot", 
+       "whiskerplot")
 
 S3method("plot", "simplejags")
 S3method("xyplot", "simplejags")
 S3method("densityplot", "simplejags")
+S3method("print","simplejags")
 
