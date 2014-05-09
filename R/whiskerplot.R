@@ -3,12 +3,11 @@ whiskerplot <- function(x,parameters,quantiles=c(0.025,0.975),zeroline=TRUE){
   if(class(x)!="simplejags"){stop('Requires simplejags object as input')}
   devAskNewPage(ask=FALSE)
   
+  #Generate a list of all specified output parameters
+  #Expand from shorthand if necessary
+  parameters <- translate.params(x,parameters)
+  
   n <- length(parameters)
-  
-  fullset <- colnames(x$samples[[1]])
-  
-  if(sum(parameters%in%fullset)!=n){stop('One or more specified parameters are not in model output.','\n',
-                                         'If parameter is not a scalar you must provide specific indexes, e.g. \'alpha[5]\' and not \'alpha\'.')}
   
   xstructure <- c(1:n)
   
