@@ -1,3 +1,7 @@
+Changes from Version 0.01-5 to 0.01-6 [9-May-2014]
+
+Overhaul calculation of statistics to speed things up. Minor bugfixes.
+
 Changes from Version 0.01-4 to 0.01-5 [6-May-2014]
 
 Bugfixes. Changed primary function name to 'jags' from 'simplejags' for simplicity. Also edited several other function names. Added a summary table to the output object.
