@@ -17,7 +17,9 @@
 jags(data, inits, parameters.to.save, model.file,
   n.chains, n.adapt=100, n.iter, n.burnin=0, n.thin=1,
   DIC=TRUE, parallel=FALSE, store.data=FALSE,
-  seed=floor(runif(1,1,10000)), bugs.format=FALSE)}
+  seed=floor(runif(1,1,10000)), bugs.format=FALSE)
+  
+update(object, parameters.to.save=NULL, n.adapt=100, n.iter, n.thin=NULL)}
 
 \arguments{
   \item{data}{A named list of the data objects required by the model, or a character vector containing the names of the data objects required by the model.}
@@ -38,6 +40,7 @@ jags(data, inits, parameters.to.save, model.file,
   \item{store.data}{Option to store the input dataset and initial values in the output object for future use. Defaults to FALSE.}
   \item{seed}{Set a custom seed for the R random number generator and JAGS. The current state of the random number generator is saved in the output object.}
   \item{bugs.format}{Option to print JAGS output in classic R2WinBUGS format. Default is FALSE.}
+  \item{object}{A \code{simplejags}-class object to update.}
 }
 
 \details{
@@ -49,6 +52,7 @@ Basic analysis steps:
   \item Set initial values
   \item Specify parameters to monitor
   \item Set MCMC variables and run analysis
+  \item Optionally, generate more posterior samples using the \code{update} method.
 
 }
 
@@ -197,5 +201,8 @@ plot(out)
 
 #Plot traces
 traceplot(out)
+
+#Update model another 1000 iterations
+out <- update(out,n.iter = 1000)
 
 }

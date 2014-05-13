@@ -15,4 +15,5 @@ S3method("plot", "simplejags")
 S3method("xyplot", "simplejags")
 S3method("densityplot", "simplejags")
 S3method("print","simplejags")
+S3method("update","simplejags")
 

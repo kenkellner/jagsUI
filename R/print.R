@@ -14,7 +14,7 @@ print.simplejags <- function(x,digits=3){
   } else{
     cat('Inference for Bugs model at \'',x$modfile,'\', fit using JAGS,','\n',sep="")
     cat(x$mcmc.info$n.chains,'chains, each with',x$mcmc.info$n.iter,'iterations (first ',x$mcmc.info$n.burnin,'discarded), n.thin =',x$mcmc.info$n.thin) 
-    cat('\nn.sims = ',x$mcmc.info$n.iter,'iterations saved','\n')    
+    cat('\nn.sims =',x$mcmc.info$n.samples,'iterations saved','\n')    
   }
   
   #Organize columns
