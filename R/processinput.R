@@ -68,7 +68,7 @@ process.input = function(x,y,inits,n.chains,DIC=FALSE){
   
   #Convert a supplied vector of characters to a list of data objects
   if((is.character(x)&is.vector(x))){    
-    temp = lapply(x,get)
+    temp = lapply(x,get,envir = parent.frame(2))
     names(temp) = x
     x = temp  
   }
