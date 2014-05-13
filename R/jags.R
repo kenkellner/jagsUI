@@ -16,6 +16,7 @@ simplejags <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.c
   #Save start time
   start.time <- Sys.time()
   
+  #Stuff to do if parallel=TRUE
   if(parallel && n.chains>1){
  
   require(parallel)

@@ -35,7 +35,7 @@ print.simplejags <- function(x,digits=3){
   #Print Rhat/n.eff information if necessary
   if(x$mcmc.info$n.chains>1){
     if(!x$bugs.format){
-      if(max(unlist(x$Rhat))>1.1){cat('\n**WARNING** Rhat values indicate convergence failure.','\n')
+      if(max(unlist(x$Rhat),na.rm=TRUE)>1.1){cat('\n**WARNING** Rhat values indicate convergence failure.','\n')
       }else{cat('\nSuccessful convergence based on Rhat values (all < 1.1).','\n')}
       cat('Rhat is the potential scale reduction factor (at convergence, Rhat=1).','\n')
       cat('For each parameter, n.eff is a crude measure of effective sample size.','\n')

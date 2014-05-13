@@ -48,7 +48,9 @@ calcneff <- function(x,n,m){
 #Gelman diag function
 
 gd <- function(i,hold){
-  gelman.diag(hold[,i])$psrf[1]
+  r <- gelman.diag(hold[,i])$psrf[1]
+  if(is.nan(r)){r <- NA}
+  return(r)
 }
 
 #Make blank lists

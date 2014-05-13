@@ -22,18 +22,10 @@ cat('Beginning parallel processing with',n.cluster,'clusters. Console output wil
 #Function called in each cluster
 jags.clust <- function(i){
 
-#Set random seed within each cluster and initial values
-#core.seed <- floor(runif(1,1,10000))
-#if(is.null(inits)){
-#  inits <- list(.RNG.name="base::Wichmann-Hill",.RNG.seed=core.seed)
-#} else{
-#  inits <- inits()
-#  inits$.RNG.name="base::Wichmann-Hill"
-#  inits$.RNG.seed=core.seed
-#}
-
+#Set initial values for cluster
 cluster.inits <- inits[[i]]
 
+#Load rjags and modules
 require(rjags)
 if(DIC){
   load.module("dic",quiet=TRUE)
