@@ -1,4 +1,4 @@
-simplejags
+jagsUI
 ==========
 
 This package runs JAGS (Just Another Gibbs Sampler) analyses from within R. It acts as a wrapper and alternative interface for the functions in the rjags package and adds some custom output and graphical options. 
