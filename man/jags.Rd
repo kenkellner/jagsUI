@@ -5,6 +5,7 @@
 % functions
 \alias{jags}
 \alias{simplejags}
+\alias{update}
 
 
 \title{Call JAGS from R}
@@ -62,7 +63,7 @@ See example below.
 
 \value{
 
-An object of class \code{simplejags}. Notable elements output object include:
+An object of class \code{simplejags}. Notable elements in the output object include:
 
 \item{sims.list}{A list of values sampled from the posterior distributions of each monitored parameter.}
 \item{summary}{A summary of various statistics calculated based on model output, in matrix form.}
