@@ -83,7 +83,7 @@ process.input = function(x,y,inits,n.chains,DIC=FALSE){
     }
      
     process <- data.check(x[[i]],name = names(x[i]))
-    if(process[1]=="error"){stop('\nElement \'',names(x[i]) ,'\' in the data list cannot be coerced to one of the','\n','allowed formats (numeric scalar, vector, matrix, or array)\n')
+    if(!is.na(process[1])&&process[1]=="error"){stop('\nElement \'',names(x[i]) ,'\' in the data list cannot be coerced to one of the','\n','allowed formats (numeric scalar, vector, matrix, or array)\n')
     } else{x[[i]] <- process}
 
   }
