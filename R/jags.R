@@ -1,18 +1,31 @@
 
 
 simplejags <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=100,n.iter,n.burnin=0,n.thin=1,
-                       DIC=TRUE,store.data=FALSE,seed=floor(runif(1,1,10000)),bugs.format=FALSE){
+                       parallel=FALSE,DIC=TRUE,store.data=FALSE,seed=floor(runif(1,1,10000)),bugs.format=FALSE){
+  
+  #Set random seed
+  RNGkind('default')
+  set.seed(seed)
   
   #Pass input data and parameter list through error check / processing
-  data.check <- process.input(data,parameters.to.save,DIC=DIC)
+  data.check <- process.input(data,parameters.to.save,inits,n.chains,DIC=DIC)
   data <- data.check$data
   parameters.to.save <- data.check$params
+  inits <- data.check$inits
   
-  #Save various info about mcmc run
+  #Save start time
   start.time <- Sys.time()
-  set.seed(seed)
-  r.seed <- .Random.seed
   
+  if(parallel && n.chains>1){
+ 
+  require(parallel)
+  par <- run.parallel(data,inits,parameters.to.save,model.file,n.chains,n.adapt,n.iter,n.burnin,n.thin,
+                      seed,DIC) 
+  samples <- par$samples
+  m <- par$model
+    
+  } else {
+    
   #######################
   ##Run rjags functions##
   #######################
@@ -42,11 +55,13 @@ simplejags <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.c
   cat('Sampling from joint posterior,',(n.iter-n.burnin),'iterations x',n.chains,'chains','\n','\n')
   samples <- coda.samples(model=m,variable.names=parameters.to.save,n.iter=(n.iter-n.burnin),thin=n.thin,
                           progress.bar="text")
-  cat('\n\n')
+  cat('\n')
   
   ##########################
   ##End of rjags functions##
   ##########################
+  
+  }
   
   #Get more info about MCMC run
   end.time <- Sys.time() 
@@ -60,14 +75,13 @@ simplejags <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.c
   
   #Reorganize JAGS output to match input parameter order
   params <- colnames(samples[[1]])
-  params <- params <- params[order(match(sapply(
+  params <- params[order(match(sapply(
             strsplit(params, "\\["), "[", 1),parameters.to.save))]
   if(DIC){
     params <- c(params[params!='deviance'],'deviance')
-  } 
-  for (i in 1:n.chains){
-    samples[[i]] <- samples[[i]][,params]
-  }
+  }  
+
+  samples <- samples[,params]
   
   #Convert rjags output to simplejags form 
   output <- process.output(samples,DIC=DIC)
@@ -83,8 +97,7 @@ simplejags <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.c
   if(mcmc.info[[1]]==1){
     y = y[,-c(8,9)]
   }
-  y <- as.matrix(y)
-  output$summary <- y
+  output$summary <- as.matrix(y)
  
   output$samples <- samples
   output$modfile <- model.file
@@ -97,7 +110,8 @@ simplejags <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.c
   output$parameters <- parameters.to.save
   output$mcmc.info <- mcmc.info
   output$run.date <- date
-  output$random.seed <- r.seed
+  output$random.seed <- seed
+  output$parallel <- parallel
   output$bugs.format <- bugs.format
   
   #Classify final output object

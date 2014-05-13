@@ -1,3 +1,7 @@
+Changes from Version 0.01-6 to 0.01-7 [12-May-2014]
+
+Fix setting the random seed so it actually works. Allow running MCMC chains in parallel. Various bugfixes.
+
 Changes from Version 0.01-5 to 0.01-6 [9-May-2014]
 
 Overhaul calculation of statistics to speed things up. Minor bugfixes.

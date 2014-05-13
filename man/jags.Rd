@@ -15,7 +15,8 @@
 
 \usage{
 jags(data, inits, parameters.to.save, model.file,
-  n.chains, n.adapt=100, n.iter, n.burnin=0, n.thin=1, DIC=TRUE, store.data=FALSE,
+  n.chains, n.adapt=100, n.iter, n.burnin=0, n.thin=1,
+  DIC=TRUE, parallel=FALSE, store.data=FALSE,
   seed=floor(runif(1,1,10000)), bugs.format=FALSE)}
 
 \arguments{
@@ -32,9 +33,10 @@ jags(data, inits, parameters.to.save, model.file,
   \item{n.iter}{Total number of iterations per chain (including burn-in).}
   \item{n.burnin}{Number of iterations at the beginning of the chain to discard (i.e., the burn-in). Does not include the adaptive phase iterations.}
   \item{n.thin}{Thinning rate. Must be a positive integer.}
+  \item{parallel}{If TRUE, run MCMC chains in parallel on multiple CPU cores. Each chain is assigned to a different core, so n.chains must be <= the number of available CPU cores.}
   \item{DIC}{Option to report DIC and the estimated number of parameters (pD). Defaults to TRUE.}
   \item{store.data}{Option to store the input dataset and initial values in the output object for future use. Defaults to FALSE.}
-  \item{seed}{Set a custom seed for the R random number generator. The current state of the random number generator is saved in the output object.}
+  \item{seed}{Set a custom seed for the R random number generator and JAGS. The current state of the random number generator is saved in the output object.}
   \item{bugs.format}{Option to print JAGS output in classic R2WinBUGS format. Default is FALSE.}
 }
 
@@ -51,6 +53,17 @@ Basic analysis steps:
 }
 
 See example below.
+
+}
+
+\value{
+
+An object of class \code{simplejags}. Notable elements output object include:
+
+\item{sims.list}{A list of values sampled from the posterior distributions of each monitored parameter.}
+\item{summary}{A summary of various statistics calculated based on model output, in matrix form.}
+\item{samples}{The original output object from the \code{rjags} package, as class \code{mcmc.list}.}
+\item{model}{The \code{rjags} model object; this will contain multiple elements if \code{parallel=TRUE}.}
 
 }
 

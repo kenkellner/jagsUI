@@ -35,7 +35,7 @@ data.check <- function(x,name){
 }
 
 
-process.input = function(x,y,DIC=FALSE){
+process.input = function(x,y,inits,n.chains,DIC=FALSE){
   cat('\nProcessing function input.......','\n')
   
   #Check if supplied parameter vector is the right format
@@ -87,8 +87,11 @@ process.input = function(x,y,DIC=FALSE){
     } else{x[[i]] <- process}
 
   }
+  
+  #Get initial values
+  init.vals <- gen.inits(inits,n.chains)
  
   cat('\nDone.','\n','\n')
-  return(list(data=x,params=params))
+  return(list(data=x,params=params,inits=init.vals))
    
 }
