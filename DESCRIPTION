@@ -1,7 +1,7 @@
 Package: jagsUI
 Version: 0.02-1
 Date: 2014-5-13
-Title: Run JAGS from R (a wrapper for rjags)
+Title: Run JAGS from R (a User Interface for rjags)
 Author: Ken Kellner <ken@kenkellner.com>
 Maintainer: Ken Kellner <ken@kenkellner.com>
 Depends: R (>= 2.14.0), rjags (>= 3-3), parallel
