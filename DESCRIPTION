@@ -1,6 +1,6 @@
 Package: jagsUI
-Version: 0.01-7
-Date: 2014-5-12
+Version: 0.02-1
+Date: 2014-5-13
 Title: Run JAGS from R (a wrapper for rjags)
 Author: Ken Kellner <ken@kenkellner.com>
 Maintainer: Ken Kellner <ken@kenkellner.com>
@@ -8,5 +8,6 @@ Depends: R (>= 2.14.0), rjags (>= 3-3), parallel
 Imports: rjags, coda (>= 0.13), parallel
 SystemRequirements: JAGS (http://mcmc-jags.sourceforge.net)
 Description: This package provides a straightforward user interface for running JAGS analyses from within R, via rjags. The goals of jagsUI are to be simple, easy to learn, and frequently updated. 
+License: GPL-2
 URL: http://code.kenkellner.com/jagsui
 NeedsCompilation: no

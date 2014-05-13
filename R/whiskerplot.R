@@ -1,6 +1,6 @@
 
 whiskerplot <- function(x,parameters,quantiles=c(0.025,0.975),zeroline=TRUE){
-  if(class(x)!="simplejags"){stop('Requires simplejags object as input')}
+  if(class(x)!="jagsUI"){stop('Requires jagsUI object as input')}
   devAskNewPage(ask=FALSE)
   
   #Generate a list of all specified output parameters

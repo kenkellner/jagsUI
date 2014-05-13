@@ -6,5 +6,6 @@ example.R
 jagsUI.Rproj
 .gitignore
 modeltest.txt
+model.txt
 example2.R
 README.md

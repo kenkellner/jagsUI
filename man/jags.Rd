@@ -1,17 +1,17 @@
 \name{jags}
 \docType{class}
 % Classes
-\alias{simplejags-class}
+\alias{jagsUI-class}
 % functions
 \alias{jags}
-\alias{simplejags}
 \alias{update}
+\alias{jagsUI}
 
 
 \title{Call JAGS from R}
 \description{
-  The \code{jags} function is a basic wrapper for running JAGS analyses in package \code{rjags} inspired by similar packages like \code{R2WinBUGS}, \code{R2OpenBUGS}, and \code{R2jags}. The user provides a model file, data, initial values (optional), and parameters to save. The function
-  compiles the information and sends it to \code{JAGS}, then consolidates and summarizes the MCMC output in an object of class \code{simplejags}.
+  The \code{jags} function is a basic user interface for running JAGS analyses via package \code{rjags} inspired by similar packages like \code{R2WinBUGS}, \code{R2OpenBUGS}, and \code{R2jags}. The user provides a model file, data, initial values (optional), and parameters to save. The function
+  compiles the information and sends it to \code{JAGS}, then consolidates and summarizes the MCMC output in an object of class \code{jagsUI}.
 }
 
 \usage{
@@ -41,7 +41,7 @@ update(object, parameters.to.save=NULL, n.adapt=100, n.iter, n.thin=NULL)}
   \item{store.data}{Option to store the input dataset and initial values in the output object for future use. Defaults to FALSE.}
   \item{seed}{Set a custom seed for the R random number generator and JAGS. The current state of the random number generator is saved in the output object.}
   \item{bugs.format}{Option to print JAGS output in classic R2WinBUGS format. Default is FALSE.}
-  \item{object}{A \code{simplejags}-class object to update.}
+  \item{object}{A \code{jagsUI}-class object to update.}
 }
 
 \details{
@@ -63,7 +63,7 @@ See example below.
 
 \value{
 
-An object of class \code{simplejags}. Notable elements in the output object include:
+An object of class \code{jagsUI}. Notable elements in the output object include:
 
 \item{sims.list}{A list of values sampled from the posterior distributions of each monitored parameter.}
 \item{summary}{A summary of various statistics calculated based on model output, in matrix form.}

@@ -1,3 +1,7 @@
+Changes from Version 0.01-7 to 0.02-1 [13-May-2014]
+
+Update to new package name ('jagsUI'). Implement update function. Bugfixes
+
 Changes from Version 0.01-6 to 0.01-7 [12-May-2014]
 
 Fix setting the random seed so it actually works. Allow running MCMC chains in parallel. Various bugfixes.

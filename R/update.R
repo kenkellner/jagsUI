@@ -1,6 +1,6 @@
 
-update.simplejags <- function(object, parameters.to.save=NULL, n.adapt=100, n.iter, n.thin=NULL){
-  
+update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=100, n.iter, n.thin=NULL){
+  if(class(object)!="jagsUI"){stop('Requires jagsUI object as input')}
   mod <- object$model
   if(is.null(parameters.to.save)){parameters <- object$parameters
   } else {parameters <- parameters.to.save}
@@ -143,7 +143,7 @@ update.simplejags <- function(object, parameters.to.save=NULL, n.adapt=100, n.it
   } else {output$update.count <- object$update.count + 1}
   
   #Classify final output object
-  class(output) <- 'simplejags'
+  class(output) <- 'jagsUI'
   
   return(output)
   

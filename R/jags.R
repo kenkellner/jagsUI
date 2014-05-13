@@ -1,6 +1,6 @@
 
 
-simplejags <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=100,n.iter,n.burnin=0,n.thin=1,
+jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=100,n.iter,n.burnin=0,n.thin=1,
                        parallel=FALSE,DIC=TRUE,store.data=FALSE,seed=floor(runif(1,1,10000)),bugs.format=FALSE){
   
   #Set random seed
@@ -84,7 +84,7 @@ simplejags <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.c
 
   samples <- samples[,params]
   
-  #Convert rjags output to simplejags form 
+  #Convert rjags output to jagsUI form 
   output <- process.output(samples,DIC=DIC)
   
   #Add additional information to output list
@@ -116,7 +116,7 @@ simplejags <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.c
   output$bugs.format <- bugs.format
   
   #Classify final output object
-  class(output) <- 'simplejags'
+  class(output) <- 'jagsUI'
   
   return(output)
   
