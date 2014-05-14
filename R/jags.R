@@ -78,9 +78,13 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
   params <- colnames(samples[[1]])
   params <- params[order(match(sapply(
             strsplit(params, "\\["), "[", 1),parameters.to.save))]
-  if(DIC){
+
+  if(DIC&&('deviance'%in%params)){
     params <- c(params[params!='deviance'],'deviance')
-  }  
+  } else if (DIC&&!('deviance'%in%params)){
+    warning('JAGS did not monitor deviance.')
+    DIC <- FALSE
+  } 
 
   samples <- samples[,params]
   
