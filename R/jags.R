@@ -1,11 +1,29 @@
 
 
 jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=100,n.iter,n.burnin=0,n.thin=1,
-                       parallel=FALSE,DIC=TRUE,store.data=FALSE,seed=floor(runif(1,1,10000)),bugs.format=FALSE){
+                       modules=c('glm'),parallel=FALSE,DIC=TRUE,store.data=FALSE,seed=floor(runif(1,1,10000)),bugs.format=FALSE){
   
   #Set random seed
   RNGkind('default')
   set.seed(seed)
+  
+  #Load/unload appropriate modules (besides dic)
+  called.set <- c('basemod','bugs',modules)
+  current.set <- list.modules()
+  
+  load.set <- called.set[!called.set%in%current.set]
+  unload.set <- current.set[!current.set%in%called.set]
+  
+  if(length(load.set)>0){
+    for (i in 1:length(load.set)){
+      load.module(load.set[i],quiet=TRUE)
+    }
+  }
+  if(length(unload.set)>0){
+    for (i in 1:length(unload.set)){
+      unload.module(unload.set[i],quiet=TRUE)
+    }
+  }
   
   #Pass input data and parameter list through error check / processing
   data.check <- process.input(data,parameters.to.save,inits,n.chains,DIC=DIC)
@@ -21,7 +39,7 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
  
   require(parallel)
   par <- run.parallel(data,inits,parameters.to.save,model.file,n.chains,n.adapt,n.iter,n.burnin,n.thin,
-                      seed,DIC) 
+                      modules,seed,DIC) 
   samples <- par$samples
   m <- par$model
     

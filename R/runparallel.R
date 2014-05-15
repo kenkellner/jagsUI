@@ -1,6 +1,6 @@
 
 run.parallel <- function(data,inits,parameters.to.save,model.file,n.chains,n.adapt,n.iter,n.burnin,n.thin,
-                         seed,DIC) {
+                         modules,seed,DIC) {
 
 #Set number of clusters/chains
 p <- detectCores()
@@ -29,6 +29,11 @@ cluster.inits <- inits[[i]]
 require(rjags)
 if(DIC){
   load.module("dic",quiet=TRUE)
+}
+if(!is.null(modules)&&length(modules)>0){
+  for (i in 1:length(modules)){
+    load.module(modules[i],quiet=TRUE)
+  }
 }
 
 #Compile model
