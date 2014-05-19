@@ -4,11 +4,11 @@ importFrom(rjags, "jags.model", "coda.samples", "adapt")
 
 import(parallel)
 
-exportClasses("jagsUI")
+exportClasses("jagsUI","jagsUIbasic")
 
 exportMethods("traceplot")
 
-export("jags", "jagsUI","pp.check", "traceplot", 
+export("jags", "jagsUI","jags.basic","pp.check", "traceplot", 
        "whiskerplot")
 
 S3method("plot", "jagsUI")
@@ -16,5 +16,6 @@ S3method("xyplot", "jagsUI")
 S3method("densityplot", "jagsUI")
 S3method("print","jagsUI")
 S3method("update","jagsUI")
+S3method("update","jagsUIbasic")
 S3method("summary","jagsUI")
 

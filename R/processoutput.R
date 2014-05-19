@@ -1,5 +1,5 @@
 
-process.output <- function(x,DIC) {
+process.output <- function(x,DIC,params.omit) {
 
 cat('Calculating statistics.......','\n')  
   
@@ -54,8 +54,8 @@ gd <- function(i,hold){
 }
 
 #Make blank lists
-sims.list <- means <- rhat <- n.eff <- se <- as.list(params.simple)
-q2.5 <- q25 <- q50 <- q75 <- q97.5 <- overlap0 <- f <- as.list(params.simple)
+sims.list <- means <- rhat <- n.eff <- se <- as.list(rep(NA,length(params.simple)))
+q2.5 <- q25 <- q50 <- q75 <- q97.5 <- overlap0 <- f <- as.list(rep(NA,length(params.simple)))
 names(sims.list) <- names(means) <- names(rhat) <- names(n.eff) <- params.simple
 names(se) <- names(q2.5) <- names(q25) <- names(q50) <- names(q75) <- names(q97.5) <- params.simple
 names(overlap0) <- names(f) <- params.simple
@@ -72,7 +72,7 @@ calc.stats <- function(i){
     
     #If more than 1 chain, calculate rhat 
     #Done separately for each element of non-scalar parameter to avoid errors
-    if(m > 1){
+    if(m > 1 && (!i%in%params.omit)){
       hold <- x[,expand==i]
       rhat[[i]] <<- array((sapply(1:dim(hold[[1]])[2],gd,hold=hold)),dim=dim[[i]])      
     }
@@ -80,6 +80,7 @@ calc.stats <- function(i){
     #Calculate other statistics
     ld <- length(dim(sims.list[[i]]))
     means[[i]] <<- array(colMeans(sims.list[[i]]),dim=dim[[i]])
+    if(!i%in%params.omit){
     se[[i]] <<- array(apply(sims.list[[i]],c(2:ld),sd),dim=dim[[i]])
     q2.5[[i]] <<- array(apply(sims.list[[i]],c(2:ld),qs,0.025),dim=dim[[i]])
     q25[[i]] <<- array(apply(sims.list[[i]],c(2:ld),qs,0.25),dim=dim[[i]])
@@ -88,16 +89,18 @@ calc.stats <- function(i){
     q97.5[[i]] <<- array(apply(sims.list[[i]],c(2:ld),qs,0.975),dim=dim[[i]])
     overlap0[[i]] <<- array(apply(sims.list[[i]],c(2:ld),ov),dim=dim[[i]])
     f[[i]] <<- array(apply(sims.list[[i]],c(2:ld),gf),dim=dim[[i]])
-    n.eff[[i]] <<- array(apply(sims.list[[i]],c(2:ld),calcneff,n,m),dim=dim[[i]])   
+    n.eff[[i]] <<- array(apply(sims.list[[i]],c(2:ld),calcneff,n,m),dim=dim[[i]]) 
+    }
   
   #If parameter is a scalar
   } else {
     
-    if(m > 1){rhat[[i]] <<- gelman.diag(x[,i])$psrf[1]}
+    if(m > 1 && (!i%in%params.omit)){rhat[[i]] <<- gelman.diag(x[,i])$psrf[1]}
     
     sims.list[[i]] <<- mat[,i]
     
     means[[i]] <<- mean(sims.list[[i]])
+    if(!i%in%params.omit){
     se[[i]] <<- sd(sims.list[[i]])
     q2.5[[i]] <<- qs(sims.list[[i]],0.025)
     q25[[i]] <<- qs(sims.list[[i]],0.25)
@@ -106,7 +109,7 @@ calc.stats <- function(i){
     q97.5[[i]] <<- qs(sims.list[[i]],0.975)
     overlap0[[i]] <<- ov(sims.list[[i]])
     f[[i]] <<- gf(sims.list[[i]])
-    n.eff[[i]] <<- calcneff(sims.list[[i]],n,m)
+    n.eff[[i]] <<- calcneff(sims.list[[i]],n,m)}
   }
   
 }

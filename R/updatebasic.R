@@ -1,26 +1,28 @@
+setClass("jagsUIbasic")
 
-update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=100, n.iter, n.thin=NULL){
+update.jagsUIbasic <- function(object, parameters.to.save=NULL, n.adapt=100, n.iter, n.thin=NULL){
   if(missing(n.iter)){stop('Specify n.iter, the number of update iterations.')}
-  if(class(object)!="jagsUI"){stop('Requires jagsUI object as input')}
   mod <- object$model
-  if(is.null(parameters.to.save)){parameters <- object$parameters
+  n.chains <- length(object$samples)
+  if(is.null(parameters.to.save)){
+    params.temp <- colnames(object$samples[[1]])
+    parameters <- unique(sapply(strsplit(params.temp, "\\["), "[", 1))
   } else {parameters <- parameters.to.save}
-  if(object$DIC&&!'deviance'%in%parameters){parameters <- c(parameters,"deviance")}
   
-  if(is.null(n.thin)){n.thin <- object$mcmc.info$n.thin}
+  if(is.null(n.thin)){n.thin <- thin(object$samples)}
   
   start.time <- Sys.time()
   
-  if(object$parallel){
+  if(names(object$model[1])=='cluster1'){
     
     #Set number of clusters/chains
     p <- detectCores()
-    if(object$mcmc.info$n.chains > p){
-      stop('Number of chains (',object$mcmc.info$n.chains,') exceeds available cores (',p,'), reduce number of chains.',sep="")
-    } else {n.cluster <- object$mcmc.info$n.chains}
+    if(n.chains > p){
+      stop('Number of chains (',n.chains,') exceeds available cores (',p,'), reduce number of chains.',sep="")
+    } else {n.cluster <- n.chains}
     cl = makeCluster(n.cluster)
     clusterExport(cl = cl, ls(), envir = environment())
-    clusterSetRNGStream(cl, object$random.seed)
+    clusterSetRNGStream(cl, floor(runif(1,1,10000)))
     
     cat('Beginning parallel processing with',n.cluster,'clusters. Console output will be suppressed.\n')
     
@@ -31,7 +33,7 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=100, n.iter, 
       
       #Load rjags and modules
       require(rjags)
-      if(object$DIC){
+      if('deviance'%in%parameters){
         load.module("dic",quiet=TRUE)
       }
       
@@ -54,7 +56,7 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=100, n.iter, 
     }
     
     #Do analysis
-    par <- clusterApply(cl=cl,x=1:object$mcmc.info$n.chains,fun=jags.clust)
+    par <- clusterApply(cl=cl,x=1:n.chains,fun=jags.clust)
     closeAllConnections()
     
     #Create empty lists
@@ -73,7 +75,9 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=100, n.iter, 
     
   } else {
     
-    if(object$DIC){load.module("dic",quiet=TRUE)}
+    if('deviance'%in%parameters){
+      load.module("dic",quiet=TRUE)
+    }
     
     mod$recompile()
     
@@ -97,54 +101,18 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=100, n.iter, 
   
   params <- colnames(samples[[1]])
   params <- params[order(match(sapply(strsplit(params, "\\["), "[", 1),parameters))]
-  if(object$DIC){params <- c(params[params!='deviance'],'deviance')}   
-  samples <- samples[,params]
+  if('deviance'%in%parameters){
+    params <- c(params[params!='deviance'],'deviance')}   
   
   end.time <- Sys.time() 
   time <- round(as.numeric(end.time-start.time,units="mins"),digits=3)
-  date <- start.time
+  cat('MCMC took',time,'minutes.')
   
-  #Run process output
-  output <- process.output(samples,DIC=object$DIC)
-    
-  #Summary
-  y = data.frame(unlist(output$mean),unlist(output$sd),unlist(output$q2.5),unlist(output$q25),
-                 unlist(output$q50),unlist(output$q75),unlist(output$q97.5),
-                 unlist(output$Rhat),unlist(output$n.eff),unlist(output$overlap0),unlist(output$f)) 
-  row.names(y) = colnames(samples[[1]])
-  names(y) = c('mean','sd','2.5%','25%','50%','75%','97.5%','Rhat','n.eff','overlap0','f')
-  if(object$mcmc.info$n.chains==1){
-    y = y[,-c(8,9)]
-  }
-  output$summary <- as.matrix(y)
-    
-  output$samples <- samples
-  
-  output$modfile <- object$modfile
-  #If user wants to save input data/inits
-  if(!is.null(object$inits)){
-    output$inits <- object$inits
-    output$data <- object$data
-  } 
-  output$parameters <- parameters
-  
+  output <- list()
+  output$samples <- samples[,params]
   output$model <- model
-  output$mcmc.info <- object$mcmc.info
-  output$mcmc.info$n.burnin <- object$mcmc.info$n.iter
-  output$mcmc.info$n.iter <- n.iter + output$mcmc.info$n.burnin
-  output$mcmc.info$n.thin <- n.thin
-  output$mcmc.info$n.samples <- round(output$mcmc.info$n.iter / n.thin,0)
-  output$mcmc.info$elapsed.mins <- time
-  output$run.date <- date
-  output$random.seed <- object$random.seed
-  output$parallel <- object$parallel
-  output$bugs.format <- object$bugs.format
   
-  if(is.null(object$update.count)){output$update.count <- 1
-  } else {output$update.count <- object$update.count + 1}
-  
-  #Classify final output object
-  class(output) <- 'jagsUI'
+  class(output) <- 'jagsUIbasic'
   
   return(output)
   

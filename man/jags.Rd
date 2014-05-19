@@ -40,6 +40,7 @@ update(object, parameters.to.save=NULL, n.adapt=100, n.iter, n.thin=NULL)}
   \item{parallel}{If TRUE, run MCMC chains in parallel on multiple CPU cores. Each chain is assigned to a different core, so n.chains must be <= the number of available CPU cores.}
   \item{DIC}{Option to report DIC and the estimated number of parameters (pD). Defaults to TRUE.}
   \item{store.data}{Option to store the input dataset and initial values in the output object for future use. Defaults to FALSE.}
+  \item{codaOnly}{Optional character vector of parameter names for which you do NOT want to calculate detailed statistics. This may be helpful when you have many output parameters (e.g., predicted values) and you want to save time. For these parameters, only the mean value will be calculated but the mcmc output will still be found in $sims.list and $samples.}
   \item{seed}{Set a custom seed for the R random number generator and JAGS. The current state of the random number generator is saved in the output object.}
   \item{bugs.format}{Option to print JAGS output in classic R2WinBUGS format. Default is FALSE.}
   \item{object}{A \code{jagsUI}-class object to update.}
