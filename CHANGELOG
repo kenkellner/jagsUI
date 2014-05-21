@@ -1,6 +1,6 @@
-Changes from Version 0.01-7 to 0.02-1 [13-May-2014]
+Changes from Version 0.01-7 to 1.00 [21-May-2014]
 
-Update to new package name ('jagsUI'). Implement update function. Bugfixes
+Update to new package name ('jagsUI'). Implement update function. Bugfixes. Final release prior to CRAN upload.
 
 Changes from Version 0.01-6 to 0.01-7 [12-May-2014]
 
