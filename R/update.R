@@ -1,5 +1,5 @@
 
-update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=100, n.iter, n.thin=NULL){
+update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=100, n.iter, n.thin=NULL, codaOnly=FALSE, ...){
   if(missing(n.iter)){stop('Specify n.iter, the number of update iterations.')}
   if(class(object)!="jagsUI"){stop('Requires jagsUI object as input')}
   mod <- object$model
@@ -105,7 +105,7 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=100, n.iter, 
   date <- start.time
   
   #Run process output
-  output <- process.output(samples,DIC=object$DIC)
+  output <- process.output(samples,DIC=object$DIC,codaOnly)
     
   #Summary
   y = data.frame(unlist(output$mean),unlist(output$sd),unlist(output$q2.5),unlist(output$q25),

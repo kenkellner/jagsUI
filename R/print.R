@@ -1,5 +1,5 @@
 
-print.jagsUI <- function(x,digits=3){
+print.jagsUI <- function(x,digits=3,...){
   
   #bugs.format=TRUE prints a nearly exact replica of WinBUGS-style output
   

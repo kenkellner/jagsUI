@@ -1,5 +1,5 @@
 
-summary.jagsUI <- function(x,digits=3){
+summary.jagsUI <- function(object,digits=3,...){
   
-  print(x,digits=digits)
+  print(object,digits=digits)
 }

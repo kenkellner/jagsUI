@@ -1,6 +1,6 @@
 setClass("jagsUIbasic")
 
-update.jagsUIbasic <- function(object, parameters.to.save=NULL, n.adapt=100, n.iter, n.thin=NULL){
+update.jagsUIbasic <- function(object, parameters.to.save=NULL, n.adapt=100, n.iter, n.thin=NULL, ...){
   if(missing(n.iter)){stop('Specify n.iter, the number of update iterations.')}
   mod <- object$model
   n.chains <- length(object$samples)

@@ -2,7 +2,7 @@ importFrom(methods, "setOldClass")
 
 importFrom(rjags, "jags.model", "coda.samples", "adapt")
 
-import(parallel)
+import(coda, lattice, parallel)
 
 exportClasses("jagsUI","jagsUIbasic")
 

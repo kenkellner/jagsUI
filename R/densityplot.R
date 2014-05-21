@@ -1,4 +1,4 @@
 
-densityplot.jagsUI <- function(x){
+densityplot.jagsUI <- function(x,...){
   densityplot(x$samples)
 }
