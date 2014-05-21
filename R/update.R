@@ -108,10 +108,15 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=100, n.iter, 
   output <- process.output(samples,DIC=object$DIC,codaOnly)
     
   #Summary
-  y = data.frame(unlist(output$mean),unlist(output$sd),unlist(output$q2.5),unlist(output$q25),
-                 unlist(output$q50),unlist(output$q75),unlist(output$q97.5),
-                 unlist(output$Rhat),unlist(output$n.eff),unlist(output$overlap0),unlist(output$f)) 
-  row.names(y) = colnames(samples[[1]])
+  y = data.frame(unlist(output$mean[!names(output$mean)%in%codaOnly]),unlist(output$sd[!names(output$mean)%in%codaOnly]),
+                 unlist(output$q2.5[!names(output$mean)%in%codaOnly]),unlist(output$q25[!names(output$mean)%in%codaOnly]),
+                 unlist(output$q50[!names(output$mean)%in%codaOnly]),unlist(output$q75[!names(output$mean)%in%codaOnly]),
+                 unlist(output$q97.5[!names(output$mean)%in%codaOnly]),
+                 unlist(output$Rhat[!names(output$mean)%in%codaOnly]),unlist(output$n.eff[!names(output$mean)%in%codaOnly]),
+                 unlist(output$overlap0[!names(output$mean)%in%codaOnly]),unlist(output$f[!names(output$mean)%in%codaOnly])) 
+  params <- colnames(samples[[1]])
+  expand <- sapply(strsplit(params, "\\["), "[", 1)  
+  row.names(y) = params[!expand%in%codaOnly]
   names(y) = c('mean','sd','2.5%','25%','50%','75%','97.5%','Rhat','n.eff','overlap0','f')
   if(object$mcmc.info$n.chains==1){
     y = y[,-c(8,9)]
