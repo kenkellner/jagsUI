@@ -2,11 +2,11 @@
 #Handle masking issues
 
 if (!isGeneric("traceplot")) {
-setGeneric("traceplot",
+  setGeneric("traceplot",
              function(x, ...)
                standardGeneric("traceplot"),
              useAsDefault = function(x, ...) coda::traceplot(x, ...))
-} 
+}  
 
 #Set traceplot method
 setClass("jagsUI")

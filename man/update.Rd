@@ -1,6 +1,8 @@
 % functions
-\name{update.jagsUI}
+\name{update}
 \alias{update}
+\alias{update.jagsUI}
+\alias{update,jagsUI-method}
 
 \title{Update a JAGS model}
 \description{
@@ -8,7 +10,7 @@
 }
 
 \usage{  
-  update(object, parameters.to.save=NULL, n.adapt=100, n.iter, 
+  \method{update}{jagsUI}(object, parameters.to.save=NULL, n.adapt=100, n.iter, 
   n.thin=NULL, codaOnly=FALSE, ...)}
 
 \arguments{

@@ -1,11 +1,13 @@
 \name{traceplot}
 % functions
 \alias{traceplot}
+\alias{traceplot.default}
+\alias{traceplot,jagsUI-method}
 
 \title{Traceplots of JAGS output}
 
 \usage{
-  traceplot(x, parameters,...)
+  \S4method{traceplot}{jagsUI}(x, parameters=NULL,...)
 }
 
 \arguments{
