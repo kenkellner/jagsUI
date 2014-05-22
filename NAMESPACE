@@ -1,8 +1,11 @@
-importFrom(methods, "setOldClass")
+import(lattice)
 
-importFrom(rjags, "jags.model", "coda.samples", "adapt")
-
-import(coda, lattice, parallel)
+importFrom(rjags, "jags.model", "adapt", "coda.samples", "list.modules",
+           "load.module","unload.module")
+importFrom(methods, "setGeneric", "setMethod", "setClass")
+importFrom(coda, "gelman.diag", "as.mcmc.list", "thin")
+importFrom(parallel, "detectCores", "makeCluster", "clusterExport", 
+           "clusterSetRNGStream", "clusterApply")
 
 exportClasses("jagsUI","jagsUIbasic")
 

@@ -30,7 +30,6 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=100, n.iter, 
       cluster.mod <- mod[[i]]
       
       #Load rjags and modules
-      require(rjags)
       if(object$DIC){
         load.module("dic",quiet=TRUE)
       }

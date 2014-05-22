@@ -26,7 +26,6 @@ jags.clust <- function(i){
 cluster.inits <- inits[[i]]
 
 #Load rjags and modules
-require(rjags)
 if(DIC){
   load.module("dic",quiet=TRUE)
 }

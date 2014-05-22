@@ -32,7 +32,6 @@ update.jagsUIbasic <- function(object, parameters.to.save=NULL, n.adapt=100, n.i
       cluster.mod <- mod[[i]]
       
       #Load rjags and modules
-      require(rjags)
       if('deviance'%in%parameters){
         load.module("dic",quiet=TRUE)
       }
