@@ -37,7 +37,6 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
   #Stuff to do if parallel=TRUE
   if(parallel && n.chains>1){
  
-  require(parallel)
   par <- run.parallel(data,inits,parameters.to.save,model.file,n.chains,n.adapt,n.iter,n.burnin,n.thin,
                       modules,seed,DIC) 
   samples <- par$samples
