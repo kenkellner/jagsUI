@@ -14,8 +14,7 @@ setClass("jagsUI")
 setMethod("traceplot", signature(x = "jagsUI"),
   function (x, parameters=NULL, ...) {
     if(class(x)!="jagsUI"){stop('Requires jagsUI object as input')}
-    samples <- x$samples
-    
+    samples <- x$samples    
     if(is.null(parameters)){params <- names(as.data.frame(samples[[1]]))
     } else {params <- translate.params(x,parameters)}
 
