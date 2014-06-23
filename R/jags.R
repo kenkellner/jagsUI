@@ -11,6 +11,13 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
   called.set <- c('basemod','bugs',modules)
   current.set <- list.modules()
   
+  #Quality control
+  if(n.thin>1&&(n.iter-n.burnin)<10){
+    options(warn=1)
+    warning('The number of iterations is very low; jagsUI may crash. Recommend reducing n.thin to 1 and/or increasing n.iter.')
+    options(warn=0,error=NULL)  
+  }
+  
   load.set <- called.set[!called.set%in%current.set]
   unload.set <- current.set[!current.set%in%called.set]
   
