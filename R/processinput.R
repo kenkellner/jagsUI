@@ -1,5 +1,5 @@
 
-process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,modules,DIC=FALSE){
+process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,DIC=FALSE){
   cat('\nProcessing function input.......','\n')
   
   #Quality control
@@ -51,9 +51,6 @@ process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,modules,DIC=F
     } else{x[[i]] <- process}
 
   }
-  
-  #Set modules
-  set.modules(modules,DIC)
   
   #Get initial values
   init.vals <- gen.inits(inits,n.chains)

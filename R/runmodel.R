@@ -1,10 +1,19 @@
 
-run.model <- function(model.file,data,inits,parameters.to.save,n.chains,n.iter,n.burnin,n.thin,n.adapt,verbose=TRUE){
+run.model <- function(model.file=NULL,data=NULL,inits=NULL,parameters.to.save,n.chains=NULL,
+                      n.iter,n.burnin,n.thin,n.adapt,verbose=TRUE,model.object=NULL,update=FALSE){
 
 if(verbose){pb="text"} else {pb="none"}  
+
+if(update){
+  #Recompile model
+  m <- model.object
+  m$recompile()
   
-#Compile model 
-m <- jags.model(file=model.file,data=data,inits=inits,n.chains=n.chains,n.adapt=0)
+} else {
+  #Compile model 
+  m <- jags.model(file=model.file,data=data,inits=inits,n.chains=n.chains,n.adapt=0)
+}
+
 
 #Adaptive phase using adapt()
 if(n.adapt>0){

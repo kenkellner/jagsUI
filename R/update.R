@@ -1,149 +1,79 @@
 
-update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=100, n.iter, n.thin=NULL, codaOnly=FALSE, ...){
-  if(missing(n.iter)){stop('Specify n.iter, the number of update iterations.')}
-  if(class(object)!="jagsUI"){stop('Requires jagsUI object as input')}
+update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=100, n.iter, n.thin=NULL, modules=c('glm'), 
+                          seed=floor(runif(1,1,10000)),codaOnly=FALSE, ...){
+  
   mod <- object$model
+  DIC <- object$DIC
+  
+  #Get list of parameters to save
   if(is.null(parameters.to.save)){parameters <- object$parameters
   } else {parameters <- parameters.to.save}
   if(object$DIC&&!'deviance'%in%parameters){parameters <- c(parameters,"deviance")}
   
+  #Get thin rate
   if(is.null(n.thin)){n.thin <- object$mcmc.info$n.thin}
   
   start.time <- Sys.time()
   
   if(object$parallel){
     
-    #Set number of clusters/chains
-    p <- detectCores()
-    if(object$mcmc.info$n.chains > p){
-      stop('Number of chains (',object$mcmc.info$n.chains,') exceeds available cores (',p,'), reduce number of chains.',sep="")
-    } else {n.cluster <- object$mcmc.info$n.chains}
-    cl = makeCluster(n.cluster)
-    clusterExport(cl = cl, ls(), envir = environment())
-    clusterSetRNGStream(cl, object$random.seed)
-    
-    cat('Beginning parallel processing with',n.cluster,'clusters. Console output will be suppressed.\n')
-    
-    jags.clust <- function(i){
-      
-      #Set initial values for cluster
-      cluster.mod <- mod[[i]]
-      
-      #Load rjags and modules
-      if(object$DIC){
-        load.module("dic",quiet=TRUE)
-      }
-      
-      #Recompile model
-      cluster.mod$recompile()
-      
-      #Adapt using adapt()
-      if(n.adapt>0){
-        x <- adapt(object=cluster.mod,n.iter=n.adapt,progress.bar="none",end.adaptation=TRUE)
-      } else{
-        x <- adapt(object=cluster.mod,n.iter=1,end.adaptation=TRUE)
-      }
-      
-      #Sample from posterior using coda.samples() 
-      samples <- coda.samples(model=cluster.mod,variable.names=parameters,n.iter=n.iter,thin=n.thin,
-                              progress.bar="none")
-      
-      return(list(samp=samples[[1]],mod=cluster.mod))
-      
-    }
-    
-    #Do analysis
-    par <- clusterApply(cl=cl,x=1:object$mcmc.info$n.chains,fun=jags.clust)
-    closeAllConnections()
-    
-    #Create empty lists
-    samples <- model <- list()
-    
-    #Save samples and model objects from each cluster
-    for (i in 1:n.cluster){
-      samples[[i]] <- par[[i]][[1]]
-      model[[i]] <- par[[i]][[2]]
-    }
-    samples <- as.mcmc.list(samples)
-    names(model) <- sapply(1:length(model),function(i){paste('cluster',i,sep="")})
-    
-    cat('\nParallel processing completed.\n\n')
-    
-    
+    par <- run.parallel(data=NULL,inits=NULL,parameters.to.save=parameters,model.file=NULL,n.chains=object$mcmc.info$n.chains
+                 ,n.adapt=n.adapt,n.iter=n.iter,n.burnin=0,n.thin=n.thin,modules=modules,
+                 seed=seed,DIC=DIC,model.object=mod,update=TRUE) 
+    samples <- par$samples
+    m <- par$model
+     
   } else {
     
-    if(object$DIC){load.module("dic",quiet=TRUE)}
+    #Set modules
+    set.modules(modules,DIC)
     
-    mod$recompile()
+    rjags.output <- run.model(model.file=NULL,data=NULL,inits=NULL,parameters.to.save=parameters,
+                              n.chains=object$mcmc.info$n.chains,n.iter,n.burnin=0,n.thin,n.adapt,
+                              model.object=mod,update=TRUE)
+    samples <- rjags.output$samples
+    m <- rjags.output$m
     
-    if(n.adapt>0){
-      cat('Adaptive phase,',n.adapt,'iterations x',object$mcmc.info$n.chains,'chains','\n')
-      cat('If no progress bar appears JAGS has decided not to adapt','\n','\n')
-      x <- adapt(object=mod,n.iter=n.adapt,progress.bar="text",end.adaptation=TRUE)
-    } else{cat('No adaptive period specified','\n','\n')
-           #If no adaptation period specified:
-           #Force JAGS to not adapt (you have to allow it to adapt at least 1 iteration)
-           x <- adapt(object=mod,n.iter=1,end.adaptation=TRUE)
-    }
-    
-    cat('\nSampling from joint posterior,',n.iter,'iterations x',object$mcmc.info$n.chains,'chains','\n','\n')
-    
-    samples <- coda.samples(mod,parameters,n.iter,n.thin,progress.bar='text')
-    cat('\n')
-    
-    model <- mod    
   }
-  
-  params <- colnames(samples[[1]])
-  params <- params[order(match(sapply(strsplit(params, "\\["), "[", 1),parameters))]
-  if(object$DIC){params <- c(params[params!='deviance'],'deviance')}   
-  samples <- samples[,params]
   
   end.time <- Sys.time() 
   time <- round(as.numeric(end.time-start.time,units="mins"),digits=3)
   date <- start.time
   
+  #Reorganize JAGS output to match input parameter order
+  samples <- order.params(samples,parameters,DIC)
+    
   #Run process output
   output <- process.output(samples,DIC=object$DIC,codaOnly)
     
   #Summary
-  y = data.frame(unlist(output$mean[!names(output$mean)%in%codaOnly]),unlist(output$sd[!names(output$mean)%in%codaOnly]),
-                 unlist(output$q2.5[!names(output$mean)%in%codaOnly]),unlist(output$q25[!names(output$mean)%in%codaOnly]),
-                 unlist(output$q50[!names(output$mean)%in%codaOnly]),unlist(output$q75[!names(output$mean)%in%codaOnly]),
-                 unlist(output$q97.5[!names(output$mean)%in%codaOnly]),
-                 unlist(output$Rhat[!names(output$mean)%in%codaOnly]),unlist(output$n.eff[!names(output$mean)%in%codaOnly]),
-                 unlist(output$overlap0[!names(output$mean)%in%codaOnly]),unlist(output$f[!names(output$mean)%in%codaOnly])) 
-  params <- colnames(samples[[1]])
-  expand <- sapply(strsplit(params, "\\["), "[", 1)  
-  row.names(y) = params[!expand%in%codaOnly]
-  names(y) = c('mean','sd','2.5%','25%','50%','75%','97.5%','Rhat','n.eff','overlap0','f')
-  if(object$mcmc.info$n.chains==1){
-    y = y[,-c(8,9)]
-  }
-  output$summary <- as.matrix(y)
-    
+  output$summary <- summary.matrix(output,samples,object$mcmc.info$n.chains,codaOnly)
+  
+  #Save other information to output object
   output$samples <- samples
   
   output$modfile <- object$modfile
+  
   #If user wants to save input data/inits
   if(!is.null(object$inits)){
     output$inits <- object$inits
     output$data <- object$data
   } 
-  output$parameters <- parameters
   
-  output$model <- model
+  output$parameters <- parameters  
+  output$model <- m
   output$mcmc.info <- object$mcmc.info
   output$mcmc.info$n.burnin <- object$mcmc.info$n.iter
   output$mcmc.info$n.iter <- n.iter + output$mcmc.info$n.burnin
   output$mcmc.info$n.thin <- n.thin
-  output$mcmc.info$n.samples <- round(output$mcmc.info$n.iter / n.thin,0)
+  output$mcmc.info$n.samples <- (output$mcmc.info$n.iter-output$mcmc.info$n.burnin) / n.thin * output$mcmc.info$n.chains
   output$mcmc.info$elapsed.mins <- time
   output$run.date <- date
   output$random.seed <- object$random.seed
   output$parallel <- object$parallel
   output$bugs.format <- object$bugs.format
   
+  #Keep a record of how many times model has been updated
   if(is.null(object$update.count)){output$update.count <- 1
   } else {output$update.count <- object$update.count + 1}
   

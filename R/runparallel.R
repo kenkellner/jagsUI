@@ -1,6 +1,6 @@
 
-run.parallel <- function(data,inits,parameters.to.save,model.file,n.chains,n.adapt,n.iter,n.burnin,n.thin,
-                         modules,seed,DIC) {
+run.parallel <- function(data=NULL,inits=NULL,parameters.to.save,model.file=NULL,n.chains,n.adapt,n.iter,n.burnin,n.thin,
+                         modules,seed,DIC,model.object=NULL,update=FALSE) {
 
 #Set number of clusters/chains
 p <- detectCores()
@@ -20,17 +20,26 @@ cat('Beginning parallel processing with',n.cluster,'clusters. Console output wil
 
 #Function called in each cluster
 jags.clust <- function(i){
-
-#Set initial values for cluster
-cluster.inits <- inits[[i]]
-
+  
 #Load modules
 set.modules(modules,DIC)
 
-#Run model
-rjags.output <- run.model(model.file,data,inits=cluster.inits,parameters.to.save,n.chains=1,n.iter,n.burnin,n.thin,n.adapt,
+if(update){
+  #Recompile model
+  cluster.mod <- model.object[[i]]
+  
+  #Run model
+  rjags.output <- run.model(model.file=NULL,data=NULL,inits=NULL,parameters.to.save,n.chains=1,n.iter,n.burnin=0,n.thin,n.adapt,
+                            verbose=FALSE,model.object=cluster.mod,update=TRUE)
+   
+} else {
+  #Set initial values for cluster
+  cluster.inits <- inits[[i]]
+  #Run model
+  rjags.output <- run.model(model.file,data,inits=cluster.inits,parameters.to.save,n.chains=1,n.iter,n.burnin,n.thin,n.adapt,
                           verbose=FALSE)
-
+}
+  
 return(list(samp=rjags.output$samples[[1]],mod=rjags.output$m))
 
 }

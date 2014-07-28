@@ -8,7 +8,7 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
   set.seed(seed)
   
   #Pass input data and parameter list through error check / processing
-  data.check <- process.input(data,parameters.to.save,inits,n.chains,n.iter,n.burnin,n.thin,modules,DIC=DIC)
+  data.check <- process.input(data,parameters.to.save,inits,n.chains,n.iter,n.burnin,n.thin,DIC=DIC)
   data <- data.check$data
   parameters.to.save <- data.check$params
   inits <- data.check$inits
@@ -29,6 +29,9 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
   #######################
   ##Run rjags functions##
   #######################
+  
+  #Set modules
+  set.modules(modules,DIC)
   
   rjags.output <- run.model(model.file,data,inits,parameters.to.save,n.chains,n.iter,n.burnin,n.thin,n.adapt)
   samples <- rjags.output$samples
@@ -59,20 +62,7 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
   #Add additional information to output list
   
   #Summary
-  y = data.frame(unlist(output$mean[!names(output$mean)%in%codaOnly]),unlist(output$sd[!names(output$mean)%in%codaOnly]),
-                 unlist(output$q2.5[!names(output$mean)%in%codaOnly]),unlist(output$q25[!names(output$mean)%in%codaOnly]),
-                 unlist(output$q50[!names(output$mean)%in%codaOnly]),unlist(output$q75[!names(output$mean)%in%codaOnly]),
-                 unlist(output$q97.5[!names(output$mean)%in%codaOnly]),
-                 unlist(output$Rhat[!names(output$mean)%in%codaOnly]),unlist(output$n.eff[!names(output$mean)%in%codaOnly]),
-                 unlist(output$overlap0[!names(output$mean)%in%codaOnly]),unlist(output$f[!names(output$mean)%in%codaOnly])) 
-  p <- colnames(samples[[1]])
-  expand <- sapply(strsplit(p, "\\["), "[", 1)  
-  row.names(y) = p[!expand%in%codaOnly]
-  names(y) = c('mean','sd','2.5%','25%','50%','75%','97.5%','Rhat','n.eff','overlap0','f')
-  if(mcmc.info[[1]]==1){
-    y = y[,-c(8,9)]
-  }
-  output$summary <- as.matrix(y)
+  output$summary <- summary.matrix(output,samples,n.chains,codaOnly)
  
   output$samples <- samples
   output$modfile <- model.file
