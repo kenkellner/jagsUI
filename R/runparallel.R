@@ -1,6 +1,6 @@
 
 run.parallel <- function(data=NULL,inits=NULL,parameters.to.save,model.file=NULL,n.chains,n.adapt,n.iter,n.burnin,n.thin,
-                         modules,seed,DIC,model.object=NULL,update=FALSE) {
+                         modules,seed,DIC,model.object=NULL,update=FALSE,verbose=TRUE) {
 
 #Set number of clusters/chains
 p <- detectCores()
@@ -16,7 +16,8 @@ cl = makeCluster(n.cluster)
 clusterExport(cl = cl, ls(), envir = environment())
 clusterSetRNGStream(cl, seed)
 
-cat('Beginning parallel processing with',n.cluster,'clusters. Console output will be suppressed.\n')
+if(verbose){
+cat('Beginning parallel processing with',n.cluster,'clusters. Console output will be suppressed.\n')}
 
 #Function called in each cluster
 jags.clust <- function(i){
@@ -60,7 +61,9 @@ out$samples <- as.mcmc.list(samples)
 out$model <- model
 names(out$model) <- sapply(1:length(out$model),function(i){paste('cluster',i,sep="")})
 
+if(verbose){
 cat('\nParallel processing completed.\n\n')
+}
 
 return(out)
 
