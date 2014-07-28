@@ -7,7 +7,7 @@ jags.basic <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
   set.seed(seed)
   
   #Pass input data and parameter list through error check / processing
-  data.check <- process.input(data,parameters.to.save,inits,n.chains,n.iter,n.burnin,n.thin,modules,DIC=DIC)
+  data.check <- process.input(data,parameters.to.save,inits,n.chains,n.iter,n.burnin,n.thin,DIC=DIC)
   data <- data.check$data
   parameters.to.save <- data.check$params
   inits <- data.check$inits
@@ -28,6 +28,9 @@ jags.basic <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
     #######################
     ##Run rjags functions##
     #######################
+    
+    #Set modules
+    set.modules(modules,DIC)
     
     rjags.output <- run.model(model.file,data,inits,parameters.to.save,n.chains,n.iter,n.burnin,n.thin,n.adapt)
     samples <- rjags.output$samples

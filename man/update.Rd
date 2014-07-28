@@ -11,7 +11,7 @@
 
 \usage{  
   \method{update}{jagsUI}(object, parameters.to.save=NULL, n.adapt=100, n.iter, 
-  n.thin=NULL, codaOnly=FALSE, ...)}
+  n.thin=NULL, modules=c('glm'), seed=floor(runif(1,1,10000)), codaOnly=FALSE, ...)}
 
 \arguments{
   \item{object}{A \code{jagsUI}-class object to update.}
@@ -20,6 +20,8 @@
   \item{n.adapt}{Number of iterations to run in the JAGS adaptive phase.}
   \item{n.iter}{Number of iterations to update for each chain.}
   \item{n.thin}{Thinning rate. Must be a positive integer. Defaults to the thinning rate of the original model run.}
+  \item{modules}{List of JAGS modules to load before analysis. By default only module 'glm' is loaded (in addition to 'basemod' and 'bugs'). To force no additional modules to load, set \code{modules=NULL}.}
+  \item{seed}{Set a custom seed for the R random number generator and JAGS. The current state of the random number generator is saved in the output object.}
   \item{codaOnly}{Optional character vector of parameter names for which you do NOT want to calculate detailed statistics. This may be helpful when you have many output parameters (e.g., predicted values) and you want to save time. For these parameters, only the mean value will be calculated but the mcmc output will still be found in $sims.list and $samples.}
  \item{...}{Further arguments pass to or from other methods.}
 }

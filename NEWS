@@ -1,27 +1,27 @@
-Changes from Version 0.01-7 to 1.00 [21-May-2014]
+# Changes from Version 0.01-7 to 1.00 [21-May-2014] #
 
 Update to new package name ('jagsUI'). Implement update function. Bugfixes. Final release prior to CRAN upload.
 
-Changes from Version 0.01-6 to 0.01-7 [12-May-2014]
+# Changes from Version 0.01-6 to 0.01-7 [12-May-2014] #
 
 Fix setting the random seed so it actually works. Allow running MCMC chains in parallel. Various bugfixes.
 
-Changes from Version 0.01-5 to 0.01-6 [9-May-2014]
+# Changes from Version 0.01-5 to 0.01-6 [9-May-2014] #
 
 Overhaul calculation of statistics to speed things up. Minor bugfixes.
 
-Changes from Version 0.01-4 to 0.01-5 [6-May-2014]
+# Changes from Version 0.01-4 to 0.01-5 [6-May-2014] #
 
 Bugfixes. Changed primary function name to 'jags' from 'simplejags' for simplicity. Also edited several other function names. Added a summary table to the output object.
 
-Changes from Version 0.01-3 to 0.01-4 [1-May-2014]
+# Changes from Version 0.01-3 to 0.01-4 [1-May-2014] #
 
 Improve processing of input data to avoid some common errors. Changed traceplots() function to traceplot() to be more consistent with similar packages. Added ability to calculate DIC and pD for JAGS models. Cleaned up the print method.
 
-Changes from Version 0.01-2 to 0.01-3 [17-Apr-2014]
+# Changes from Version 0.01-2 to 0.01-3 [17-Apr-2014] #
 
 Simplify output object so that indexed parameters are contained in their own array rather than many separate list objects. Adjust other functions to match this change. Clean up the printed text / progress bars in R console.
 
-Changes from Version 0.01-1 to 0.01-2 [8-Apr-2014]
+# Changes from Version 0.01-1 to 0.01-2 [8-Apr-2014] #
 
 Fix problem where some components of output object were vectors instead of lists (and change print function accordingly). Add option for simplejags() to save input data and initial values in model output object for future use (store.data).
