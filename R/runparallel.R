@@ -18,48 +18,26 @@ clusterSetRNGStream(cl, seed)
 
 cat('Beginning parallel processing with',n.cluster,'clusters. Console output will be suppressed.\n')
 
-
 #Function called in each cluster
 jags.clust <- function(i){
 
 #Set initial values for cluster
 cluster.inits <- inits[[i]]
 
-#Load rjags and modules
-if(DIC){
-  load.module("dic",quiet=TRUE)
-}
-if(!is.null(modules)&&length(modules)>0){
-  for (i in 1:length(modules)){
-    load.module(modules[i],quiet=TRUE)
-  }
-}
+#Load modules
+set.modules(modules,DIC)
 
-#Compile model
-m <- jags.model(file=model.file,data=data,inits=cluster.inits,n.chains=1,n.adapt=0)
+#Run model
+rjags.output <- run.model(model.file,data,inits=cluster.inits,parameters.to.save,n.chains=1,n.iter,n.burnin,n.thin,n.adapt,
+                          verbose=FALSE)
 
-#Adapt using adapt()
-if(n.adapt>0){
-x <- adapt(object=m,n.iter=n.adapt,progress.bar="none",end.adaptation=TRUE)
-} else{
-x <- adapt(object=m,n.iter=1,end.adaptation=TRUE)
-}
-
-#Burn-in phase using update()  
-if(n.burnin>0){
-  update(object=m,n.iter=n.burnin,progress.bar="text")} 
-
-#Sample from posterior using coda.samples() 
-samples <- coda.samples(model=m,variable.names=parameters.to.save,n.iter=(n.iter-n.burnin),thin=n.thin,
-                        progress.bar="none")
-
-return(list(samp=samples[[1]],mod=m))
+return(list(samp=rjags.output$samples[[1]],mod=rjags.output$m))
 
 }
 
 #Do analysis
+on.exit(closeAllConnections())
 par <- clusterApply(cl=cl,x=1:n.chains,fun=jags.clust)
-closeAllConnections()
 
 #Create empty lists
 out <- samples <- model <- list()

@@ -1,55 +1,22 @@
-data.check <- function(x,name){
-  
-  test = FALSE
-    
-  if(is.data.frame(x)){
-    if(!is.null(dim(x))){
-      cat('\nConverting data frame \'',name,'\' to matrix.\n',sep="")
-      x = as.matrix(x)
-    } else {
-      cat('\nConverting data frame',name,'to vector.\n')
-      x = as.vector(x)}
-  }
-  
-  
-  if (is.numeric(x)&&is.matrix(x)){
-    if(1%in%dim(x)){
-      cat('\nConverting 1-column matrix \'',name,'\' to vector\n',sep="")
-      x = as.vector(x)
-    }
-    test = TRUE
-  }
-  
-  if(is.numeric(x)&&is.array(x)&&!test){
-    test = TRUE
-  }
-  
-  if (is.numeric(x)&&is.vector(x)&&!test){
-    test = TRUE
-  }
-  
-  if(test){
-    return(x)
-  } else{return('error')}
-  
-}
 
-
-process.input = function(x,y,inits,n.chains,DIC=FALSE){
+process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,modules,DIC=FALSE){
   cat('\nProcessing function input.......','\n')
+  
+  #Quality control
+  if(n.thin>1&&(n.iter-n.burnin)<10){
+    options(warn=1)
+    warning('The number of iterations is very low; jagsUI may crash. Recommend reducing n.thin to 1 and/or increasing n.iter.')
+    options(warn=0,error=NULL)  
+  }
   
   #Check if supplied parameter vector is the right format
   if((is.character(y)&is.vector(y))){
       } else{stop('The parameters to save must be a vector containing only character strings.\n')}
   
   #If DIC requested, add deviance to parameters (if not already there)
-  #and start JAGS DIC module
-  if(DIC){
-    load.module("dic",quiet=TRUE)
-    if(!'deviance'%in%y){
+  if(DIC&&(!'deviance'%in%y)){
       params <- c(y,"deviance")
-    } else {params <- y}    
-  } else {params <- y}
+  } else {params <- y}    
   
   #Check if supplied data object is the proper format
   if(is.list(x)||(is.character(x)&is.vector(x))){
@@ -84,6 +51,9 @@ process.input = function(x,y,inits,n.chains,DIC=FALSE){
     } else{x[[i]] <- process}
 
   }
+  
+  #Set modules
+  set.modules(modules,DIC)
   
   #Get initial values
   init.vals <- gen.inits(inits,n.chains)
