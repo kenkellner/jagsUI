@@ -21,7 +21,7 @@ cat('Beginning parallel processing with',n.cluster,'clusters. Console output wil
 
 #Function called in each cluster
 jags.clust <- function(i){
-  
+
 #Load modules
 set.modules(modules,DIC)
 
@@ -31,16 +31,20 @@ if(update){
   
   #Run model
   rjags.output <- run.model(model.file=NULL,data=NULL,inits=NULL,parameters.to.save,n.chains=1,n.iter,n.burnin=0,n.thin,n.adapt,
-                            verbose=FALSE,model.object=cluster.mod,update=TRUE)
+                            verbose=FALSE,model.object=cluster.mod,update=TRUE,parallel=TRUE)
    
 } else {
+
   #Set initial values for cluster
   cluster.inits <- inits[[i]]
+
   #Run model
-  rjags.output <- run.model(model.file,data,inits=cluster.inits,parameters.to.save,n.chains=1,n.iter,n.burnin,n.thin,n.adapt,
-                          verbose=FALSE)
-}
+
+  rjags.output <- run.model(model.file,data,inits=cluster.inits,parameters.to.save,n.chains=1,n.iter,
+                  n.burnin,n.thin,n.adapt,verbose=FALSE,parallel=TRUE)
   
+}
+
 return(list(samp=rjags.output$samples[[1]],mod=rjags.output$m))
 
 }

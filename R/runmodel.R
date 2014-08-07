@@ -1,25 +1,27 @@
 
 run.model <- function(model.file=NULL,data=NULL,inits=NULL,parameters.to.save,n.chains=NULL,
-                      n.iter,n.burnin,n.thin,n.adapt,verbose=TRUE,model.object=NULL,update=FALSE){
-
+                      n.iter,n.burnin,n.thin,n.adapt,verbose=TRUE,model.object=NULL,update=FALSE,parallel=FALSE){
+  
 if(verbose){pb="text"} else {pb="none"}
 
 if(update){
   #Recompile model
   m <- model.object
-  if(verbose){
+  if(verbose | parallel==TRUE){
   m$recompile()
-  } else {sink('/dev/null');m$recompile();sink()}
+  } else {null <- capture.output(
+          m$recompile()
+          )}
   
 } else {
   #Compile model 
-  
-  if(verbose){
+  if(verbose | parallel==TRUE){
     m <- jags.model(file=model.file,data=data,inits=inits,n.chains=n.chains,n.adapt=0)
   } else {
-    sink('/dev/null')
-    m <- jags.model(file=model.file,data=data,inits=inits,n.chains=n.chains,n.adapt=0)
-    sink()}
+    null <- capture.output(
+    m <- jags.model(file=model.file,data=data,inits=inits,n.chains=n.chains,n.adapt=0,quiet=TRUE)
+    )
+  }
 }
 
 
