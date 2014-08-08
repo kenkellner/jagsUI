@@ -12,7 +12,7 @@ exportClasses("jagsUI","jagsUIbasic")
 exportMethods("traceplot")
 
 export("jags", "jagsUI","jags.basic","autojags","pp.check", "traceplot", 
-       "whiskerplot")
+       "whiskerplot", "xyplot", "densityplot")
 
 S3method("plot", "jagsUI")
 S3method("xyplot", "jagsUI")
