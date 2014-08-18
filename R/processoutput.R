@@ -91,6 +91,8 @@ calc.stats <- function(i){
     f[[i]] <<- array(apply(sims.list[[i]],c(2:ld),gf),dim=dim[[i]])
     n.eff[[i]] <<- array(apply(sims.list[[i]],c(2:ld),calcneff,n,m),dim=dim[[i]]) 
     }
+    
+    sims.list[[i]] <<- array(sims.list[[i]],dim=c(dim(mat)[1],dim[[i]]))
   
   #If parameter is a scalar
   } else {
