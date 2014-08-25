@@ -75,6 +75,9 @@ calc.stats <- function(i){
     if(m > 1 && (!i%in%params.omit)){
       hold <- x[,expand==i]
       rhat[[i]] <<- array((sapply(1:dim(hold[[1]])[2],gd,hold=hold)),dim=dim[[i]])      
+    } else if (m == 1){
+      hold <- x[,expand==i]
+      rhat[[i]] <<- array(NA,dim=dim[[i]])
     }
     
     #Calculate other statistics
