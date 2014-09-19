@@ -47,9 +47,9 @@ print.jagsUI <- function(x,digits=3,...){
   
   #Print overlap0/f statistic info
   if(!x$bugs.format){
-  cat('\noverlap0 indicates if 0 falls within the 95% credible interval for the parameter.\n')
-  cat('f represents the proportion of a parameter\'s posterior distribution with the same\n')
-  cat('sign as the mean; i.e., our confidence that the parameter is positive or negative.\n')
+  cat('\noverlap0 checks if 0 falls in the parameter\'s 95% credible interval.\n')
+  cat('f is the proportion of the posterior with the same sign as the mean;\n')
+  cat('i.e., our confidence that the parameter is positive or negative.\n')
   }
   
   #Print DIC info
