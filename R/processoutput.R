@@ -48,7 +48,7 @@ calcneff <- function(x,n,m){
 #Gelman diag function
 
 gd <- function(i,hold){
-  r <- gelman.diag(hold[,i])$psrf[1]
+  r <- gelman.diag(hold[,i],autoburnin=FALSE)$psrf[1]
   if(is.nan(r)){r <- NA}
   return(r)
 }
@@ -100,7 +100,7 @@ calc.stats <- function(i){
   #If parameter is a scalar
   } else {
     
-    if(m > 1 && (!i%in%params.omit)){rhat[[i]] <<- gelman.diag(x[,i])$psrf[1]}
+    if(m > 1 && (!i%in%params.omit)){rhat[[i]] <<- gelman.diag(x[,i],autoburnin=FALSE)$psrf[1]}
     
     sims.list[[i]] <<- mat[,i]
     
