@@ -4,7 +4,7 @@ test.Rhat <- function(samples,cutoff){
   params <- colnames(samples[[1]])
   
   gd <- function(hold){
-    r <- gelman.diag(hold)$psrf[1]
+    r <- gelman.diag(hold,autoburnin=FALSE)$psrf[1]
     if(is.nan(r)){r <- NA}
     return(r)
   }
