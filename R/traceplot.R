@@ -32,7 +32,7 @@ setMethod("traceplot", signature(x = "jagsUI"),
             
     for (i in 1:nparams){
       if(nchains>1){
-        rhat <- gelman.diag(samples[,params[i]])$psrf[1]
+        rhat <- gelman.diag(samples[,params[i]],autoburnin=FALSE)$psrf[1]
         title <- paste('Trace of ',params[i],', Rhat = ',round(rhat,2),sep="")
       } else {title <- paste('Trace of ',params[i],sep="") }
         plot(x = 1:xmax, y = samples[,params[i]][[1]], main = title, xlab="Iterations", ylab="Value",type="l", col=col[1],
