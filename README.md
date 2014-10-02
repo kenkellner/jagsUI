@@ -13,6 +13,7 @@ To install the package independent of CRAN:
         remove.packages(c('coda','rjags'))
         install.packages(c('coda','rjags'))
 3. Finally, in R or Rstudio, choose to install a package from a local/archive file and select the downloaded package.
+
 Alternatively, you can install directly from R, using package devtools (which installs the other required packages automatically). Devtools may complain that Rtools are not installed, but they are not necessary to install this package, so you can safely ignore the warning.
 ```
 remove.packages(c('coda','rjags'))
