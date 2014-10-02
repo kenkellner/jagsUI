@@ -5,7 +5,7 @@ Title: Run JAGS (specifically, libjags) from R; an alternative user interface fo
 Author: Ken Kellner <ken@kenkellner.com>
 Maintainer: Ken Kellner <ken@kenkellner.com>
 Depends:
-    R (>= 2.14.0),    
+    R (>= 2.14.0)    
 Imports:
     rjags (>= 3-3),
     coda (>= 0.13),
