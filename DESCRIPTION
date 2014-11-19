@@ -1,5 +1,5 @@
 Package: jagsUI
-Version: 1.1
+Version: 1.2
 Date: 2014-7-28
 Title: Run JAGS (specifically, libjags) from R; an alternative user interface for rjags
 Author: Ken Kellner <ken@kenkellner.com>

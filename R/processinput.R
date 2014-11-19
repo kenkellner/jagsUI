@@ -3,6 +3,10 @@ process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,DIC=FALSE){
   cat('\nProcessing function input.......','\n')
   
   #Quality control
+  if(n.iter<=n.burnin){
+    stop('Number of iterations must be larger than burn-in.\n')
+  }
+  
   if(n.thin>1&&(n.iter-n.burnin)<10){
     options(warn=1)
     warning('The number of iterations is very low; jagsUI may crash. Recommend reducing n.thin to 1 and/or increasing n.iter.')

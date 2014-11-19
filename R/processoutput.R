@@ -45,11 +45,16 @@ calcneff <- function(x,n,m){
   }
   n.eff
 }
-#Gelman diag function
 
+#Gelman diag function
 gd <- function(i,hold){
-  r <- gelman.diag(hold[,i],autoburnin=FALSE)$psrf[1]
-  if(is.nan(r)){r <- NA}
+  r <- try(gelman.diag(hold[,i], autoburnin=FALSE)$psrf[1], silent=TRUE)
+  if(inherits(r, "try-error" || !is.finite(r))) {
+    r <- NA
+    options(warn=1)
+    warning('At least one Rhat value could not be calculated.')
+    options(warn=0,error=NULL)   
+  }
   return(r)
 }
 
