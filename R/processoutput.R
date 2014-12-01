@@ -49,7 +49,7 @@ calcneff <- function(x,n,m){
 #Gelman diag function
 gd <- function(i,hold){
   r <- try(gelman.diag(hold[,i], autoburnin=FALSE)$psrf[1], silent=TRUE)
-  if(inherits(r, "try-error" || !is.finite(r))) {
+  if(inherits(r, "try-error") || !is.finite(r)) {
     r <- NA
     options(warn=1)
     warning('At least one Rhat value could not be calculated.')

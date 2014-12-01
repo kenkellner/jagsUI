@@ -36,8 +36,7 @@ n <- length(employed)
 data <- list(gnp=gnp,employed=employed,n=n)
 
 #Read in BUGS model file
-sink("model.txt")
-cat(" 
+writeLines("
 model{
 
   #Likelihood
@@ -55,8 +54,7 @@ model{
   tau <- pow(sigma,-2)
 
 }
-",fill=TRUE)
-sink()
+", con="model.txt")
 
 #Identify filepath of model file;
 #in this case in the working directory

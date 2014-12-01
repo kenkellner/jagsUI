@@ -49,7 +49,7 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
   date <- start.time
   
   #Combine mcmc info into list
-  n.samples <- (n.iter-n.burnin) / n.thin * n.chains
+  n.samples <- dim(samples[[1]])[1] * n.chains
   end.values <- samples[(n.samples/n.chains),]
   mcmc.info <- list(n.chains,n.adapt,n.iter,n.burnin,n.thin,n.samples,end.values,time)
   names(mcmc.info) <- c('n.chains','n.adapt','n.iter','n.burnin','n.thin','n.samples','end.values','elapsed.mins')

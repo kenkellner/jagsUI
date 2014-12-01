@@ -117,8 +117,7 @@ data <- list('gnp','employed','n')
 #Generate model file directly in R
 #(could also read in existing model file)
 
-sink("model.txt")
-cat(" 
+writeLines("
 model{
 
   #Likelihood
@@ -136,8 +135,7 @@ model{
   tau <- pow(sigma,-2)
 
 }
-",fill=TRUE)
-sink()
+", con="model.txt")
 
 #Identify filepath of model file;
 #in this case in the working directory

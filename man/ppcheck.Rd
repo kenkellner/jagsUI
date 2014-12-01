@@ -36,8 +36,7 @@ data <- list(gnp=gnp,employed=employed,n=n)
 #Read in BUGS model file
 #Note calculation of discrepancy stats fit and fit.new
 #(sums of residuals)
-sink("model.txt")
-cat(" 
+writeLines("
 model{
 
   #Likelihood
@@ -63,8 +62,7 @@ model{
   fit.new <- sum(res.new[])
 
 }
-",fill=TRUE)
-sink()
+", con="model.txt")
 
 #Identify filepath of model file;
 #in this case in the working directory

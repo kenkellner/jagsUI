@@ -24,8 +24,8 @@ setMethod("traceplot", signature(x = "jagsUI"),
             
     sep <- par()$ask
     par(ask=TRUE)
-            
-    xmax <- x$mcmc.info[[6]] / nchains
+    
+    xmax <- x$mcmc.info$n.samples / x$mcmc.info$n.chains
             
     col=c('red','blue','green','yellow','orange','violet')
     if(nchains>6){col=rainbow(nchains)}

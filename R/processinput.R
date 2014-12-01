@@ -13,6 +13,14 @@ process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,DIC=FALSE){
     options(warn=0,error=NULL)  
   }
   
+  final.chain.length <- (n.iter - n.burnin) / n.thin
+  even.length <- floor(final.chain.length) == final.chain.length
+  if(!even.length){
+    options(warn=1)
+    warning('Number of iterations saved after thinning is not an integer; JAGS will round it up.')
+    options(warn=0,error=NULL)  
+  }
+  
   #Check if supplied parameter vector is the right format
   if((is.character(y)&is.vector(y))){
       } else{stop('The parameters to save must be a vector containing only character strings.\n')}
