@@ -7,12 +7,13 @@ There are several other similar packages (R2jags, runjags, and of course rjags i
 
 To install the package independent of CRAN:
 
-1. Download the latest source package .tar.gz or Windows binary .zip file from the 'Release' tab of the repository (https://github.com/kenkellner/jagsUI). 
-2. The jagsUI library requires packages rjags and coda. If you have previously installed the coda and/or rjags packages, I highly recommend removing and re-installing them first:
+1. Install the latest version of JAGS on your computer (http://sourceforge.net/projects/mcmc-jags/files/JAGS/). If you have a 64-bit OS, you may need to install both the 32 and 64 bit versions of JAGS (if available).
+2. Download the latest source package .tar.gz or Windows binary .zip file from the 'Release' tab of the repository (https://github.com/kenkellner/jagsUI). 
+3. The jagsUI library requires packages rjags and coda. If you have previously installed the coda and/or rjags packages, I highly recommend removing and re-installing them first:
 
         remove.packages(c('coda','rjags'))
         install.packages(c('coda','rjags'))
-3. Finally, in R or Rstudio, choose to install a package from a local/archive file and select the downloaded package.
+4. Finally, in R or Rstudio, choose to install a package from a local/archive file and select the downloaded package.
 
 Alternatively, you can install directly from R, using package devtools (which installs the other required packages automatically). Devtools may complain that Rtools are not installed, but they are not necessary to install this package, so you can safely ignore the warning.
 ```
