@@ -13,7 +13,7 @@ Imports:
     parallel,
     methods
 SystemRequirements: JAGS (http://mcmc-jags.sourceforge.net)
-Description: This package provides a set of wrappers around rjags functions that run JAGS/libjags analyses and provide summary statistics and figures (e.g., posterior distribution summaries and predictive checks).  A single function call can control adaptive, burn-in, and sampling MCMC phases, with MCMC chains run in sequence or in parallel. 
+Description: This package provides a set of wrappers around rjags functions to run Bayesian analyses in JAGS (specifically, via libjags).  A single function call can control adaptive, burn-in, and sampling MCMC phases, with MCMC chains run in sequence or in parallel. Posterior distributions are automatically summarized and functions are available to generate figures based on the posteriors (e.g., predictive check plots). Function inputs, argument syntax, and output format are nearly identical to the R2WinBUGS/R2OpenBUGS packages to allow easy switching between MCMC samplers. 
 License: GPL-2
 URL: https://github.com/kenkellner/jagsUI
 NeedsCompilation: no
