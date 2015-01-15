@@ -141,12 +141,12 @@ if(DIC){
   
   #Return this list if DIC/pD requested
   cat('\nDone.','\n')
-  return(list(sims.list=sims.list,means=means,sd=se,q2.5=q2.5,q25=q25,q50=q50,q75=q75,q97.5=q97.5,overlap0=overlap0,
+  return(list(sims.list=sims.list,mean=means,sd=se,q2.5=q2.5,q25=q25,q50=q50,q75=q75,q97.5=q97.5,overlap0=overlap0,
               f=f,Rhat=rhat,n.eff=n.eff,pD=pd,DIC=dic))
 } else {
   #Otherwise return list without pD/DIC
   cat('\nDone.','\n')
-  return(list(sims.list=sims.list,means=means,sd=se,q2.5=q2.5,q25=q25,q50=q50,q75=q75,q97.5=q97.5,overlap0=overlap0,
+  return(list(sims.list=sims.list,mean=means,sd=se,q2.5=q2.5,q25=q25,q50=q50,q75=q75,q97.5=q97.5,overlap0=overlap0,
               f=f,Rhat=rhat,n.eff=n.eff))
 }
 

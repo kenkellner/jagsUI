@@ -1,3 +1,7 @@
+# Changes from Version 1.3 to 1.3.1 [15-Jan-2015] #
+
+Minor wording changes.
+
 # Changes from Version 1.2 to 1.3 [1-Dec-2014] #
 
 Add warning and fix issue with traceplot when number of saved iterations after thinning was rounded up by JAGS (because it wasn't an integer). Several small fixes to clean up code and get R CMD check to run cleanly.
