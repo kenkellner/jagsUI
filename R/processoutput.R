@@ -51,9 +51,6 @@ gd <- function(i,hold){
   r <- try(gelman.diag(hold[,i], autoburnin=FALSE)$psrf[1], silent=TRUE)
   if(inherits(r, "try-error") || !is.finite(r)) {
     r <- NA
-    options(warn=1)
-    warning('At least one Rhat value could not be calculated.')
-    options(warn=0,error=NULL)   
   }
   return(r)
 }
@@ -126,6 +123,13 @@ calc.stats <- function(i){
 
 #Actually run function(nullout not used for anything)
 nullout <- sapply(params.simple,calc.stats)
+
+#Warn user if at least one Rhat value was NA
+if(NA%in%unlist(rhat)){
+  options(warn=1)
+  warning('At least one Rhat value could not be calculated.')
+  options(warn=0,error=NULL)
+}
 
 #Do DIC/pD calculations if requested by user
 if(DIC){

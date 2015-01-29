@@ -49,7 +49,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   mcmc.info <- list(n.chains,n.adapt,n.iter=iter.increment,n.burnin,n.thin,n.samples,time)
   names(mcmc.info) <- c('n.chains','n.adapt','n.iter','n.burnin','n.thin','n.samples','elapsed.mins')
   
-  test <- test.Rhat(samples,Rhat.limit)
+  test <- test.Rhat(samples,Rhat.limit,codaOnly)
   reach.max <- FALSE
   index = 1
   
@@ -65,7 +65,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
                           seed=seed,DIC=DIC,model.object=mod,update=TRUE,verbose=FALSE) 
       samples <- par$samples
       mod <- par$model
-      test <- test.Rhat(samples,Rhat.limit)
+      test <- test.Rhat(samples,Rhat.limit,codaOnly)
       
     } else {
       
@@ -76,7 +76,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
                                 model.object=mod,update=TRUE,verbose=FALSE)
       samples <- rjags.output$samples
       mod <- rjags.output$m
-      test <- test.Rhat(samples,Rhat.limit)
+      test <- test.Rhat(samples,Rhat.limit,codaOnly)
      
     }
     mcmc.info$n.burnin <- mcmc.info$n.iter
