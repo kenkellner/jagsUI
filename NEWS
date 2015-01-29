@@ -1,3 +1,7 @@
+# Changes from Version 1.3.1 to 1.3.2 [29-Jan-2015] #
+
+Fix error where autojags did not handle NA rhat values properly. Added more helpful warning when at least one rhat value = NA.
+
 # Changes from Version 1.3 to 1.3.1 [15-Jan-2015] #
 
 Minor wording changes.
