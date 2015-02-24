@@ -24,7 +24,7 @@ params.simple <- unique(sapply(strsplit(params, "\\["), "[", 1))
 #Functions for statistics
 qs <- function(x,y){as.numeric(quantile(x,y))}
 #Overlap 0 function
-ov <- function(x){findInterval(0,c(qs(x,0.025),qs(x,0.975)))==1}
+ov <- function(x){findInterval(0,sort(c(qs(x,0.025),qs(x,0.975))))==1}
 #f function (proportion of posterior with same sign as mean)
 gf <- function(x){if(mean(x)>=0){mean(x>=0)}else{mean(x<0)}}
 #n.eff function
