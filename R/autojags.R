@@ -1,6 +1,6 @@
 
 autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=100,iter.increment=1000,n.burnin=0,n.thin=1,
-                    modules=c('glm'),parallel=FALSE,DIC=TRUE,store.data=FALSE,codaOnly=FALSE,seed=floor(runif(1,1,10000)),
+                     save.all.iter=FALSE,modules=c('glm'),parallel=FALSE,DIC=TRUE,store.data=FALSE,codaOnly=FALSE,seed=floor(runif(1,1,10000)),
                     bugs.format=FALSE,Rhat.limit=1.1,max.iter=100000){
   
   if(n.chains<2){stop('Number of chains must be >2.')}
@@ -17,6 +17,9 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   
   #Save start time
   start.time <- Sys.time()
+  
+  #Note if saving all iterations
+  if(save.all.iter){cat('Note: ALL iterations will be included in final posterior.\n\n')}
   
   #Initial model run
   
@@ -54,16 +57,27 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   index = 1
   
   while(test==TRUE && reach.max==FALSE){
-    
+        
     index <- index + 1
     cat('Iteration ',index,' (',mcmc.info$n.iter + iter.increment,')',sep="")
     
+    if(save.all.iter){
+      if(index==2){start.iter <- start(samples)}
+      if (index > 1) {
+        old.samples <- samples
+      }
+    }
+       
     if(parallel){
       
       par <- run.parallel(data=NULL,inits=NULL,parameters.to.save=parameters.to.save,model.file=NULL,n.chains=n.chains
                           ,n.adapt=n.adapt,n.iter=iter.increment,n.burnin=0,n.thin=n.thin,modules=modules,
                           seed=seed,DIC=DIC,model.object=mod,update=TRUE,verbose=FALSE) 
-      samples <- par$samples
+      
+      if(save.all.iter & index > 1){
+        samples <- bind.mcmc(old.samples,par$samples,start=start.iter,n.new.iter=iter.increment)
+      } else {samples <- par$samples}
+      
       mod <- par$model
       test <- test.Rhat(samples,Rhat.limit,codaOnly)
       
@@ -74,14 +88,19 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
       rjags.output <- run.model(model.file=NULL,data=NULL,inits=NULL,parameters.to.save=parameters.to.save,
                                 n.chains=n.chains,n.iter=iter.increment,n.burnin=0,n.thin,n.adapt,
                                 model.object=mod,update=TRUE,verbose=FALSE)
-      samples <- rjags.output$samples
+      
+      if(save.all.iter & index > 1){
+        samples <- bind.mcmc(old.samples,rjags.output$samples,start=start.iter,n.new.iter=iter.increment)
+      } else {samples <- rjags.output$samples}
+
       mod <- rjags.output$m
       test <- test.Rhat(samples,Rhat.limit,codaOnly)
      
     }
-    mcmc.info$n.burnin <- mcmc.info$n.iter
-    mcmc.info$n.iter <- mcmc.info$n.iter + iter.increment
-    mcmc.info$n.samples <- (iter.increment) / n.thin * n.chains
+    
+    if(!save.all.iter){mcmc.info$n.burnin <- mcmc.info$n.iter}   
+    mcmc.info$n.iter <- mcmc.info$n.iter + iter.increment    
+    mcmc.info$n.samples <- dim(samples[[1]])[1] * n.chains
     
     if(mcmc.info$n.iter>=max.iter){
       reach.max <- TRUE

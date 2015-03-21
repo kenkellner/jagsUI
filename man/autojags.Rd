@@ -10,9 +10,9 @@
 \usage{
 autojags(data, inits, parameters.to.save, model.file,
   n.chains, n.adapt=100, iter.increment=1000, n.burnin=0, n.thin=1,
-  modules=c('glm'), parallel=FALSE, DIC=TRUE, store.data=FALSE,
-  codaOnly=FALSE,seed=floor(runif(1,1,10000)), bugs.format=FALSE,
-  Rhat.limit=1.1,max.iter=100000)}
+  save.all.iter=FALSE, modules=c('glm'), parallel=FALSE, DIC=TRUE, 
+  store.data=FALSE, codaOnly=FALSE,seed=floor(runif(1,1,10000)), 
+  bugs.format=FALSE, Rhat.limit=1.1,max.iter=100000)}
 
 \arguments{
   \item{data}{A named list of the data objects required by the model, or a character vector containing the names of the data objects required by the model.}
@@ -28,6 +28,7 @@ autojags(data, inits, parameters.to.save, model.file,
   \item{iter.increment}{Total number of iterations per model auto-update. Set to larger values when you suspect the model will take a long time to converge.}
   \item{n.burnin}{Number of iterations at the beginning of the chain to discard (i.e., the burn-in). Does not include the adaptive phase iterations.}
   \item{n.thin}{Thinning rate. Must be a positive integer.}
+  \item{save.all.iter}{Option to combine MCMC samples from all iterative updates into final posterior (by default only the final iteration is included in the posterior).}
   \item{modules}{List of JAGS modules to load before analysis. By default only module 'glm' is loaded (in addition to 'basemod' and 'bugs'). To force no additional modules to load, set \code{modules=NULL}.}
   \item{parallel}{If TRUE, run MCMC chains in parallel on multiple CPU cores. Each chain is assigned to a different core, so n.chains must be <= the number of available CPU cores.}
   \item{DIC}{Option to report DIC and the estimated number of parameters (pD). Defaults to TRUE.}
