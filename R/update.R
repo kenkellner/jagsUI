@@ -1,5 +1,5 @@
 
-update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=100, n.iter, n.thin=NULL, modules=c('glm'), 
+update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=0, n.iter, n.thin=NULL, modules=c('glm'), 
                           seed=floor(runif(1,1,10000)),codaOnly=FALSE, ...){
   
   mod <- object$model

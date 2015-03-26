@@ -10,7 +10,7 @@
 }
 
 \usage{  
-  \method{update}{jagsUI}(object, parameters.to.save=NULL, n.adapt=100, n.iter, 
+  \method{update}{jagsUI}(object, parameters.to.save=NULL, n.adapt=0, n.iter, 
   n.thin=NULL, modules=c('glm'), seed=floor(runif(1,1,10000)), codaOnly=FALSE, ...)}
 
 \arguments{

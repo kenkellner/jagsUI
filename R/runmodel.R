@@ -35,7 +35,7 @@ if(n.adapt>0){
 } else{if(verbose){cat('No adaptive period specified','\n','\n')}
        #If no adaptation period specified:
        #Force JAGS to not adapt (you have to allow it to adapt at least 1 iteration)
-       x <- adapt(object=m,n.iter=1,end.adaptation=TRUE)
+       if(!update){x <- adapt(object=m,n.iter=1,end.adaptation=TRUE)}
 }
 
 #Burn-in phase using update()  

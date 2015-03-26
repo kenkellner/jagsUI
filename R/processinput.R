@@ -1,10 +1,19 @@
 
-process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,DIC=FALSE){
+process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,DIC=FALSE,autojags=FALSE,max.iter=NULL){
   cat('\nProcessing function input.......','\n')
   
   #Quality control
   if(n.iter<=n.burnin){
     stop('Number of iterations must be larger than burn-in.\n')
+  }
+  
+  if(autojags){
+    if(n.chains<2){stop('Number of chains must be >1 to calculate Rhat.')}
+    if(max.iter<n.burnin){
+      options(warn=1)
+      warning('Maximum iterations includes burn-in and should be larger than burn-in.')
+      options(warn=0,error=NULL)  
+    }        
   }
   
   if(n.thin>1&&(n.iter-n.burnin)<10){

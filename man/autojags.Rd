@@ -12,7 +12,7 @@ autojags(data, inits, parameters.to.save, model.file,
   n.chains, n.adapt=100, iter.increment=1000, n.burnin=0, n.thin=1,
   save.all.iter=FALSE, modules=c('glm'), parallel=FALSE, DIC=TRUE, 
   store.data=FALSE, codaOnly=FALSE,seed=floor(runif(1,1,10000)), 
-  bugs.format=FALSE, Rhat.limit=1.1,max.iter=100000)}
+  bugs.format=FALSE, Rhat.limit=1.1, max.iter=100000)}
 
 \arguments{
   \item{data}{A named list of the data objects required by the model, or a character vector containing the names of the data objects required by the model.}
@@ -25,7 +25,7 @@ autojags(data, inits, parameters.to.save, model.file,
   \item{model.file}{Path to file containing the model written in \code{BUGS} code}
   \item{n.chains}{Number of Markov chains to run.}
   \item{n.adapt}{Number of iterations to run in the JAGS adaptive phase. Sometimes JAGS chooses not to run these iterations; therefore they are separated from the burn-in in this package.}
-  \item{iter.increment}{Total number of iterations per model auto-update. Set to larger values when you suspect the model will take a long time to converge.}
+  \item{iter.increment}{Number of iterations per model auto-update. Set to larger values when you suspect the model will take a long time to converge.}
   \item{n.burnin}{Number of iterations at the beginning of the chain to discard (i.e., the burn-in). Does not include the adaptive phase iterations.}
   \item{n.thin}{Thinning rate. Must be a positive integer.}
   \item{save.all.iter}{Option to combine MCMC samples from all iterative updates into final posterior (by default only the final iteration is included in the posterior).}
@@ -37,7 +37,7 @@ autojags(data, inits, parameters.to.save, model.file,
   \item{seed}{Set a custom seed for the R random number generator and JAGS. The current state of the random number generator is saved in the output object.}
   \item{bugs.format}{Option to print JAGS output in classic R2WinBUGS format. Default is FALSE.}
   \item{Rhat.limit}{Set the desired cutoff point for convergence; when all Rhat values are less than this value the model assumes convergence has been reached and will stop auto-updating.}
-  \item{max.iter}{Maximum number of total iterations allowed via auto-update.}
+  \item{max.iter}{Maximum number of total iterations allowed via auto-update (including burn-in).}
 }
 
 \details{
