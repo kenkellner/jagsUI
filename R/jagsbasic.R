@@ -45,7 +45,7 @@ jags.basic <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
   #Get more info about MCMC run
   end.time <- Sys.time() 
   time <- round(as.numeric(end.time-start.time,units="mins"),digits=3)
-  cat('MCMC took',time,'minutes.')
+  cat('MCMC took',time,'minutes.\n')
   
   if(save.model){
   output <- list()

@@ -5,7 +5,7 @@ importFrom(rjags, "jags.model", "adapt", "coda.samples", "list.modules",
 importFrom(methods, "setGeneric", "setMethod", "setClass")
 importFrom(coda, "gelman.diag", "as.mcmc.list", "thin", "mcmc", "as.mcmc")
 importFrom(parallel, "detectCores", "makeCluster", "clusterExport", 
-           "clusterSetRNGStream", "clusterApply")
+           "clusterSetRNGStream", "clusterApply", "stopCluster")
 
 exportClasses("jagsUI","jagsUIbasic")
 

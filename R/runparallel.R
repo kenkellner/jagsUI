@@ -13,6 +13,7 @@ set.seed(seed)
 
 #Set up clusters
 cl = makeCluster(n.cluster)
+on.exit(stopCluster(cl))
 clusterExport(cl = cl, ls(), envir = environment())
 clusterSetRNGStream(cl, seed)
 
@@ -50,7 +51,6 @@ return(list(samp=rjags.output$samples[[1]],mod=rjags.output$m))
 }
 
 #Do analysis
-on.exit(closeAllConnections())
 par <- clusterApply(cl=cl,x=1:n.chains,fun=jags.clust)
 
 #Create empty lists
