@@ -1,7 +1,7 @@
 
-process.output <- function(x,DIC,params.omit) {
+process.output <- function(x,DIC,params.omit,verbose=TRUE) {
 
-cat('Calculating statistics.......','\n')  
+if(verbose){cat('Calculating statistics.......','\n')}  
   
 #Get parameter names
 params <- colnames(x[[1]])
@@ -125,7 +125,7 @@ calc.stats <- function(i){
 nullout <- sapply(params.simple,calc.stats)
 
 #Warn user if at least one Rhat value was NA
-if(NA%in%unlist(rhat)){
+if(NA%in%unlist(rhat)&&verbose){
   options(warn=1)
   warning('At least one Rhat value could not be calculated.')
   options(warn=0,error=NULL)
@@ -144,12 +144,12 @@ if(DIC){
   dic <- mean(dic)
   
   #Return this list if DIC/pD requested
-  cat('\nDone.','\n')
+  if(verbose){cat('\nDone.','\n')}
   return(list(sims.list=sims.list,mean=means,sd=se,q2.5=q2.5,q25=q25,q50=q50,q75=q75,q97.5=q97.5,overlap0=overlap0,
               f=f,Rhat=rhat,n.eff=n.eff,pD=pd,DIC=dic))
 } else {
   #Otherwise return list without pD/DIC
-  cat('\nDone.','\n')
+  if(verbose){cat('\nDone.','\n')}
   return(list(sims.list=sims.list,mean=means,sd=se,q2.5=q2.5,q25=q25,q50=q50,q75=q75,q97.5=q97.5,overlap0=overlap0,
               f=f,Rhat=rhat,n.eff=n.eff))
 }

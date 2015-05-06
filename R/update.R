@@ -1,6 +1,6 @@
 
 update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=0, n.iter, n.thin=NULL, modules=c('glm'), 
-                          seed=floor(runif(1,1,10000)),codaOnly=FALSE, ...){
+                          seed=floor(runif(1,1,10000)),codaOnly=FALSE, verbose=TRUE, ...){
   
   mod <- object$model
   DIC <- object$DIC
@@ -19,7 +19,7 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=0, n.iter, n.
     
     par <- run.parallel(data=NULL,inits=NULL,parameters.to.save=parameters,model.file=NULL,n.chains=object$mcmc.info$n.chains
                  ,n.adapt=n.adapt,n.iter=n.iter,n.burnin=0,n.thin=n.thin,modules=modules,
-                 seed=seed,DIC=DIC,model.object=mod,update=TRUE) 
+                 seed=seed,DIC=DIC,model.object=mod,update=TRUE,verbose=verbose) 
     samples <- par$samples
     m <- par$model
      
@@ -30,7 +30,7 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=0, n.iter, n.
     
     rjags.output <- run.model(model.file=NULL,data=NULL,inits=NULL,parameters.to.save=parameters,
                               n.chains=object$mcmc.info$n.chains,n.iter,n.burnin=0,n.thin,n.adapt,
-                              model.object=mod,update=TRUE)
+                              model.object=mod,update=TRUE,verbose=verbose)
     samples <- rjags.output$samples
     m <- rjags.output$m
     
@@ -41,10 +41,10 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=0, n.iter, n.
   date <- start.time
   
   #Reorganize JAGS output to match input parameter order
-  samples <- order.params(samples,parameters,DIC)
+  samples <- order.params(samples,parameters,DIC,verbose=verbose)
     
   #Run process output
-  output <- process.output(samples,DIC=object$DIC,codaOnly)
+  output <- process.output(samples,DIC=object$DIC,codaOnly,verbose=verbose)
     
   #Summary
   output$summary <- summary.matrix(output,samples,object$mcmc.info$n.chains,codaOnly)

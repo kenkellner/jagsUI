@@ -1,5 +1,5 @@
 
-test.Rhat <- function(samples,cutoff,params.omit){
+test.Rhat <- function(samples,cutoff,params.omit,verbose=TRUE){
   
   params <- colnames(samples[[1]])
   expand <- sapply(strsplit(params, "\\["), "[", 1)
@@ -26,10 +26,10 @@ test.Rhat <- function(samples,cutoff,params.omit){
     } else {index <- index + 1}
   }
   
-  if(failure==TRUE){
+  if(failure==TRUE&verbose){
     cat('.......Convergence check failed for parameter \'',params[index],'\'\n',sep="")
   }
-  if(failure==FALSE){
+  if(failure==FALSE&verbose){
     cat('.......All parameters converged.','\n\n')
   }
   

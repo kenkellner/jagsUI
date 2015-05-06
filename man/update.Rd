@@ -11,7 +11,7 @@
 
 \usage{  
   \method{update}{jagsUI}(object, parameters.to.save=NULL, n.adapt=0, n.iter, 
-  n.thin=NULL, modules=c('glm'), seed=floor(runif(1,1,10000)), codaOnly=FALSE, ...)}
+  n.thin=NULL, modules=c('glm'), seed=floor(runif(1,1,10000)), codaOnly=FALSE, verbose=TRUE, ...)}
 
 \arguments{
   \item{object}{A \code{jagsUI}-class object to update.}
@@ -23,6 +23,7 @@
   \item{modules}{List of JAGS modules to load before analysis. By default only module 'glm' is loaded (in addition to 'basemod' and 'bugs'). To force no additional modules to load, set \code{modules=NULL}.}
   \item{seed}{Set a custom seed for the R random number generator and JAGS. The current state of the random number generator is saved in the output object.}
   \item{codaOnly}{Optional character vector of parameter names for which you do NOT want to calculate detailed statistics. This may be helpful when you have many output parameters (e.g., predicted values) and you want to save time. For these parameters, only the mean value will be calculated but the mcmc output will still be found in $sims.list and $samples.}
+  \item{verbose}{If set to FALSE, all text output in the console will be suppressed as the function runs (including most warnings).}
  \item{...}{Further arguments pass to or from other methods.}
 }
 \author{ 

@@ -1,7 +1,7 @@
 setClass("jagsUIbasic")
 
 update.jagsUIbasic <- function(object, parameters.to.save=NULL, n.adapt=100, n.iter, n.thin=NULL, 
-                               modules=c('glm'), seed=floor(runif(1,1,10000)), ...){
+                               modules=c('glm'), seed=floor(runif(1,1,10000)), verbose=TRUE, ...){
   
   mod <- object$model
   n.chains <- length(object$samples)
@@ -23,7 +23,7 @@ update.jagsUIbasic <- function(object, parameters.to.save=NULL, n.adapt=100, n.i
     
     par <- run.parallel(data=NULL,inits=NULL,parameters.to.save=parameters,model.file=NULL,n.chains=n.chains
                         ,n.adapt=n.adapt,n.iter=n.iter,n.burnin=0,n.thin=n.thin,modules=modules,
-                        seed=seed,DIC=DIC,model.object=mod,update=TRUE) 
+                        seed=seed,DIC=DIC,model.object=mod,update=TRUE,verbose=verbose) 
     samples <- par$samples
     m <- par$model
        
@@ -34,7 +34,7 @@ update.jagsUIbasic <- function(object, parameters.to.save=NULL, n.adapt=100, n.i
     
     rjags.output <- run.model(model.file=NULL,data=NULL,inits=NULL,parameters.to.save=parameters,
                               n.chains=object$mcmc.info$n.chains,n.iter,n.burnin=0,n.thin,n.adapt,
-                              model.object=mod,update=TRUE)
+                              model.object=mod,update=TRUE,verbose=verbose)
     samples <- rjags.output$samples
     m <- rjags.output$m    
   }
@@ -43,7 +43,7 @@ update.jagsUIbasic <- function(object, parameters.to.save=NULL, n.adapt=100, n.i
   
   end.time <- Sys.time() 
   time <- round(as.numeric(end.time-start.time,units="mins"),digits=3)
-  cat('MCMC took',time,'minutes.')
+  if(verbose){cat('MCMC took',time,'minutes.\n')}
   
   output <- list(samples=samples,model=m)
   

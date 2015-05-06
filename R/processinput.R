@@ -1,6 +1,6 @@
 
-process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,DIC=FALSE,autojags=FALSE,max.iter=NULL){
-  cat('\nProcessing function input.......','\n')
+process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,DIC=FALSE,autojags=FALSE,max.iter=NULL,verbose=TRUE){
+  if(verbose){cat('\nProcessing function input.......','\n')}
   
   #Quality control
   if(n.iter<=n.burnin){
@@ -9,14 +9,14 @@ process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,DIC=FALSE,aut
   
   if(autojags){
     if(n.chains<2){stop('Number of chains must be >1 to calculate Rhat.')}
-    if(max.iter<n.burnin){
+    if(max.iter<n.burnin&verbose){
       options(warn=1)
       warning('Maximum iterations includes burn-in and should be larger than burn-in.')
       options(warn=0,error=NULL)  
     }        
   }
   
-  if(n.thin>1&&(n.iter-n.burnin)<10){
+  if(n.thin>1&&(n.iter-n.burnin)<10&&verbose){
     options(warn=1)
     warning('The number of iterations is very low; jagsUI may crash. Recommend reducing n.thin to 1 and/or increasing n.iter.')
     options(warn=0,error=NULL)  
@@ -24,7 +24,7 @@ process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,DIC=FALSE,aut
   
   final.chain.length <- (n.iter - n.burnin) / n.thin
   even.length <- floor(final.chain.length) == final.chain.length
-  if(!even.length){
+  if(!even.length&verbose){
     options(warn=1)
     warning('Number of iterations saved after thinning is not an integer; JAGS will round it up.')
     options(warn=0,error=NULL)  
@@ -67,7 +67,7 @@ process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,DIC=FALSE,aut
             
     }
      
-    process <- data.check(x[[i]],name = names(x[i]))
+    process <- data.check(x[[i]],name = names(x[i]),verbose=verbose)
     if(!is.na(process[1])&&process[1]=="error"){stop('\nElement \'',names(x[i]) ,'\' in the data list cannot be coerced to one of the','\n','allowed formats (numeric scalar, vector, matrix, or array)\n')
     } else{x[[i]] <- process}
 
@@ -76,7 +76,7 @@ process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,DIC=FALSE,aut
   #Get initial values
   init.vals <- gen.inits(inits,n.chains)
  
-  cat('\nDone.','\n','\n')
+  if(verbose){cat('\nDone.','\n','\n')}
   return(list(data=x,params=params,inits=init.vals))
    
 }

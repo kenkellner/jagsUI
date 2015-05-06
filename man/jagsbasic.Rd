@@ -15,7 +15,7 @@
 jags.basic(data, inits, parameters.to.save, model.file,
   n.chains, n.adapt=100, n.iter, n.burnin=0, n.thin=1,
   modules=c('glm'), parallel=FALSE, DIC=TRUE,
-  seed=floor(runif(1,1,10000)), save.model=FALSE)}
+  seed=floor(runif(1,1,10000)), save.model=FALSE, verbose=TRUE)}
 
 \arguments{
   \item{data}{A named list of the data objects required by the model, or a character vector containing the names of the data objects required by the model.}
@@ -36,6 +36,7 @@ jags.basic(data, inits, parameters.to.save, model.file,
   \item{DIC}{Option to report deviance values. Defaults to TRUE.}
   \item{seed}{Set a custom seed for the R random number generator and JAGS. The current state of the random number generator is saved in the output object.}
   \item{save.model}{Returns the JAGS model as part of the output object to allow updating the model later. If TRUE, the output object will instead be a list of class \code{jagsUIbasic}. Default is false.}
+  \item{verbose}{If set to FALSE, all text output in the console will be suppressed as the function runs (including most warnings).}
 }
 
 \details{

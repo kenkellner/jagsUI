@@ -1,7 +1,7 @@
 
 autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=100,iter.increment=1000,n.burnin=0,n.thin=1,
                      save.all.iter=FALSE,modules=c('glm'),parallel=FALSE,DIC=TRUE,store.data=FALSE,codaOnly=FALSE,seed=floor(runif(1,1,10000)),
-                    bugs.format=FALSE,Rhat.limit=1.1,max.iter=100000){
+                    bugs.format=FALSE,Rhat.limit=1.1,max.iter=100000,verbose=TRUE){
     
   #Set random seed
   RNGkind('default')
@@ -9,7 +9,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   
   #Pass input data and parameter list through error check / processing
   data.check <- process.input(data,parameters.to.save,inits,n.chains,(n.burnin + iter.increment),
-                              n.burnin,n.thin,DIC=DIC,autojags=TRUE,max.iter=max.iter)    
+                              n.burnin,n.thin,DIC=DIC,autojags=TRUE,max.iter=max.iter,verbose=verbose)    
   data <- data.check$data
   parameters.to.save <- data.check$params
   inits <- data.check$inits
@@ -18,13 +18,13 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   start.time <- Sys.time()
   
   #Note if saving all iterations
-  if(save.all.iter){cat('Note: ALL iterations will be included in final posterior.\n\n')}
+  if(save.all.iter&verbose){cat('Note: ALL iterations will be included in final posterior.\n\n')}
   
   #Initial model run
   
   #Parallel
   
-  cat('Burn-in + Update 1',' (',(n.burnin + iter.increment),')',sep="")
+  if(verbose){cat('Burn-in + Update 1',' (',(n.burnin + iter.increment),')',sep="")}
   
   if(parallel){
     
@@ -51,19 +51,19 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   mcmc.info <- list(n.chains,n.adapt,n.iter=(n.burnin + iter.increment),n.burnin,n.thin,n.samples,time)
   names(mcmc.info) <- c('n.chains','n.adapt','n.iter','n.burnin','n.thin','n.samples','elapsed.mins')
   
-  test <- test.Rhat(samples,Rhat.limit,codaOnly)
+  test <- test.Rhat(samples,Rhat.limit,codaOnly,verbose=verbose)
   reach.max <- FALSE
   index = 1
   
   if(mcmc.info$n.iter>=max.iter){
     reach.max <- TRUE
-    cat('\nMaximum iterations reached.\n\n')
+    if(verbose){cat('\nMaximum iterations reached.\n\n')}
   }
   
   while(test==TRUE && reach.max==FALSE){
         
     index <- index + 1
-    cat('Update ',index,' (',mcmc.info$n.iter + iter.increment,')',sep="")
+    if(verbose){cat('Update ',index,' (',mcmc.info$n.iter + iter.increment,')',sep="")}
     
     if(save.all.iter){
       if(index==2){start.iter <- start(samples)}
@@ -111,7 +111,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
     
     if(mcmc.info$n.iter>=max.iter){
       reach.max <- TRUE
-      cat('\nMaximum iterations reached.\n\n')
+      if(verbose){cat('\nMaximum iterations reached.\n\n')}
     }
   }
   
@@ -121,10 +121,10 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   date <- start.time
   
   #Reorganize JAGS output to match input parameter order
-  samples <- order.params(samples,parameters.to.save,DIC)
+  samples <- order.params(samples,parameters.to.save,DIC,verbose=verbose)
   
   #Convert rjags output to jagsUI form 
-  output <- process.output(samples,DIC=DIC,codaOnly)
+  output <- process.output(samples,DIC=DIC,codaOnly,verbose=verbose)
   
   #Add additional information to output list
   

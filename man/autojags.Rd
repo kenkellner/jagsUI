@@ -12,7 +12,7 @@ autojags(data, inits, parameters.to.save, model.file,
   n.chains, n.adapt=100, iter.increment=1000, n.burnin=0, n.thin=1,
   save.all.iter=FALSE, modules=c('glm'), parallel=FALSE, DIC=TRUE, 
   store.data=FALSE, codaOnly=FALSE,seed=floor(runif(1,1,10000)), 
-  bugs.format=FALSE, Rhat.limit=1.1, max.iter=100000)}
+  bugs.format=FALSE, Rhat.limit=1.1, max.iter=100000, verbose=TRUE)}
 
 \arguments{
   \item{data}{A named list of the data objects required by the model, or a character vector containing the names of the data objects required by the model.}
@@ -38,6 +38,7 @@ autojags(data, inits, parameters.to.save, model.file,
   \item{bugs.format}{Option to print JAGS output in classic R2WinBUGS format. Default is FALSE.}
   \item{Rhat.limit}{Set the desired cutoff point for convergence; when all Rhat values are less than this value the model assumes convergence has been reached and will stop auto-updating.}
   \item{max.iter}{Maximum number of total iterations allowed via auto-update (including burn-in).}
+  \item{verbose}{If set to FALSE, all text output in the console will be suppressed as the function runs (including most warnings).}
 }
 
 \details{

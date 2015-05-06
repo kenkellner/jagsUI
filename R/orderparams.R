@@ -1,5 +1,5 @@
 
-order.params <- function(samples,parameters.to.save,DIC){
+order.params <- function(samples,parameters.to.save,DIC,verbose=TRUE){
   
   params <- colnames(samples[[1]])
   params <- params[order(match(sapply(strsplit(params, "\\["), "[", 1),
@@ -8,7 +8,7 @@ order.params <- function(samples,parameters.to.save,DIC){
   if(DIC&&('deviance'%in%params)){
     params <- c(params[params!='deviance'],'deviance')
   } else if (DIC&&!('deviance'%in%params)){
-    warning('JAGS did not monitor deviance.')
+    if(verbose){warning('JAGS did not monitor deviance.')}
     DIC <- FALSE
   } 
   
