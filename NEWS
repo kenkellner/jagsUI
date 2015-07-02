@@ -1,3 +1,7 @@
+# Changes from Version 1.3.7 to 1.3.8 [2-July-2015] #
+
+Explicitly import functions from default packages to meet new standards for building with R-devel.
+
 # Changes from Version 1.3.6 to 1.3.7 [11-June-2015] #
 
 Add verbose argument to functions to allow suppression of all text output in the console as the function runs.
