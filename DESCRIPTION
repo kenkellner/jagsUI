@@ -1,6 +1,6 @@
 Package: jagsUI
 Version: 1.3.8
-Date: 2015-7-2
+Date: 2015-7-13
 Title: A Wrapper Around 'rjags' to Streamline 'JAGS' Analyses
 Author: Ken Kellner <ken@kenkellner.com>
 Maintainer: Ken Kellner <ken@kenkellner.com>
@@ -8,7 +8,7 @@ Depends:
     R (>= 2.14.0),
     lattice
 Imports:
-    rjags (>= 3-3),
+    rjags (>= 3-13),
     coda (>= 0.13),
     parallel,
     methods,
