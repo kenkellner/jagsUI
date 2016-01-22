@@ -76,7 +76,9 @@ calc.stats <- function(i){
     #Done separately for each element of non-scalar parameter to avoid errors
     if(m > 1 && (!i%in%params.omit)){
       hold <- x[,expand==i]
-      rhat[[i]] <<- array((sapply(1:dim(hold[[1]])[2],gd,hold=hold)),dim=dim[[i]])      
+      rhat.vals <- sapply(1:dim(hold[[1]])[2],gd,hold=hold)
+      names(rhat.vals) <- colnames(hold[[1]])
+      rhat[[i]] <<- populate(rhat.vals,dim[[i]])
     } else if (m == 1){
       hold <- x[,expand==i]
       rhat[[i]] <<- array(NA,dim=dim[[i]])
@@ -84,20 +86,20 @@ calc.stats <- function(i){
     
     #Calculate other statistics
     ld <- length(dim(sims.list[[i]]))
-    means[[i]] <<- array(colMeans(sims.list[[i]]),dim=dim[[i]])
+    means[[i]] <<- populate(colMeans(sims.list[[i]]),dim[[i]])
     if(!i%in%params.omit){
-    se[[i]] <<- array(apply(sims.list[[i]],c(2:ld),sd),dim=dim[[i]])
-    q2.5[[i]] <<- array(apply(sims.list[[i]],c(2:ld),qs,0.025),dim=dim[[i]])
-    q25[[i]] <<- array(apply(sims.list[[i]],c(2:ld),qs,0.25),dim=dim[[i]])
-    q50[[i]] <<- array(apply(sims.list[[i]],c(2:ld),qs,0.5),dim=dim[[i]])
-    q75[[i]] <<- array(apply(sims.list[[i]],c(2:ld),qs,0.75),dim=dim[[i]])
-    q97.5[[i]] <<- array(apply(sims.list[[i]],c(2:ld),qs,0.975),dim=dim[[i]])
-    overlap0[[i]] <<- array(apply(sims.list[[i]],c(2:ld),ov),dim=dim[[i]])
-    f[[i]] <<- array(apply(sims.list[[i]],c(2:ld),gf),dim=dim[[i]])
-    n.eff[[i]] <<- array(apply(sims.list[[i]],c(2:ld),calcneff,n,m),dim=dim[[i]]) 
+    se[[i]] <<- populate(apply(sims.list[[i]],c(2:ld),sd),dim=dim[[i]])
+    q2.5[[i]] <<- populate(apply(sims.list[[i]],c(2:ld),qs,0.025),dim=dim[[i]])
+    q25[[i]] <<- populate(apply(sims.list[[i]],c(2:ld),qs,0.25),dim=dim[[i]])
+    q50[[i]] <<- populate(apply(sims.list[[i]],c(2:ld),qs,0.5),dim=dim[[i]])
+    q75[[i]] <<- populate(apply(sims.list[[i]],c(2:ld),qs,0.75),dim=dim[[i]])
+    q97.5[[i]] <<- populate(apply(sims.list[[i]],c(2:ld),qs,0.975),dim=dim[[i]])
+    overlap0[[i]] <<- populate(apply(sims.list[[i]],c(2:ld),ov),dim=dim[[i]])
+    f[[i]] <<- populate(apply(sims.list[[i]],c(2:ld),gf),dim=dim[[i]])
+    n.eff[[i]] <<- populate(apply(sims.list[[i]],c(2:ld),calcneff,n,m),dim=dim[[i]])   
     }
     
-    sims.list[[i]] <<- array(sims.list[[i]],dim=c(dim(mat)[1],dim[[i]]))
+    sims.list[[i]] <<- populate(sims.list[[i]],dim=dim[[i]],simslist=T,samples=dim(mat)[1])
   
   #If parameter is a scalar
   } else {
