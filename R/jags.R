@@ -57,7 +57,9 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
   
   
   #Reorganize JAGS output to match input parameter order
-  samples <- order.params(samples,parameters.to.save,DIC,verbose=verbose)
+  if(dim(samples[[1]])[2]>1){
+    samples <- order.params(samples,parameters.to.save,DIC,verbose=verbose)
+  }
   
   #Convert rjags output to jagsUI form 
   output <- process.output(samples,DIC=DIC,codaOnly,verbose=verbose)

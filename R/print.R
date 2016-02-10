@@ -22,11 +22,19 @@ print.jagsUI <- function(x,digits=3,...){
     if(x$mcmc.info$n.chains!=1){y = x$summary[,c(1,2,3,5,7,10,11,8,9)]
     } else {y = x$summary[,c(1,2,3,5,7,8,9)]}
     z <-  as.data.frame(round(as.matrix(y),digits))
+    if(is.vector(y)){
+      z <- as.data.frame(t(z))
+      row.names(z) <- rownames(x$summary)
+    }
     z[,6] <- z[,6]==1
   } else {
     if(x$mcmc.info$n.chains!=1){y = x$summary[,c(1:9)]
     } else {y = x$summary[,c(1:7)]}
     z <- as.data.frame(round(as.matrix(y),digits))
+    if(is.vector(y)){
+      z <- as.data.frame(t(z))
+      row.names(z) <- rownames(x$summary)
+    }
   }
   
   #print the output
