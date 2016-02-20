@@ -19,7 +19,7 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=0, n.iter, n.
     
     par <- run.parallel(data=NULL,inits=NULL,parameters.to.save=parameters,model.file=NULL,n.chains=object$mcmc.info$n.chains
                  ,n.adapt=n.adapt,n.iter=n.iter,n.burnin=0,n.thin=n.thin,modules=modules,
-                 seed=seed,DIC=DIC,model.object=mod,update=TRUE,verbose=verbose) 
+                 seed=seed,DIC=DIC,model.object=mod,update=TRUE,verbose=verbose,n.cores=object$mcmc.info$n.cores) 
     samples <- par$samples
     m <- par$model
      

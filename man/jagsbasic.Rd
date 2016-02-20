@@ -14,7 +14,7 @@
 \usage{
 jags.basic(data, inits, parameters.to.save, model.file,
   n.chains, n.adapt=100, n.iter, n.burnin=0, n.thin=1,
-  modules=c('glm'), parallel=FALSE, DIC=TRUE,
+  modules=c('glm'), parallel=FALSE, n.cores=NULL, DIC=TRUE,
   seed=floor(runif(1,1,10000)), save.model=FALSE, verbose=TRUE)}
 
 \arguments{
@@ -32,7 +32,8 @@ jags.basic(data, inits, parameters.to.save, model.file,
   \item{n.burnin}{Number of iterations at the beginning of the chain to discard (i.e., the burn-in). Does not include the adaptive phase iterations.}
   \item{n.thin}{Thinning rate. Must be a positive integer.}
   \item{modules}{List of JAGS modules to load before analysis. By default only module 'glm' is loaded (in addition to 'basemod' and 'bugs'). To force no additional modules to load, set \code{modules=NULL}.}
-  \item{parallel}{If TRUE, run MCMC chains in parallel on multiple CPU cores. Each chain is assigned to a different core, so n.chains must be <= the number of available CPU cores.}
+  \item{parallel}{If TRUE, run MCMC chains in parallel on multiple CPU cores}
+  \item{n.cores}{If parallel=TRUE, specify the number of CPU cores used. Defaults to total available cores or the number of chains, whichever is smaller.}
   \item{DIC}{Option to report deviance values. Defaults to TRUE.}
   \item{seed}{Set a custom seed for the R random number generator and JAGS. The current state of the random number generator is saved in the output object.}
   \item{save.model}{Returns the JAGS model as part of the output object to allow updating the model later. If TRUE, the output object will instead be a list of class \code{jagsUIbasic}. Default is false.}

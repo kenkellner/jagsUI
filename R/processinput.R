@@ -1,10 +1,35 @@
 
-process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,DIC=FALSE,autojags=FALSE,max.iter=NULL,verbose=TRUE){
+process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,n.cores,DIC=FALSE,autojags=FALSE,max.iter=NULL,verbose=TRUE,parallel=FALSE){
   if(verbose){cat('\nProcessing function input.......','\n')}
   
   #Quality control
   if(n.iter<=n.burnin){
     stop('Number of iterations must be larger than burn-in.\n')
+  }
+  
+  if(parallel){
+    #Set number of clusters
+    p <- detectCores()
+    if(is.null(n.cores)){
+      if(is.na(p)){
+        p <- n.chains
+        if(verbose){
+          options(warn=1)
+          warning('Could not detect number of cores on the machine. Defaulting to cores used = number of chains.')
+          options(warn=0,error=NULL)
+          }
+      }
+      n.cores <- min(p,n.chains)
+    } else {
+      if(n.cores>p){
+        if(verbose){
+          options(warn=1)
+          warning(paste('You have specified more cores (',n.cores,') than the available number of cores on this machine (',p,').\nReducing n.cores to max of ',p,'.',sep=""))
+          options(warn=0,error=NULL)
+          }
+        n.cores <- p
+      }
+    }
   }
   
   if(autojags){
@@ -77,6 +102,6 @@ process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,DIC=FALSE,aut
   init.vals <- gen.inits(inits,n.chains)
  
   if(verbose){cat('\nDone.','\n','\n')}
-  return(list(data=x,params=params,inits=init.vals))
+  return(list(data=x,params=params,inits=init.vals,n.cores=n.cores))
    
 }

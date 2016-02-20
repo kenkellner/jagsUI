@@ -16,7 +16,7 @@
 \usage{
 jags(data, inits, parameters.to.save, model.file,
   n.chains, n.adapt=100, n.iter, n.burnin=0, n.thin=1,
-  modules=c('glm'), parallel=FALSE, DIC=TRUE, store.data=FALSE,
+  modules=c('glm'), parallel=FALSE, n.cores=NULL, DIC=TRUE, store.data=FALSE,
   codaOnly=FALSE,seed=floor(runif(1,1,10000)), bugs.format=FALSE, verbose=TRUE)}
 
 \arguments{
@@ -34,7 +34,8 @@ jags(data, inits, parameters.to.save, model.file,
   \item{n.burnin}{Number of iterations at the beginning of the chain to discard (i.e., the burn-in). Does not include the adaptive phase iterations.}
   \item{n.thin}{Thinning rate. Must be a positive integer.}
   \item{modules}{List of JAGS modules to load before analysis. By default only module 'glm' is loaded (in addition to 'basemod' and 'bugs'). To force no additional modules to load, set \code{modules=NULL}.}
-  \item{parallel}{If TRUE, run MCMC chains in parallel on multiple CPU cores. Each chain is assigned to a different core, so n.chains must be <= the number of available CPU cores.}
+  \item{parallel}{If TRUE, run MCMC chains in parallel on multiple CPU cores}
+  \item{n.cores}{If parallel=TRUE, specify the number of CPU cores used. Defaults to total available cores or the number of chains, whichever is smaller.}
   \item{DIC}{Option to report DIC and the estimated number of parameters (pD). Defaults to TRUE.}
   \item{store.data}{Option to store the input dataset and initial values in the output object for future use. Defaults to FALSE.}
   \item{codaOnly}{Optional character vector of parameter names for which you do NOT want to calculate detailed statistics. This may be helpful when you have many output parameters (e.g., predicted values) and you want to save time. For these parameters, only the mean value will be calculated but the mcmc output will still be found in $sims.list and $samples.}

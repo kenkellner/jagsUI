@@ -1,6 +1,6 @@
 
 autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=100,iter.increment=1000,n.burnin=0,n.thin=1,
-                     save.all.iter=FALSE,modules=c('glm'),parallel=FALSE,DIC=TRUE,store.data=FALSE,codaOnly=FALSE,seed=floor(runif(1,1,10000)),
+                     save.all.iter=FALSE,modules=c('glm'),parallel=FALSE,n.cores=NULL,DIC=TRUE,store.data=FALSE,codaOnly=FALSE,seed=floor(runif(1,1,10000)),
                     bugs.format=FALSE,Rhat.limit=1.1,max.iter=100000,verbose=TRUE){
     
   #Set random seed
@@ -9,10 +9,11 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   
   #Pass input data and parameter list through error check / processing
   data.check <- process.input(data,parameters.to.save,inits,n.chains,(n.burnin + iter.increment),
-                              n.burnin,n.thin,DIC=DIC,autojags=TRUE,max.iter=max.iter,verbose=verbose)    
+                              n.burnin,n.thin,n.cores,DIC=DIC,autojags=TRUE,max.iter=max.iter,verbose=verbose,parallel=parallel)    
   data <- data.check$data
   parameters.to.save <- data.check$params
   inits <- data.check$inits
+  if(parallel){n.cores <- data.check$n.cores}
   
   #Save start time
   start.time <- Sys.time()
@@ -29,7 +30,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   if(parallel){
     
     par <- run.parallel(data,inits,parameters.to.save,model.file,n.chains,n.adapt,n.iter=(n.burnin + iter.increment),n.burnin,n.thin,
-                        modules,seed,DIC,verbose=FALSE) 
+                        modules,seed,DIC,verbose=FALSE,n.cores=n.cores) 
     samples <- par$samples
     mod <- par$model
     
@@ -50,6 +51,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   n.samples <- (iter.increment-n.burnin) / n.thin * n.chains
   mcmc.info <- list(n.chains,n.adapt,n.iter=(n.burnin + iter.increment),n.burnin,n.thin,n.samples,time)
   names(mcmc.info) <- c('n.chains','n.adapt','n.iter','n.burnin','n.thin','n.samples','elapsed.mins')
+  if(parallel){mcmc.info$n.cores <- n.cores}
   
   test <- test.Rhat(samples,Rhat.limit,codaOnly,verbose=verbose)
   reach.max <- FALSE
@@ -76,7 +78,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
       
       par <- run.parallel(data=NULL,inits=NULL,parameters.to.save=parameters.to.save,model.file=NULL,n.chains=n.chains
                           ,n.adapt=0,n.iter=iter.increment,n.burnin=0,n.thin=n.thin,modules=modules,
-                          seed=seed,DIC=DIC,model.object=mod,update=TRUE,verbose=FALSE) 
+                          seed=seed,DIC=DIC,model.object=mod,update=TRUE,verbose=FALSE,n.cores=n.cores) 
       
       if(save.all.iter & index > 1){
         samples <- bind.mcmc(old.samples,par$samples,start=start.iter,n.new.iter=iter.increment)

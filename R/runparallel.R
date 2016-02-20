@@ -1,26 +1,20 @@
 
 run.parallel <- function(data=NULL,inits=NULL,parameters.to.save,model.file=NULL,n.chains,n.adapt,n.iter,n.burnin,n.thin,
-                         modules,seed,DIC,model.object=NULL,update=FALSE,verbose=TRUE) {
-
-#Set number of clusters/chains
-p <- detectCores()
-if(n.chains > p){
-  stop('Number of chains (',n.chains,') exceeds available cores (',p,'), reduce number of chains.',sep="")
-} else {n.cluster <- n.chains}
+                         modules,seed,DIC,model.object=NULL,update=FALSE,verbose=TRUE,n.cores=NULL) {
 
 #Set random seed
 set.seed(seed)
 
 #Set up clusters
-cl = makeCluster(n.cluster)
+cl = makeCluster(n.cores)
 on.exit(stopCluster(cl))
 clusterExport(cl = cl, ls(), envir = environment())
 clusterSetRNGStream(cl, seed)
 
 if(verbose){
-cat('Beginning parallel processing with',n.cluster,'clusters. Console output will be suppressed.\n')}
+cat('Beginning parallel processing using',n.cores,'cores. Console output will be suppressed.\n')}
 
-#Function called in each cluster
+#Function called in each core
 jags.clust <- function(i){
 
 #Load modules
@@ -57,7 +51,7 @@ par <- clusterApply(cl=cl,x=1:n.chains,fun=jags.clust)
 out <- samples <- model <- list()
 
 #Save samples and model objects from each cluster
-for (i in 1:n.cluster){
+for (i in 1:n.chains){
   samples[[i]] <- par[[i]][[1]]
   model[[i]] <- par[[i]][[2]]
 }

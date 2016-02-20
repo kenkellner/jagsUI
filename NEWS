@@ -1,3 +1,7 @@
+# Changes from Version 1.4.0 to 1.4.1 [20-Feb-2016] #
+
+Add ability to specify number of CPU cores to use when running in parallel.
+
 # Changes from Version 1.3.9 to 1.4.0 [10-Feb-2016] #
 
 Fix a problem where saving output for a single scalar parameter broke output processing.
