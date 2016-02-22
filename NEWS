@@ -1,3 +1,7 @@
+# Changes from Version 1.4.1 to 1.4.2 [21-Feb-2016] #
+
+Changes to NAMESPACE to get clean build check on R-devel.
+
 # Changes from Version 1.4.0 to 1.4.1 [20-Feb-2016] #
 
 Add ability to specify number of CPU cores to use when running in parallel.
