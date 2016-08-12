@@ -4,11 +4,15 @@ run.parallel <- function(data=NULL,inits=NULL,parameters.to.save,model.file=NULL
 
 #Set random seed
 set.seed(seed)
+  
+#Save current library paths
+current.libpaths <- .libPaths()
 
 #Set up clusters
 cl = makeCluster(n.cores)
 on.exit(stopCluster(cl))
 clusterExport(cl = cl, ls(), envir = environment())
+clusterEvalQ(cl,.libPaths(current.libpaths))
 clusterSetRNGStream(cl, seed)
 
 if(verbose){

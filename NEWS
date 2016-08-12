@@ -1,3 +1,7 @@
+# Changes from Version 1.4.2 to 1.4.3 [12-Aug-2016] #
+
+Fix to allow running in parallel when dependencies are in non-standard libraries.
+
 # Changes from Version 1.4.1 to 1.4.2 [21-Feb-2016] #
 
 Changes to NAMESPACE to get clean build check on R-devel.
