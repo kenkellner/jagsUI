@@ -5,6 +5,7 @@ update.jagsUIbasic <- function(object, parameters.to.save=NULL, n.adapt=100, n.i
   
   mod <- object$model
   n.chains <- length(object$samples)
+  n.cores <- object$n.cores
  
   if(is.null(parameters.to.save)){
     params.temp <- colnames(object$samples[[1]])
@@ -23,7 +24,7 @@ update.jagsUIbasic <- function(object, parameters.to.save=NULL, n.adapt=100, n.i
     
     par <- run.parallel(data=NULL,inits=NULL,parameters.to.save=parameters,model.file=NULL,n.chains=n.chains
                         ,n.adapt=n.adapt,n.iter=n.iter,n.burnin=0,n.thin=n.thin,modules=modules,
-                        seed=seed,DIC=DIC,model.object=mod,update=TRUE,verbose=verbose,n.cores=object$n.cores) 
+                        seed=seed,DIC=DIC,model.object=mod,update=TRUE,verbose=verbose,n.cores=n.cores) 
     samples <- par$samples
     m <- par$model
        
@@ -45,7 +46,7 @@ update.jagsUIbasic <- function(object, parameters.to.save=NULL, n.adapt=100, n.i
   time <- round(as.numeric(end.time-start.time,units="mins"),digits=3)
   if(verbose){cat('MCMC took',time,'minutes.\n')}
   
-  output <- list(samples=samples,model=m)
+  output <- list(samples=samples,model=m,n.cores=n.cores)
   
   class(output) <- 'jagsUIbasic'
   
