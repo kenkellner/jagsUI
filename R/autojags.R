@@ -1,6 +1,6 @@
 
 autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=100,iter.increment=1000,n.burnin=0,n.thin=1,
-                     save.all.iter=FALSE,modules=c('glm'),parallel=FALSE,n.cores=NULL,DIC=TRUE,store.data=FALSE,codaOnly=FALSE,seed=floor(runif(1,1,10000)),
+                     save.all.iter=FALSE,modules=c('glm'),parallel=FALSE,n.cores=NULL,DIC=TRUE,store.data=FALSE,codaOnly=FALSE,seed=as.integer(Sys.time()),
                     bugs.format=FALSE,Rhat.limit=1.1,max.iter=100000,verbose=TRUE){
     
   #Set random seed

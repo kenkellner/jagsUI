@@ -1,7 +1,7 @@
 setClass("jagsUIbasic")
 
 update.jagsUIbasic <- function(object, parameters.to.save=NULL, n.adapt=100, n.iter, n.thin=NULL, 
-                               modules=c('glm'), seed=floor(runif(1,1,10000)), verbose=TRUE, ...){
+                               modules=c('glm'), seed=as.integer(Sys.time()), verbose=TRUE, ...){
   
   mod <- object$model
   n.chains <- length(object$samples)

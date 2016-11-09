@@ -1,6 +1,6 @@
 
 update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=0, n.iter, n.thin=NULL, modules=c('glm'), 
-                          seed=floor(runif(1,1,10000)),codaOnly=FALSE, verbose=TRUE, ...){
+                          seed=as.integer(Sys.time()),codaOnly=FALSE, verbose=TRUE, ...){
   
   mod <- object$model
   DIC <- object$DIC

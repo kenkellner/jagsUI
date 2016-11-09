@@ -1,6 +1,6 @@
 
 jags.basic <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=100,n.iter,n.burnin=0,n.thin=1,
-                           modules=c('glm'),parallel=FALSE,n.cores=NULL,DIC=TRUE,seed=floor(runif(1,1,10000)),save.model=FALSE,verbose=TRUE){
+                           modules=c('glm'),parallel=FALSE,n.cores=NULL,DIC=TRUE,seed=as.integer(Sys.time()),save.model=FALSE,verbose=TRUE){
   
   #Set random seed
   RNGkind('default')

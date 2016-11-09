@@ -21,5 +21,5 @@
 }
 
 \author{ 
-  Ken Kellner \email{ken@kenkellner.com}.
+  Ken Kellner \email{contact@kenkellner.com}.
 }

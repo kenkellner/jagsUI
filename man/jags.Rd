@@ -17,7 +17,7 @@
 jags(data, inits, parameters.to.save, model.file,
   n.chains, n.adapt=100, n.iter, n.burnin=0, n.thin=1,
   modules=c('glm'), parallel=FALSE, n.cores=NULL, DIC=TRUE, store.data=FALSE,
-  codaOnly=FALSE,seed=floor(runif(1,1,10000)), bugs.format=FALSE, verbose=TRUE)}
+  codaOnly=FALSE,seed=as.integer(Sys.time()), bugs.format=FALSE, verbose=TRUE)}
 
 \arguments{
   \item{data}{A named list of the data objects required by the model, or a character vector containing the names of the data objects required by the model.}
@@ -39,7 +39,7 @@ jags(data, inits, parameters.to.save, model.file,
   \item{DIC}{Option to report DIC and the estimated number of parameters (pD). Defaults to TRUE.}
   \item{store.data}{Option to store the input dataset and initial values in the output object for future use. Defaults to FALSE.}
   \item{codaOnly}{Optional character vector of parameter names for which you do NOT want to calculate detailed statistics. This may be helpful when you have many output parameters (e.g., predicted values) and you want to save time. For these parameters, only the mean value will be calculated but the mcmc output will still be found in $sims.list and $samples.}
-  \item{seed}{Set a custom seed for the R random number generator and JAGS. The current state of the random number generator is saved in the output object.}
+  \item{seed}{Set a custom seed for the R random number generator and JAGS.}
   \item{bugs.format}{Option to print JAGS output in classic R2WinBUGS format. Default is FALSE.}
   \item{verbose}{If set to FALSE, all text output in the console will be suppressed as the function runs (including most warnings).}
 }
@@ -73,7 +73,7 @@ An object of class \code{jagsUI}. Notable elements in the output object include:
 }
 
 \author{ 
-  Ken Kellner \email{ken@kenkellner.com}.
+  Ken Kellner \email{contact@kenkellner.com}.
 }
 
 \examples{  
