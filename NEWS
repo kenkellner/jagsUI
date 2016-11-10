@@ -1,6 +1,6 @@
-# Changes from Version 1.4.3 to 1.4.4 [9-Nov-2016] #
+# Changes from Version 1.4.3 to 1.4.4 [10-Nov-2016] #
 
-Change default approach to generating random seeds.
+Change default approach to generating random seeds. Add S3 method for View() and convert traceplot() to an S3 method from S4.
 
 # Changes from Version 1.4.2 to 1.4.3 [15-Sept-2016] #
 

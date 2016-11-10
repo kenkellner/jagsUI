@@ -11,12 +11,12 @@ importFrom(grDevices, "devAskNewPage", "rainbow")
 importFrom(graphics, "plot", "abline", "axis", "box", "segments", "lines", "par")
 importFrom(utils, "capture.output")
 
-exportClasses("jagsUI","jagsUIbasic")
+#exportClasses("jagsUI","jagsUIbasic")
 
-exportMethods("traceplot")
+#exportMethods("traceplot")
 
 export("jags", "jagsUI","jags.basic","autojags","pp.check", "traceplot", 
-       "whiskerplot")
+       "whiskerplot", "View")
 
 S3method("plot", "jagsUI")
 S3method("xyplot", "jagsUI")
@@ -25,4 +25,8 @@ S3method("print","jagsUI")
 S3method("update","jagsUI")
 S3method("update","jagsUIbasic")
 S3method("summary","jagsUI")
+S3method("traceplot", "jagsUI")
+S3method("traceplot", "default")
+S3method("View", "jagsUI")
+S3method("View","default")
 
