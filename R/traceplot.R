@@ -1,9 +1,9 @@
 
 traceplot <- function(x, ...) UseMethod("traceplot")
 
-traceplot.default <- function(x, ...) rjags::traceplot(x, ...)
+traceplot.default <- function(x, ...) coda::traceplot(x, ...)
 
-traceplot.jagsUI <- function (x, parameters=NULL) {
+traceplot.jagsUI <- function (x, parameters=NULL, ...) {
 
   samples <- x$samples    
   

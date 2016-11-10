@@ -1,7 +1,7 @@
 
 View <- function(x, title, ...) UseMethod("View")
 
-View.default <- function(x, title){
+View.default <- function(x, title, ...){
   
   if(missing(title)){
     title <- deparse(substitute(x))
@@ -10,7 +10,7 @@ View.default <- function(x, title){
   utils::View(x, title)
 }  
 
-View.jagsUI <- function(x,title,digits=3){
+View.jagsUI <- function(x,title,digits=3, ...){
   # grab object name
   if(missing(title)){
     title <- paste("jagsUI:", deparse(substitute(x)))

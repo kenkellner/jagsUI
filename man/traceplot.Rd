@@ -9,7 +9,7 @@
 
   traceplot(x, ...)
 
-  \method{traceplot}{jagsUI}(x, parameters=NULL)
+  \method{traceplot}{jagsUI}(x, parameters=NULL, ...)
 }
 
 \arguments{

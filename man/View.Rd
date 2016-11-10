@@ -9,7 +9,7 @@
   
   View(x, title, ...)
 
-  \method{View}{jagsUI}(x, title, digits=3)
+  \method{View}{jagsUI}(x, title, digits=3, ...)
 }
 
 \arguments{
