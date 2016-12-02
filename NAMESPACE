@@ -11,10 +11,6 @@ importFrom(grDevices, "devAskNewPage", "rainbow")
 importFrom(graphics, "plot", "abline", "axis", "box", "segments", "lines", "par")
 importFrom(utils, "capture.output")
 
-#exportClasses("jagsUI","jagsUIbasic")
-
-#exportMethods("traceplot")
-
 export("jags", "jagsUI","jags.basic","autojags","pp.check", "traceplot", 
        "whiskerplot", "View")
 
