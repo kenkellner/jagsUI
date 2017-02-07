@@ -1,5 +1,5 @@
 
-autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=100,iter.increment=1000,n.burnin=0,n.thin=1,
+autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=NULL,iter.increment=1000,n.burnin=0,n.thin=1,
                      save.all.iter=FALSE,modules=c('glm'),parallel=FALSE,n.cores=NULL,DIC=TRUE,store.data=FALSE,codaOnly=FALSE,seed=as.integer(Sys.time()),
                     bugs.format=FALSE,Rhat.limit=1.1,max.iter=100000,verbose=TRUE){
     
@@ -33,6 +33,8 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
                         modules,seed,DIC,verbose=FALSE,n.cores=n.cores) 
     samples <- par$samples
     mod <- par$model
+    total.adapt <- par$total.adapt
+    sufficient.adapt <- par$sufficient.adapt
     
   } else {
     
@@ -44,13 +46,15 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
                               verbose=FALSE)
     samples <- rjags.output$samples
     mod <- rjags.output$m
+    total.adapt <- rjags.output$total.adapt
+    sufficient.adapt <- rjags.output$sufficient.adapt
     
   }
   
   #Combine mcmc info into list
-  n.samples <- (iter.increment-n.burnin) / n.thin * n.chains
-  mcmc.info <- list(n.chains,n.adapt,n.iter=(n.burnin + iter.increment),n.burnin,n.thin,n.samples,time)
-  names(mcmc.info) <- c('n.chains','n.adapt','n.iter','n.burnin','n.thin','n.samples','elapsed.mins')
+  n.samples <- dim(samples[[1]])[1] * n.chains
+  mcmc.info <- list(n.chains,n.adapt=total.adapt,sufficient.adapt=sufficient.adapt,n.iter=(n.burnin + iter.increment),n.burnin,n.thin,n.samples,time)
+  names(mcmc.info) <- c('n.chains','n.adapt','sufficient.adapt','n.iter','n.burnin','n.thin','n.samples','elapsed.mins')
   if(parallel){mcmc.info$n.cores <- n.cores}
   
   test <- test.Rhat(samples,Rhat.limit,codaOnly,verbose=verbose)
@@ -77,7 +81,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
     if(parallel){
       
       par <- run.parallel(data=NULL,inits=NULL,parameters.to.save=parameters.to.save,model.file=NULL,n.chains=n.chains
-                          ,n.adapt=0,n.iter=iter.increment,n.burnin=0,n.thin=n.thin,modules=modules,
+                          ,n.adapt=n.adapt,n.iter=iter.increment,n.burnin=0,n.thin=n.thin,modules=modules,
                           seed=seed,DIC=DIC,model.object=mod,update=TRUE,verbose=FALSE,n.cores=n.cores) 
       
       if(save.all.iter & index > 1){
@@ -85,6 +89,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
       } else {samples <- par$samples}
       
       mod <- par$model
+      sufficient.adapt <- par$sufficient.adapt
       
       test <- test.Rhat(samples,Rhat.limit,codaOnly)
       
@@ -93,7 +98,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
       set.modules(modules,DIC)
       
       rjags.output <- run.model(model.file=NULL,data=NULL,inits=NULL,parameters.to.save=parameters.to.save,
-                                n.chains=n.chains,n.iter=iter.increment,n.burnin=0,n.thin,n.adapt=0,
+                                n.chains=n.chains,n.iter=iter.increment,n.burnin=0,n.thin,n.adapt=n.adapt,
                                 model.object=mod,update=TRUE,verbose=FALSE)
       
       if(save.all.iter & index > 1){
@@ -101,6 +106,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
       } else {samples <- rjags.output$samples}
 
       mod <- rjags.output$m
+      sufficient.adapt <- rjags.output$sufficient.adapt
 
       test <- test.Rhat(samples,Rhat.limit,codaOnly)
 
@@ -110,6 +116,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
     if(!save.all.iter){mcmc.info$n.burnin <- mcmc.info$n.iter}   
     mcmc.info$n.iter <- mcmc.info$n.iter + iter.increment    
     mcmc.info$n.samples <- dim(samples[[1]])[1] * n.chains
+    mcmc.info$sufficient.adapt <- sufficient.adapt
     
     if(mcmc.info$n.iter>=max.iter){
       reach.max <- TRUE

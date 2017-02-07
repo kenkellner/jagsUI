@@ -1,6 +1,6 @@
 
 
-jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=100,n.iter,n.burnin=0,n.thin=1,
+jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=NULL,n.iter,n.burnin=0,n.thin=1,
                        modules=c('glm'),parallel=FALSE,n.cores=NULL,DIC=TRUE,store.data=FALSE,codaOnly=FALSE,seed=as.integer(Sys.time()),
                        bugs.format=FALSE,verbose=TRUE){
   
@@ -25,6 +25,9 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
                       modules,seed,DIC,verbose=verbose,n.cores=n.cores) 
   samples <- par$samples
   m <- par$model
+  total.adapt <- par$total.adapt
+  sufficient.adapt <- par$sufficient.adapt
+  if(any(!sufficient.adapt)&verbose){warning("JAGS reports adaptation was incomplete. Consider increasing n.adapt")}
     
   } else {
     
@@ -38,6 +41,8 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
   rjags.output <- run.model(model.file,data,inits,parameters.to.save,n.chains,n.iter,n.burnin,n.thin,n.adapt,verbose=verbose)
   samples <- rjags.output$samples
   m <- rjags.output$m
+  total.adapt <- rjags.output$total.adapt
+  sufficient.adapt <- rjags.output$sufficient.adapt
   
   ##########################
   ##End of rjags functions##
@@ -53,8 +58,8 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
   #Combine mcmc info into list
   n.samples <- dim(samples[[1]])[1] * n.chains
   end.values <- samples[(n.samples/n.chains),]
-  mcmc.info <- list(n.chains,n.adapt,n.iter,n.burnin,n.thin,n.samples,end.values,time)
-  names(mcmc.info) <- c('n.chains','n.adapt','n.iter','n.burnin','n.thin','n.samples','end.values','elapsed.mins')
+  mcmc.info <- list(n.chains,n.adapt=total.adapt,sufficient.adapt,n.iter,n.burnin,n.thin,n.samples,end.values,time)
+  names(mcmc.info) <- c('n.chains','n.adapt','sufficient.adapt','n.iter','n.burnin','n.thin','n.samples','end.values','elapsed.mins')
   if(parallel){mcmc.info$n.cores <- n.cores}
   
   #Reorganize JAGS output to match input parameter order

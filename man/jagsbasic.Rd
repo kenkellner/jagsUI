@@ -13,7 +13,7 @@
 
 \usage{
 jags.basic(data, inits, parameters.to.save, model.file,
-  n.chains, n.adapt=100, n.iter, n.burnin=0, n.thin=1,
+  n.chains, n.adapt=NULL, n.iter, n.burnin=0, n.thin=1,
   modules=c('glm'), parallel=FALSE, n.cores=NULL, DIC=TRUE,
   seed=as.integer(Sys.time()), save.model=FALSE, verbose=TRUE)}
 
@@ -27,7 +27,7 @@ jags.basic(data, inits, parameters.to.save, model.file,
     parameters in the model which should be monitored.}
   \item{model.file}{Path to file containing the model written in \code{BUGS} code}
   \item{n.chains}{Number of Markov chains to run.}
-  \item{n.adapt}{Number of iterations to run in the JAGS adaptive phase. Sometimes JAGS chooses not to run these iterations; therefore they are separated from the burn-in in this package.}
+  \item{n.adapt}{Number of iterations to run in the \code{JAGS} adaptive phase. The default is \code{NULL}, which will result in the function running groups of 100 adaptation iterations (to a max of 10,000) until \code{JAGS} reports adaptation is sufficient. If you set \code{n.adapt} manually, 1000 is the recommended minimum value.}
   \item{n.iter}{Total number of iterations per chain (including burn-in).}
   \item{n.burnin}{Number of iterations at the beginning of the chain to discard (i.e., the burn-in). Does not include the adaptive phase iterations.}
   \item{n.thin}{Thinning rate. Must be a positive integer.}

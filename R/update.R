@@ -1,14 +1,21 @@
 
-update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=0, n.iter, n.thin=NULL, modules=c('glm'), 
-                          seed=as.integer(Sys.time()),codaOnly=FALSE, verbose=TRUE, ...){
+update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.iter, n.thin=NULL, modules=c('glm'), 
+                          DIC=NULL, seed=as.integer(Sys.time()),codaOnly=FALSE, verbose=TRUE, ...){
   
   mod <- object$model
-  DIC <- object$DIC
   
   #Get list of parameters to save
   if(is.null(parameters.to.save)){parameters <- object$parameters
   } else {parameters <- parameters.to.save}
-  if(object$DIC&&!'deviance'%in%parameters){parameters <- c(parameters,"deviance")}
+  
+  #Set up DIC monitoring
+  if(is.null(DIC)){
+    DIC <- object$DIC
+    if(!'deviance'%in%parameters){parameters <- c(parameters,"deviance")}
+  } else{
+    if(DIC&!'deviance'%in%parameters){parameters <- c(parameters,'deviance')
+    } else if(!DIC&'deviance'%in%parameters){parameters <- parameters[parameters!='deviance']}
+  }
   
   #Get thin rate
   if(is.null(n.thin)){n.thin <- object$mcmc.info$n.thin}
@@ -44,7 +51,7 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=0, n.iter, n.
   samples <- order.params(samples,parameters,DIC,verbose=verbose)
     
   #Run process output
-  output <- process.output(samples,DIC=object$DIC,codaOnly,verbose=verbose)
+  output <- process.output(samples,DIC=DIC,codaOnly,verbose=verbose)
     
   #Summary
   output$summary <- summary.matrix(output,samples,object$mcmc.info$n.chains,codaOnly)

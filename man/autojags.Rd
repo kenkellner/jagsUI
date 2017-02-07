@@ -9,7 +9,7 @@
 
 \usage{
 autojags(data, inits, parameters.to.save, model.file,
-  n.chains, n.adapt=100, iter.increment=1000, n.burnin=0, n.thin=1,
+  n.chains, n.adapt=NULL, iter.increment=1000, n.burnin=0, n.thin=1,
   save.all.iter=FALSE, modules=c('glm'), parallel=FALSE, n.cores=NULL, DIC=TRUE, 
   store.data=FALSE, codaOnly=FALSE,seed=as.integer(Sys.time()), 
   bugs.format=FALSE, Rhat.limit=1.1, max.iter=100000, verbose=TRUE)}
@@ -24,7 +24,7 @@ autojags(data, inits, parameters.to.save, model.file,
     parameters in the model which should be monitored.}
   \item{model.file}{Path to file containing the model written in \code{BUGS} code}
   \item{n.chains}{Number of Markov chains to run.}
-  \item{n.adapt}{Number of iterations to run in the JAGS adaptive phase. Sometimes JAGS chooses not to run these iterations; therefore they are separated from the burn-in in this package.}
+  \item{n.adapt}{Number of iterations to run in the \code{JAGS} adaptive phase. The default is \code{NULL}, which will result in the function running groups of 100 adaptation iterations (to a max of 10,000) until \code{JAGS} reports adaptation is sufficient. If you set \code{n.adapt} manually, 1000 is the recommended minimum value.}
   \item{iter.increment}{Number of iterations per model auto-update. Set to larger values when you suspect the model will take a long time to converge.}
   \item{n.burnin}{Number of iterations at the beginning of the chain to discard (i.e., the burn-in). Does not include the adaptive phase iterations.}
   \item{n.thin}{Thinning rate. Must be a positive integer.}

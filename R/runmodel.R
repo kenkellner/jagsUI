@@ -24,29 +24,57 @@ if(update){
   }
 }
 
-
 #Adaptive phase using adapt()
-if(n.adapt>0){
-  if(verbose){
-    cat('Adaptive phase,',n.adapt,'iterations x',n.chains,'chains','\n')
-    cat('If no progress bar appears JAGS has decided not to adapt','\n','\n')
-    x <- adapt(object=m,n.iter=n.adapt,progress.bar=pb,end.adaptation=TRUE)
-  } else {
-    null <- capture.output(
-    x <- adapt(object=m,n.iter=n.adapt,progress.bar=pb,end.adaptation=TRUE)
-    )}
-} else{if(verbose){cat('No adaptive period specified','\n','\n')}
-       #If no adaptation period specified:
-       #Force JAGS to not adapt (you have to allow it to adapt at least 1 iteration)
-       if(!update){
-         if(verbose){
-            x <- adapt(object=m,n.iter=1,end.adaptation=TRUE)
-         } else {
-            null <- capture.output(
-            x <- adapt(object=m,n.iter=1,end.adaptation=TRUE)  
-            )} 
-       }
-}
+total.adapt <- 0
+  
+if(!is.null(n.adapt)){
+  if(n.adapt>0){
+    if(verbose){
+      cat('Adaptive phase,',n.adapt,'iterations x',n.chains,'chains','\n')
+      cat('If no progress bar appears JAGS has decided not to adapt','\n','\n')
+      sufficient.adapt <- adapt(object=m,n.iter=n.adapt,progress.bar=pb,end.adaptation=TRUE)
+    } else {
+      null <- capture.output(
+      sufficient.adapt <- adapt(object=m,n.iter=n.adapt,progress.bar=pb,end.adaptation=TRUE)
+      )}
+    total.adapt <- total.adapt + n.adapt
+  } else{
+    if(verbose){cat('No adaptive period specified','\n','\n')}
+    #If no adaptation period specified:
+    #Force JAGS to not adapt (you have to allow it to adapt at least 1 iteration)
+    if(!update){
+      if(verbose){
+        sufficient.adapt <- adapt(object=m,n.iter=1,end.adaptation=TRUE)
+      } else {
+        null <- capture.output(
+          sufficient.adapt <- adapt(object=m,n.iter=1,end.adaptation=TRUE)  
+        )} 
+    }
+    total.adapt <- 0
+  }
+} else {
+  
+  maxloops <- 100
+  n.adapt.iter <- 100
+  
+  for (i in 1:maxloops){
+    if(verbose){cat('Adaptive phase.....','\n')}
+    sufficient.adapt <- adapt(object=m,n.iter=n.adapt.iter,progress.bar='none')
+    total.adapt <- total.adapt + n.adapt.iter
+    if(i==maxloops){
+      if(verbose){warning(paste("Reached max of",maxloops*n.adapt.iter,"adaption iterations; set n.adapt to > 10000"))}
+      null <- adapt(object=m,n.iter=1,end.adaptation = TRUE)
+      break
+    }
+    if(sufficient.adapt){
+      null <- adapt(object=m,n.iter=1,end.adaptation = TRUE)
+      cat('Adaptive phase complete','\n','\n')
+      break
+    }
+  }
+  
+} 
+if(!sufficient.adapt&total.adapt!=0&verbose){warning("JAGS reports adaptation was incomplete. Consider increasing n.adapt")}
 
 #Burn-in phase using update()  
 if(n.burnin>0){
@@ -72,5 +100,5 @@ if(verbose){
                           progress.bar=pb)
   )}
 
-return(list(m=m,samples=samples))
+return(list(m=m,samples=samples,total.adapt=total.adapt,sufficient.adapt=sufficient.adapt))
 }

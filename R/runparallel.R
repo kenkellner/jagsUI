@@ -44,7 +44,7 @@ if(update){
   
 }
 
-return(list(samp=rjags.output$samples[[1]],mod=rjags.output$m))
+return(list(samp=rjags.output$samples[[1]],mod=rjags.output$m,total.adapt=rjags.output$total.adapt,sufficient.adapt=rjags.output$sufficient.adapt))
 
 }
 
@@ -53,14 +53,19 @@ par <- clusterApply(cl=cl,x=1:n.chains,fun=jags.clust)
 
 #Create empty lists
 out <- samples <- model <- list()
+total.adapt <- sufficient.adapt <- vector(length=n.chains)
 
 #Save samples and model objects from each cluster
 for (i in 1:n.chains){
   samples[[i]] <- par[[i]][[1]]
   model[[i]] <- par[[i]][[2]]
+  total.adapt[i] <- par[[i]][[3]]
+  sufficient.adapt[i] <- par[[i]][[4]]
 }
 out$samples <- as.mcmc.list(samples)
 out$model <- model
+out$total.adapt <- total.adapt
+out$sufficient.adapt <- sufficient.adapt
 names(out$model) <- sapply(1:length(out$model),function(i){paste('cluster',i,sep="")})
 
 if(verbose){

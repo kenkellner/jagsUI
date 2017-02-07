@@ -1,5 +1,5 @@
 
-jags.basic <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=100,n.iter,n.burnin=0,n.thin=1,
+jags.basic <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=NULL,n.iter,n.burnin=0,n.thin=1,
                            modules=c('glm'),parallel=FALSE,n.cores=NULL,DIC=TRUE,seed=as.integer(Sys.time()),save.model=FALSE,verbose=TRUE){
   
   #Set random seed
@@ -23,6 +23,9 @@ jags.basic <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
                         modules,seed,DIC,verbose=verbose,n.cores=n.cores) 
     samples <- par$samples
     m <- par$model
+    total.adapt <- par$total.adapt
+    sufficient.adapt <- par$sufficient.adapt
+    if(any(!sufficient.adapt)&verbose){warning("JAGS reports adaptation was incomplete. Consider increasing n.adapt")}
     
   } else {
     
@@ -37,6 +40,8 @@ jags.basic <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
                               verbose=verbose)
     samples <- rjags.output$samples
     m <- rjags.output$m
+    total.adapt <- rjags.output$total.adapt
+    sufficient.adapt <- rjags.output$sufficient.adapt
     
     ##########################
     ##End of rjags functions##

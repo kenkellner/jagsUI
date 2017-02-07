@@ -1,3 +1,7 @@
+# Changes from Version 1.4.4 to 1.4.5 [7-Feb-2017] #
+
+Allow turning deviance/DIC monitoring on/off when updating an existing model. Overhaul handling of adaptation; default to running a sequence of adapt() calls until JAGS reports adapation is adequate. Suggest minimum of 1000 adaptation iterations otherwise in man pages.
+
 # Changes from Version 1.4.3 to 1.4.4 [10-Nov-2016] #
 
 Change default approach to generating random seeds. Add S3 method for View() and convert traceplot() to an S3 method from S4.
