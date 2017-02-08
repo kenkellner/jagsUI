@@ -2,7 +2,7 @@
 summary.jagsUI <- function(object,digits=3,...){
   
   cat('Summary for model \'',object$modfile,'\'','\n',sep="")
-  cat('Saved parameters:',out$parameters,'\n')
+  cat('Saved parameters:',object$parameters,'\n')
   if(!object$parallel){cat('MCMC ran for ',object$mcmc.info$elapsed.mins,' minutes at time ',paste(object$run.date),'.\n','\n',sep="")
   } else{cat('MCMC ran in parallel for ',object$mcmc.info$elapsed.mins,' minutes at time ',paste(object$run.date),'.\n','\n',sep="")}
   
