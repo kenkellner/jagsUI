@@ -1,6 +1,6 @@
-# Changes from Version 1.4.4 to 1.4.5 [7-Feb-2017] #
+# Changes from Version 1.4.4 to 1.4.5 [8-Feb-2017] #
 
-Allow turning deviance/DIC monitoring on/off when updating an existing model. Overhaul handling of adaptation; default to running a sequence of adapt() calls until JAGS reports adapation is adequate. Suggest minimum of 1000 adaptation iterations otherwise in man pages.
+Allow turning deviance/DIC monitoring on/off when updating an existing model. Overhaul handling of adaptation; default to running a sequence of adapt() calls until JAGS reports adapation is adequate. Suggest minimum of 1000 adaptation iterations otherwise in man pages. Change output of summary function. Add ability to control factories.
 
 # Changes from Version 1.4.3 to 1.4.4 [10-Nov-2016] #
 

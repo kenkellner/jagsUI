@@ -10,7 +10,8 @@
 \usage{
 autojags(data, inits, parameters.to.save, model.file,
   n.chains, n.adapt=NULL, iter.increment=1000, n.burnin=0, n.thin=1,
-  save.all.iter=FALSE, modules=c('glm'), parallel=FALSE, n.cores=NULL, DIC=TRUE, 
+  save.all.iter=FALSE, modules=c('glm'), factories=NULL, 
+  parallel=FALSE, n.cores=NULL, DIC=TRUE, 
   store.data=FALSE, codaOnly=FALSE,seed=as.integer(Sys.time()), 
   bugs.format=FALSE, Rhat.limit=1.1, max.iter=100000, verbose=TRUE)}
 
@@ -30,6 +31,7 @@ autojags(data, inits, parameters.to.save, model.file,
   \item{n.thin}{Thinning rate. Must be a positive integer.}
   \item{save.all.iter}{Option to combine MCMC samples from all iterative updates into final posterior (by default only the final iteration is included in the posterior).}
   \item{modules}{List of JAGS modules to load before analysis. By default only module 'glm' is loaded (in addition to 'basemod' and 'bugs'). To force no additional modules to load, set \code{modules=NULL}.}
+  \item{factories}{Optional character vector of factories to enable or disable, in the format <factory> <type> <setting>. For example, to turn \code{TemperedMix} on you would provide \code{'mix::TemperedMix sampler TRUE'} (note spaces between parts). Make sure you have the corresponding modules loaded as well.}
   \item{parallel}{If TRUE, run MCMC chains in parallel on multiple CPU cores}
   \item{n.cores}{If parallel=TRUE, specify the number of CPU cores used. Defaults to total available cores or the number of chains, whichever is smaller.}
   \item{DIC}{Option to report DIC and the estimated number of parameters (pD). Defaults to TRUE.}

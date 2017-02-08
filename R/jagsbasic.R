@@ -1,6 +1,6 @@
 
 jags.basic <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=NULL,n.iter,n.burnin=0,n.thin=1,
-                           modules=c('glm'),parallel=FALSE,n.cores=NULL,DIC=TRUE,seed=as.integer(Sys.time()),save.model=FALSE,verbose=TRUE){
+                           modules=c('glm'),factories=NULL,parallel=FALSE,n.cores=NULL,DIC=TRUE,seed=as.integer(Sys.time()),save.model=FALSE,verbose=TRUE){
   
   #Set random seed
   RNGkind('default')
@@ -20,7 +20,7 @@ jags.basic <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
   if(parallel && n.chains>1){
     
     par <- run.parallel(data,inits,parameters.to.save,model.file,n.chains,n.adapt,n.iter,n.burnin,n.thin,
-                        modules,seed,DIC,verbose=verbose,n.cores=n.cores) 
+                        modules,factories,seed,DIC,verbose=verbose,n.cores=n.cores) 
     samples <- par$samples
     m <- par$model
     total.adapt <- par$total.adapt
@@ -35,6 +35,7 @@ jags.basic <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
     
     #Set modules
     set.modules(modules,DIC)
+    set.factories(factories)
     
     rjags.output <- run.model(model.file,data,inits,parameters.to.save,n.chains,n.iter,n.burnin,n.thin,n.adapt,
                               verbose=verbose)

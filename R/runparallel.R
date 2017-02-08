@@ -1,6 +1,6 @@
 
 run.parallel <- function(data=NULL,inits=NULL,parameters.to.save,model.file=NULL,n.chains,n.adapt,n.iter,n.burnin,n.thin,
-                         modules,seed,DIC,model.object=NULL,update=FALSE,verbose=TRUE,n.cores=NULL) {
+                         modules,factories,seed,DIC,model.object=NULL,update=FALSE,verbose=TRUE,n.cores=NULL) {
 
 #Set random seed
 set.seed(seed)
@@ -23,6 +23,7 @@ jags.clust <- function(i){
 
 #Load modules
 set.modules(modules,DIC)
+set.factories(factories)
 
 if(update){
   #Recompile model

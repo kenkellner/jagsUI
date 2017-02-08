@@ -1,7 +1,7 @@
 import(lattice)
 
 importFrom(rjags, "jags.model", "adapt", "coda.samples", "list.modules",
-           "load.module","unload.module")
+           "load.module","unload.module","list.factories","set.factory")
 importFrom(coda, "gelman.diag", "as.mcmc.list", "thin", "mcmc", "as.mcmc")
 importFrom(parallel, "detectCores", "makeCluster", "clusterExport", 
            "clusterSetRNGStream", "clusterApply", "stopCluster", "clusterEvalQ")
