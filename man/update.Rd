@@ -11,8 +11,8 @@
 
 \usage{  
   \method{update}{jagsUI}(object, parameters.to.save=NULL, n.adapt=NULL, 
-  n.iter, n.thin=NULL, modules=c('glm'), DIC=NULL, seed=as.integer(Sys.time()), 
-  codaOnly=FALSE, verbose=TRUE, ...)}
+  n.iter, n.thin=NULL, modules=c('glm'), factories=NULL, DIC=NULL, 
+  seed=as.integer(Sys.time()), codaOnly=FALSE, verbose=TRUE, ...)}
 
 \arguments{
   \item{object}{A \code{jagsUI} or \code{jagsUIbasic}-class object to update.}
@@ -22,6 +22,7 @@
   \item{n.iter}{Number of iterations to update for each chain.}
   \item{n.thin}{Thinning rate. Must be a positive integer. Defaults to the thinning rate of the original model run.}
   \item{modules}{List of JAGS modules to load before analysis. By default only module 'glm' is loaded (in addition to 'basemod' and 'bugs'). To force no additional modules to load, set \code{modules=NULL}.}
+  \item{factories}{Optional character vector of factories to enable or disable, in the format <factory> <type> <setting>. For example, to turn \code{TemperedMix} on you would provide \code{'mix::TemperedMix sampler TRUE'} (note spaces between parts). Make sure you have the corresponding modules loaded as well.}
   \item{DIC}{Option to report DIC and the estimated number of parameters (pD). Defaults to the same setting as the original model to updated.}
   \item{seed}{Set a custom seed for the R random number generator and JAGS.}
   \item{codaOnly}{Optional character vector of parameter names for which you do NOT want to calculate detailed statistics. This may be helpful when you have many output parameters (e.g., predicted values) and you want to save time. For these parameters, only the mean value will be calculated but the mcmc output will still be found in $sims.list and $samples.}

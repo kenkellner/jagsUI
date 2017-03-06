@@ -1,6 +1,6 @@
 
 update.jagsUIbasic <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.iter, n.thin=NULL, 
-                               modules=c('glm'), DIC=NULL, seed=as.integer(Sys.time()), verbose=TRUE, ...){
+                               modules=c('glm'), factories=NULL, DIC=NULL, seed=as.integer(Sys.time()), verbose=TRUE, ...){
   
   mod <- object$model
   n.chains <- length(object$samples)
@@ -28,7 +28,7 @@ update.jagsUIbasic <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.
   if(names(object$model[1])=='cluster1'){
     
     par <- run.parallel(data=NULL,inits=NULL,parameters.to.save=parameters,model.file=NULL,n.chains=n.chains
-                        ,n.adapt=n.adapt,n.iter=n.iter,n.burnin=0,n.thin=n.thin,modules=modules,
+                        ,n.adapt=n.adapt,n.iter=n.iter,n.burnin=0,n.thin=n.thin,modules=modules,factories=factories,
                         seed=seed,DIC=DIC,model.object=mod,update=TRUE,verbose=verbose,n.cores=n.cores) 
     samples <- par$samples
     m <- par$model
@@ -37,6 +37,7 @@ update.jagsUIbasic <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.
     
     #Set modules
     set.modules(modules,DIC)
+    set.factories(factories)
     
     rjags.output <- run.model(model.file=NULL,data=NULL,inits=NULL,parameters.to.save=parameters,
                               n.chains=object$mcmc.info$n.chains,n.iter,n.burnin=0,n.thin,n.adapt,
