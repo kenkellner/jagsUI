@@ -1,29 +1,60 @@
 
-gen.inits <- function(inits,n.chains){
+gen.inits <- function(inits,n.chains,seed){
   
-  if(is.null(inits)){
-    init.values <- vector("list",length=n.chains)
-    for(i in 1:n.chains){     
-      init.values[[i]]$.RNG.name="base::Mersenne-Twister"
-      init.values[[i]]$.RNG.seed=abs(.Random.seed[i+2])
-    }
-  }else if(is.list(inits)){
+  #Error check and run init function if necessary
+  if(is.list(inits)){
     if(length(inits)!=n.chains){stop('Length of initial values list != number of chains')}
     init.values <- inits
-    for(i in 1:n.chains){
-      init.values[[i]]$.RNG.name="base::Mersenne-Twister"
-      init.values[[i]]$.RNG.seed=abs(.Random.seed[i+2])
-    }
-    
-  } else if (is.function(inits)){
+  } else if(is.function(inits)){
     init.values <- list()
     for (i in 1:n.chains){
       init.values[[i]] <- inits()
-      init.values[[i]]$.RNG.name="base::Mersenne-Twister"
-      init.values[[i]]$.RNG.seed=abs(.Random.seed[i+2])
     }
+  } else if(is.null(inits)){
+    init.values <- NULL
     
   } else {stop('Invalid initial values. Must be a function or a list with length=n.chains')}
+  
+  #Add random seed info if specified
+  if(!is.null(seed)){
     
-  return(init.values) 
+    #Save old seed if it exists
+    if(exists('.Random.seed')){
+      old.seed <- .Random.seed
+    }
+    
+    #Generate seed for each chain
+    set.seed(seed)
+    init.rand <- floor(runif(n.chains,1,100000))
+    
+    #Restore old seed if it exists
+    if(exists('old.seed')){
+      assign(".Random.seed", old.seed, pos=1)
+    }
+    
+    #Add random seeds to inits
+    if(is.null(inits)){
+      init.values <- vector("list",length=n.chains)
+      for(i in 1:n.chains){
+        init.values[[i]]$.RNG.name="base::Mersenne-Twister"
+        init.values[[i]]$.RNG.seed=init.rand[i]
+      }
+      
+    } else if(is.list(init.values)){
+        for(i in 1:n.chains){
+          init.values[[i]]$.RNG.name="base::Mersenne-Twister"
+          init.values[[i]]$.RNG.seed=init.rand[i]
+        }
+      
+    } else if (is.function(inits)){
+        for (i in 1:n.chains){
+          init.values[[i]]$.RNG.name="base::Mersenne-Twister"
+          init.values[[i]]$.RNG.seed=init.rand[i]
+        }
+      
+    } 
+ 
   }
+
+  return(init.values) 
+}

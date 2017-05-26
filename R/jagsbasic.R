@@ -1,13 +1,10 @@
 
 jags.basic <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=NULL,n.iter,n.burnin=0,n.thin=1,
-                           modules=c('glm'),factories=NULL,parallel=FALSE,n.cores=NULL,DIC=TRUE,seed=as.integer(Sys.time()),save.model=FALSE,verbose=TRUE){
-  
-  #Set random seed
-  RNGkind('default')
-  set.seed(seed)
+                           modules=c('glm'),factories=NULL,parallel=FALSE,n.cores=NULL,DIC=TRUE,seed=NULL,save.model=FALSE,verbose=TRUE){
   
   #Pass input data and parameter list through error check / processing
-  data.check <- process.input(data,parameters.to.save,inits,n.chains,n.iter,n.burnin,n.thin,n.cores,DIC=DIC,verbose=verbose,parallel=parallel)
+  data.check <- process.input(data,parameters.to.save,inits,n.chains,n.iter,n.burnin,n.thin,n.cores,DIC=DIC,
+                              verbose=verbose,parallel=parallel,seed=seed)
   data <- data.check$data
   parameters.to.save <- data.check$params
   inits <- data.check$inits

@@ -1,15 +1,12 @@
 
 autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=NULL,iter.increment=1000,n.burnin=0,n.thin=1,
-                     save.all.iter=FALSE,modules=c('glm'),factories=NULL,parallel=FALSE,n.cores=NULL,DIC=TRUE,store.data=FALSE,codaOnly=FALSE,seed=as.integer(Sys.time()),
+                     save.all.iter=FALSE,modules=c('glm'),factories=NULL,parallel=FALSE,n.cores=NULL,DIC=TRUE,store.data=FALSE,codaOnly=FALSE,seed=NULL,
                     bugs.format=FALSE,Rhat.limit=1.1,max.iter=100000,verbose=TRUE){
     
-  #Set random seed
-  RNGkind('default')
-  set.seed(seed)
-  
   #Pass input data and parameter list through error check / processing
   data.check <- process.input(data,parameters.to.save,inits,n.chains,(n.burnin + iter.increment),
-                              n.burnin,n.thin,n.cores,DIC=DIC,autojags=TRUE,max.iter=max.iter,verbose=verbose,parallel=parallel)    
+                              n.burnin,n.thin,n.cores,DIC=DIC,autojags=TRUE,max.iter=max.iter,
+                              verbose=verbose,parallel=parallel,seed=seed)    
   data <- data.check$data
   parameters.to.save <- data.check$params
   inits <- data.check$inits

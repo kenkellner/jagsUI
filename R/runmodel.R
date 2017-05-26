@@ -68,7 +68,7 @@ if(!is.null(n.adapt)){
     }
     if(sufficient.adapt){
       null <- adapt(object=m,n.iter=1,end.adaptation = TRUE)
-      cat('Adaptive phase complete','\n','\n')
+      if(verbose){cat('Adaptive phase complete','\n','\n')}
       break
     }
   }

@@ -2,9 +2,6 @@
 run.parallel <- function(data=NULL,inits=NULL,parameters.to.save,model.file=NULL,n.chains,n.adapt,n.iter,n.burnin,n.thin,
                          modules,factories,seed,DIC,model.object=NULL,update=FALSE,verbose=TRUE,n.cores=NULL) {
 
-#Set random seed
-set.seed(seed)
-  
 #Save current library paths
 current.libpaths <- .libPaths()
 
@@ -13,7 +10,6 @@ cl = makeCluster(n.cores)
 on.exit(stopCluster(cl))
 clusterExport(cl = cl, ls(), envir = environment())
 clusterEvalQ(cl,.libPaths(current.libpaths))
-clusterSetRNGStream(cl, seed)
 
 if(verbose){
 cat('Beginning parallel processing using',n.cores,'cores. Console output will be suppressed.\n')}

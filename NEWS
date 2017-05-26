@@ -1,3 +1,7 @@
+# Changes from Version 1.4.5 to 1.4.6 [26-May-2017] #
+
+Fix issue with setting seed affecting other random number generation.
+
 # Changes from Version 1.4.4 to 1.4.5 [8-Feb-2017] #
 
 Allow turning deviance/DIC monitoring on/off when updating an existing model. Overhaul handling of adaptation; default to running a sequence of adapt() calls until JAGS reports adapation is adequate. Suggest minimum of 1000 adaptation iterations otherwise in man pages. Change output of summary function. Add ability to control factories.

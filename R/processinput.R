@@ -1,5 +1,6 @@
 
-process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,n.cores,DIC=FALSE,autojags=FALSE,max.iter=NULL,verbose=TRUE,parallel=FALSE){
+process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,n.cores,DIC=FALSE,autojags=FALSE,max.iter=NULL,
+                         verbose=TRUE,parallel=FALSE,seed=NULL){
   if(verbose){cat('\nProcessing function input.......','\n')}
   
   #Quality control
@@ -99,7 +100,7 @@ process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,n.cores,DIC=F
   }
   
   #Get initial values
-  init.vals <- gen.inits(inits,n.chains)
+  init.vals <- gen.inits(inits,n.chains,seed)
  
   if(verbose){cat('\nDone.','\n','\n')}
   return(list(data=x,params=params,inits=init.vals,n.cores=n.cores))
