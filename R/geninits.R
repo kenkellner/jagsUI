@@ -55,6 +55,17 @@ gen.inits <- function(inits,n.chains,seed){
     } 
  
   }
+  
+  if(is.null(init.values)&is.null(seed)){ #Have to do this to handle parallel chains correctly
+    
+    init.rand <- floor(runif(n.chains,1,100000))
+    init.values <- vector("list",length=n.chains)
+    for(i in 1:n.chains){
+      init.values[[i]]$.RNG.name="base::Mersenne-Twister"
+      init.values[[i]]$.RNG.seed=init.rand[i]
+    }
+    
+  }
 
   return(init.values) 
 }
