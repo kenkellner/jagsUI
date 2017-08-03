@@ -100,7 +100,7 @@ process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,n.cores,DIC=F
   }
   
   #Get initial values
-  init.vals <- gen.inits(inits,n.chains,seed)
+  init.vals <- gen.inits(inits,n.chains,seed,parallel)
  
   if(verbose){cat('\nDone.','\n','\n')}
   return(list(data=x,params=params,inits=init.vals,n.cores=n.cores))
