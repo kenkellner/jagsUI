@@ -1,3 +1,7 @@
+# Changes from Version 1.4.5 to 1.4.7 [17-August-2017] #
+
+Fix more issues with random seeds and problems with DIC.
+
 # Changes from Version 1.4.5 to 1.4.6 [26-May-2017] #
 
 Fix issue with setting seed affecting other random number generation.

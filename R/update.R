@@ -12,11 +12,10 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.iter,
   #Set up DIC monitoring
   if(is.null(DIC)){
     DIC <- object$DIC
-    if(!'deviance'%in%parameters){parameters <- c(parameters,"deviance")}
-  } else{
-    if(DIC&!'deviance'%in%parameters){parameters <- c(parameters,'deviance')
-    } else if(!DIC&'deviance'%in%parameters){parameters <- parameters[parameters!='deviance']}
   }
+  
+  if(DIC&!'deviance'%in%parameters){parameters <- c(parameters,'deviance')
+    } else if(!DIC&'deviance'%in%parameters){parameters <- parameters[parameters!='deviance']}
   
   #Get thin rate
   if(is.null(n.thin)){n.thin <- object$mcmc.info$n.thin}
@@ -81,6 +80,7 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.iter,
   output$random.seed <- object$random.seed
   output$parallel <- object$parallel
   output$bugs.format <- object$bugs.format
+  output$DIC <- DIC
   
   #Keep a record of how many times model has been updated
   if(is.null(object$update.count)){output$update.count <- 1

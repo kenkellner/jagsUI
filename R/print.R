@@ -63,7 +63,7 @@ print.jagsUI <- function(x,digits=3,...){
   }
   
   #Print DIC info
-  if(!is.null(x$DIC)){    
+  if(x$DIC){    
     if(!x$bugs.format){
       cat('\nDIC info: (pD = var(deviance)/2)','\npD =',round(x$pD,1),'and DIC =',round(x$DIC,digits),'\n')
       cat('DIC is an estimate of expected predictive error (lower is better).\n')
