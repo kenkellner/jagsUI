@@ -87,7 +87,7 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
   output$random.seed <- seed
   output$parallel <- parallel
   output$bugs.format <- bugs.format
-  output$DIC <- DIC
+  output$calc.DIC <- DIC
   
   #Classify final output object
   class(output) <- 'jagsUI'

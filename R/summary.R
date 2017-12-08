@@ -19,7 +19,7 @@ summary.jagsUI <- function(object,digits=3,...){
       }else{cat('Successful convergence based on Rhat values (all < 1.1).','\n')}
   }
   
-  if(object$DIC){    
+  if(object$calc.DIC){
     cat('\nDIC info: (pD = var(deviance)/2)','\npD =',round(object$pD,1),'and DIC =',round(object$DIC,digits),'\n')
   }
   

@@ -152,7 +152,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   output$random.seed <- seed
   output$parallel <- parallel
   output$bugs.format <- bugs.format
-  output$DIC <- DIC
+  output$calc.DIC <- DIC
   
   #Classify final output object
   class(output) <- 'jagsUI'

@@ -11,7 +11,7 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.iter,
   
   #Set up DIC monitoring
   if(is.null(DIC)){
-    DIC <- object$DIC
+    DIC <- object$calc.DIC
   }
   
   if(DIC&!'deviance'%in%parameters){parameters <- c(parameters,'deviance')
@@ -80,7 +80,7 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.iter,
   output$random.seed <- object$random.seed
   output$parallel <- object$parallel
   output$bugs.format <- object$bugs.format
-  output$DIC <- DIC
+  output$calc.DIC <- DIC
   
   #Keep a record of how many times model has been updated
   if(is.null(object$update.count)){output$update.count <- 1

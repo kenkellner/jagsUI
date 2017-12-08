@@ -1,3 +1,11 @@
+# Changes from Version 1.4.8 to 1.4.9 [8 December 2017] #
+
+Fix bug with DIC output introduced in 1.4.7.
+
+# Changes from Version 1.4.7 to 1.4.8 [17-November 2017] #
+
+Minor changes to prep for CRAN submission.
+
 # Changes from Version 1.4.5 to 1.4.7 [17-August-2017] #
 
 Fix more issues with random seeds and problems with DIC.

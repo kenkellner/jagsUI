@@ -1,6 +1,6 @@
 Package: jagsUI
-Version: 1.4.8
-Date: 2017-11-17
+Version: 1.4.9
+Date: 2017-12-08
 Title: A Wrapper Around 'rjags' to Streamline 'JAGS' Analyses
 Author: Ken Kellner <contact@kenkellner.com>
 Maintainer: Ken Kellner <contact@kenkellner.com>
@@ -20,3 +20,4 @@ Description: A set of wrappers around 'rjags' functions to run Bayesian analyses
 License: GPL-2
 URL: https://github.com/kenkellner/jagsUI
 NeedsCompilation: no
+RoxygenNote: 6.0.1
