@@ -12,7 +12,7 @@ order.params <- function(samples,parameters.to.save,DIC,verbose=TRUE){
     DIC <- FALSE
   } 
   
-  samples <- samples[,params]
+  samples <- samples[,params, drop=FALSE]
   
   return(samples)
   

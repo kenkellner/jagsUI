@@ -2,9 +2,10 @@
 process.output <- function(x,DIC,params.omit,verbose=TRUE) {
 
 if(verbose){cat('Calculating statistics.......','\n')}  
-  
-#Get parameter names
+
+# Get parameter names
 params <- colnames(x[[1]])
+
 #Get number of chains
 m <- length(x)
 
@@ -35,7 +36,9 @@ calcneff <- function(x,n,m){
   W <- mean(s2)
   
   #Non-degenerate case
-  if ((W > 1.e-8) && (m > 1)) {
+  if (is.na(W)){
+	  n.eff <- NA
+  } else if ((W > 1.e-8) && (m > 1)) {
     B <- n*var(xdot)
     sig2hat <- ((n-1)*W + B)/n      
     n.eff <- round(m*n*min(sig2hat/B,1),0)
@@ -71,7 +74,10 @@ calc.stats <- function(i){
     
     #Get all samples
     sims.list[[i]] <<- mat[,expand==i]
-    
+
+	#if every iteration is NA, don't do anything else
+	if(all(is.na(sims.list[[i]]))){return(NA)}
+
     #If more than 1 chain, calculate rhat 
     #Done separately for each element of non-scalar parameter to avoid errors
     if(m > 1 && (!i%in%params.omit)){
@@ -103,11 +109,13 @@ calc.stats <- function(i){
   
   #If parameter is a scalar
   } else {
-    
+
     if(m > 1 && (!i%in%params.omit)){rhat[[i]] <<- gelman.diag(x[,i],autoburnin=FALSE)$psrf[1]}
-    
+
     sims.list[[i]] <<- mat[,i]
-    
+
+	if(all(is.na(sims.list[[i]]))){return(NA)}
+
     means[[i]] <<- mean(sims.list[[i]])
     if(!i%in%params.omit){
     se[[i]] <<- sd(sims.list[[i]])
