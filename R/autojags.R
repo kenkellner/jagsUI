@@ -80,7 +80,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
       
       par <- run.parallel(data=NULL,inits=NULL,parameters.to.save=parameters.to.save,model.file=NULL,n.chains=n.chains
                           ,n.adapt=n.adapt,n.iter=iter.increment,n.burnin=0,n.thin=n.thin,modules=modules,
-                          seed=seed,DIC=DIC,model.object=mod,update=TRUE,verbose=FALSE,n.cores=n.cores) 
+                          factories=factories,seed=seed,DIC=DIC,model.object=mod,update=TRUE,verbose=FALSE,n.cores=n.cores) 
       
       if(save.all.iter & index > 1){
         samples <- bind.mcmc(old.samples,par$samples,start=start.iter,n.new.iter=iter.increment)
