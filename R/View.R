@@ -30,5 +30,7 @@ View.jagsUI <- function(x,title,digits=3, ...){
   
   # View the output
   utils::View(view.out, title=title)
+
+  invisible(view.out)
   
 }
