@@ -73,7 +73,7 @@ calc.stats <- function(i){
   if(!is.na(dim[i][1])){
     
     #Get all samples
-    sims.list[[i]] <<- mat[,expand==i]
+    sims.list[[i]] <<- mat[,expand==i,drop=FALSE]
 
 	#if every iteration is NA, don't do anything else
 	if(all(is.na(sims.list[[i]]))){return(NA)}
@@ -81,8 +81,9 @@ calc.stats <- function(i){
     #If more than 1 chain, calculate rhat 
     #Done separately for each element of non-scalar parameter to avoid errors
     if(m > 1 && (!i%in%params.omit)){
-      hold <- x[,expand==i]
-      rhat.vals <- sapply(1:dim(hold[[1]])[2],gd,hold=hold)
+      hold <- x[,expand==i,drop=FALSE]
+      nelements <- sum(expand==i)
+      rhat.vals <- sapply(1:nelements,gd,hold=hold)
       names(rhat.vals) <- colnames(hold[[1]])
       rhat[[i]] <<- populate(rhat.vals,dim[[i]])
     } else if (m == 1){

@@ -3,9 +3,28 @@ summary.matrix <- function(output,samples,n.chains,codaOnly){
   
   hold <- unlist(output$mean[!names(output$mean)%in%codaOnly])
   toremove <- which(!is.na(hold))
+
+  #Get rownames
+  rnames = c()
+  for (i in 1:length(output$sd)){
+    if(length(output$sd[[i]])>1){
+      raw.ind <- which(!is.na(output$sd[[i]]),arr.ind=T)
+      if(is.matrix(raw.ind)){
+        ind <- apply(raw.ind,1,paste,collapse=',')
+      } else {
+        ind <- raw.ind
+      }
+
+      newnames <- paste(names(output$sd)[i],'[',ind,']',sep='')
+      rnames <- c(rnames,newnames)
+
+    } else {
+      rnames <- c(rnames,names(output$sd[i]))
+    }
+  }
   
   cleanup <- function(input,codaOnly){
-    
+
     out.raw <- unlist(input[!names(input)%in%codaOnly])
     
     out <- out.raw[toremove]
@@ -19,7 +38,7 @@ summary.matrix <- function(output,samples,n.chains,codaOnly){
                  cleanup(output$Rhat,codaOnly),cleanup(output$n.eff,codaOnly),
                  cleanup(output$overlap0,codaOnly),cleanup(output$f,codaOnly))
  
-  p <- colnames(samples[[1]])
+  p <- rnames
   expand <- sapply(strsplit(p, "\\["), "[", 1)  
   row.names(y) = p[!expand%in%codaOnly]
   names(y) = c('mean','sd','2.5%','25%','50%','75%','97.5%','Rhat','n.eff','overlap0','f')
