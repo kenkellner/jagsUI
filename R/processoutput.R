@@ -136,7 +136,8 @@ calc.stats <- function(i){
 nullout <- sapply(params.simple,calc.stats)
 
 #Warn user if at least one Rhat value was NA
-if(NA%in%unlist(rhat)&&verbose){
+rhat.sub <- unlist(rhat)[!is.na(unlist(means))]
+if(NA%in%rhat.sub&&verbose){
   options(warn=1)
   warning('At least one Rhat value could not be calculated.')
   options(warn=0,error=NULL)

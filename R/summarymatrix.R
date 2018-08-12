@@ -4,24 +4,29 @@ summary.matrix <- function(output,samples,n.chains,codaOnly){
   hold <- unlist(output$mean[!names(output$mean)%in%codaOnly])
   toremove <- which(!is.na(hold))
 
-  #Get rownames
-  rnames = c()
-  for (i in 1:length(output$sd)){
-    if(length(output$sd[[i]])>1){
-      raw.ind <- which(!is.na(output$sd[[i]]),arr.ind=T)
+  #Get sorted names
+  sort.names = c()
+  for (i in 1:length(output$mean)){
+    if(length(output$mean[[i]])>1){
+      raw.ind <- which(output$mean[[i]]==output$mean[[i]],arr.ind=T)
       if(is.matrix(raw.ind)){
         ind <- apply(raw.ind,1,paste,collapse=',')
       } else {
         ind <- raw.ind
       }
 
-      newnames <- paste(names(output$sd)[i],'[',ind,']',sep='')
-      rnames <- c(rnames,newnames)
+      newnames <- paste(names(output$mean)[i],'[',ind,']',sep='')
+      sort.names <- c(sort.names,newnames)
 
     } else {
-      rnames <- c(rnames,names(output$sd[i]))
+      sort.names <- c(sort.names,names(output$mean[i]))
     }
   }
+
+
+  rnames <- colnames(samples[[1]])
+  sorted.order <- order(match(rnames,sort.names))
+  rnames <- rnames[sorted.order]
   
   cleanup <- function(input,codaOnly){
 
