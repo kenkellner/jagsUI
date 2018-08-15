@@ -24,7 +24,6 @@
   \item{modules}{List of JAGS modules to load before analysis. By default only module 'glm' is loaded (in addition to 'basemod' and 'bugs'). To force no additional modules to load, set \code{modules=NULL}.}
   \item{factories}{Optional character vector of factories to enable or disable, in the format <factory> <type> <setting>. For example, to turn \code{TemperedMix} on you would provide \code{'mix::TemperedMix sampler TRUE'} (note spaces between parts). Make sure you have the corresponding modules loaded as well.}
   \item{DIC}{Option to report DIC and the estimated number of parameters (pD). Defaults to the same setting as the original model to updated.}
-  \item{seed}{Set a custom seed for the R random number generator and JAGS.}
   \item{codaOnly}{Optional character vector of parameter names for which you do NOT want to calculate detailed statistics. This may be helpful when you have many output parameters (e.g., predicted values) and you want to save time. For these parameters, only the mean value will be calculated but the mcmc output will still be found in $sims.list and $samples.}
   \item{verbose}{If set to FALSE, all text output in the console will be suppressed as the function runs (including most warnings).}
  \item{...}{Further arguments pass to or from other methods.}

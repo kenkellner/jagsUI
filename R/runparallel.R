@@ -1,6 +1,6 @@
 
 run.parallel <- function(data=NULL,inits=NULL,parameters.to.save,model.file=NULL,n.chains,n.adapt,n.iter,n.burnin,n.thin,
-                         modules,factories,seed,DIC,model.object=NULL,update=FALSE,verbose=TRUE,n.cores=NULL) {
+                         modules,factories,DIC,model.object=NULL,update=FALSE,verbose=TRUE,n.cores=NULL) {
 
 #Save current library paths
 current.libpaths <- .libPaths()

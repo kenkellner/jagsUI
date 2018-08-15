@@ -17,7 +17,7 @@ jags.basic <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
   if(parallel && n.chains>1){
     
     par <- run.parallel(data,inits,parameters.to.save,model.file,n.chains,n.adapt,n.iter,n.burnin,n.thin,
-                        modules,factories,seed,DIC,verbose=verbose,n.cores=n.cores) 
+                        modules=modules,factories=factories,DIC=DIC,verbose=verbose,n.cores=n.cores) 
     samples <- par$samples
     m <- par$model
     total.adapt <- par$total.adapt
@@ -58,6 +58,7 @@ jags.basic <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
   output$samples <- samples
   output$model <- m
   output$n.cores <- n.cores
+  output$random.seed <- seed
   class(output) <- 'jagsUIbasic'
   } else {output <- samples}
  

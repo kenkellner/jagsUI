@@ -1,6 +1,17 @@
 
 gen.inits <- function(inits,n.chains,seed,parallel){
   
+  if(!is.null(seed)){
+    
+    #Save old seed if it exists
+    if(exists('.Random.seed')){
+      old.seed <- .Random.seed
+    }   
+    #Generate seed for each chain
+    set.seed(seed)
+
+  }
+
   #Error check and run init function if necessary
   if(is.list(inits)){
     if(length(inits)!=n.chains){stop('Length of initial values list != number of chains')}
@@ -18,13 +29,6 @@ gen.inits <- function(inits,n.chains,seed,parallel){
   #Add random seed info if specified
   if(!is.null(seed)){
     
-    #Save old seed if it exists
-    if(exists('.Random.seed')){
-      old.seed <- .Random.seed
-    }
-    
-    #Generate seed for each chain
-    set.seed(seed)
     init.rand <- floor(runif(n.chains,1,100000))
     
     #Restore old seed if it exists
@@ -76,7 +80,6 @@ gen.inits <- function(inits,n.chains,seed,parallel){
       
     }
   }
-
 
   return(init.values) 
 }

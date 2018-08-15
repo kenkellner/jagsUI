@@ -1,3 +1,11 @@
+# Changes from Version 1.4.9 to 1.5.0 [16 August 2018] #
+
+Fix issues with NAs in parameters.
+Fix missing arguments in autojags().
+Handle errors in output processing so that samples are not lost completely.
+Make sure a specified random seed is used for initial value functions.
+Fix error where summary stats were printed in the wrong order for some parameters.
+
 # Changes from Version 1.4.8 to 1.4.9 [8 December 2017] #
 
 Fix bug with DIC output introduced in 1.4.7.

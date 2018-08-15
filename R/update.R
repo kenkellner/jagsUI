@@ -1,7 +1,7 @@
 
 update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.iter, n.thin=NULL, 
                           modules=c('glm'), factories=NULL,
-                          DIC=NULL, seed=as.integer(Sys.time()),codaOnly=FALSE, verbose=TRUE, ...){
+                          DIC=NULL,codaOnly=FALSE, verbose=TRUE, ...){
   
   mod <- object$model
   
@@ -26,7 +26,7 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.iter,
     
     par <- run.parallel(data=NULL,inits=NULL,parameters.to.save=parameters,model.file=NULL,n.chains=object$mcmc.info$n.chains
                  ,n.adapt=n.adapt,n.iter=n.iter,n.burnin=0,n.thin=n.thin,modules=modules,factories=factories,
-                 seed=seed,DIC=DIC,model.object=mod,update=TRUE,verbose=verbose,n.cores=object$mcmc.info$n.cores) 
+                 DIC=DIC,model.object=mod,update=TRUE,verbose=verbose,n.cores=object$mcmc.info$n.cores) 
     samples <- par$samples
     m <- par$model
      
