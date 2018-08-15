@@ -12,7 +12,7 @@
 \usage{  
   \method{update}{jagsUI}(object, parameters.to.save=NULL, n.adapt=NULL, 
   n.iter, n.thin=NULL, modules=c('glm'), factories=NULL, DIC=NULL, 
-  seed=as.integer(Sys.time()), codaOnly=FALSE, verbose=TRUE, ...)}
+  codaOnly=FALSE, verbose=TRUE, ...)}
 
 \arguments{
   \item{object}{A \code{jagsUI} or \code{jagsUIbasic}-class object to update.}
