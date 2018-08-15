@@ -67,6 +67,15 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
   
   #Convert rjags output to jagsUI form 
   output <- process.output(samples,DIC=DIC,codaOnly,verbose=verbose)
+  if(is.null(output)){
+    output <- list()
+    samples <- order.params(samples,parameters.to.save,DIC,verbose=verbose)
+    output$samples <- samples
+    output$model <- m
+    output$n.cores <- n.cores
+    class(output) <- 'jagsUIbasic'
+    return(output)
+  }
   
   #Add additional information to output list
   

@@ -1,6 +1,8 @@
 
 process.output <- function(x,DIC,params.omit,verbose=TRUE) {
 
+out <- tryCatch({
+
 if(verbose){cat('Calculating statistics.......','\n')}  
 
 # Get parameter names
@@ -154,7 +156,7 @@ if(DIC){
   }    
   pd <- mean(pd)
   dic <- mean(dic)
-  
+
   #Return this list if DIC/pD requested
   if(verbose){cat('\nDone.','\n')}
   return(list(sims.list=sims.list,mean=means,sd=se,q2.5=q2.5,q25=q25,q50=q50,q75=q75,q97.5=q97.5,overlap0=overlap0,
@@ -166,6 +168,14 @@ if(DIC){
               f=f,Rhat=rhat,n.eff=n.eff))
 }
 
+}, error = function(cond){
+  message('Calculating statistics failed with the following error:')
+  message(cond)
+  message('\nOutput falling back to class jagsUIbasic\n')
+  return(NULL)
+  }
+)
+return(out)
 }
 
 

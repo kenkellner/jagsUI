@@ -131,8 +131,17 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   samples <- order.params(samples,parameters.to.save,DIC,verbose=verbose)
   
   #Convert rjags output to jagsUI form 
-  output <- process.output(samples,DIC=DIC,codaOnly,verbose=verbose)
-  
+  output <- process.output(samples,DIC=DIC,codaOnly,verbose=verbose) 
+  if(is.null(output)){
+    output <- list()
+    samples <- order.params(samples,parameters.to.save,DIC,verbose=verbose)
+    output$samples <- samples
+    output$model <- mod
+    output$n.cores <- n.cores
+    class(output) <- 'jagsUIbasic'
+    return(output)
+  }
+
   #Add additional information to output list
   
   #Summary
