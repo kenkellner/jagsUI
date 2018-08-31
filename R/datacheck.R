@@ -14,10 +14,10 @@ data.check <- function(x,name,verbose=TRUE){
   
   
   if (is.numeric(x)&&is.matrix(x)){
-    if(1%in%dim(x)){
-      if(verbose){cat('\nConverting 1-column matrix \'',name,'\' to vector\n',sep="")}
-      x = as.vector(x)
-    }
+    #if(1%in%dim(x)){
+    #  if(verbose){cat('\nConverting 1-column matrix \'',name,'\' to vector\n',sep="")}
+    #  x = as.vector(x)
+    #}
     test = TRUE
   }
   
