@@ -146,7 +146,7 @@ if(NA%in%rhat.sub&&verbose){
 }
 
 #Do DIC/pD calculations if requested by user
-if(DIC){
+if(DIC & 'deviance' %in% params){
   dev <- matrix(data=mat[,'deviance'],ncol=m,nrow=n)   
   pd <- numeric(m)
   dic <- numeric(m)    
