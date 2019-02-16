@@ -5,7 +5,7 @@
 \title{Posterior Predictive Checks for Bayesian Analyses fit in JAGS}
 
 \usage{
-  pp.check(x, observed, simulated, xlab=NULL, ylab=NULL, main=NULL)}
+  pp.check(x, observed, simulated, xlab=NULL, ylab=NULL, main=NULL, ...)}
 
 \arguments{
   \item{x}{A jagsUI object generated using the \code{jags} function}
@@ -14,6 +14,7 @@
   \item{xlab}{Customize x-axis label}
   \item{ylab}{Customize y-axis label}
   \item{main}{Customize plot title}
+  \item{\dots}{Additional arguments passed to \link{plot.default}}
 }
 
 \description{
