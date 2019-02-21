@@ -7,7 +7,7 @@ importFrom(parallel, "detectCores", "makeCluster", "clusterExport",
            "clusterSetRNGStream", "clusterApply", "stopCluster", "clusterEvalQ")
 importFrom(stats, "runif", "time", "start", "end", "quantile", "var", "sd")
 importFrom(grDevices, "devAskNewPage", "rainbow")
-importFrom(graphics, "plot", "abline", "axis", "box", "segments", "lines", "par")
+importFrom(graphics, "plot", "abline", "axis", "box", "segments", "lines", "par", "legend")
 importFrom(utils, "capture.output")
 
 export("jags", "jagsUI","jags.basic","autojags","pp.check", "traceplot", 
