@@ -11,6 +11,11 @@ View.default <- function(x, title, ...){
 }  
 
 View.jagsUI <- function(x,title,digits=3, ...){
+  .Deprecated("jags.View") 
+  jags.View(x, title, digits=3, ...) 
+}
+
+jags.View <- function(x,title,digits=3, ...){
   # grab object name
   if(missing(title)){
     title <- paste("jagsUI:", deparse(substitute(x)))

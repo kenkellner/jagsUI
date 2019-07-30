@@ -21,7 +21,8 @@ jags(data, inits, parameters.to.save, model.file,
   codaOnly=FALSE,seed=NULL, bugs.format=FALSE, verbose=TRUE)}
 
 \arguments{
-  \item{data}{A named list of the data objects required by the model, or a character vector containing the names of the data objects required by the model.}
+  \item{data}{A named list of the data objects required by the model, or a character vector containing the names of the data objects required by the model.
+              Use of a character vector will be deprecated in the next version - switch to using named lists.}
   \item{inits}{A list with \code{n.chains} elements; each element of the
     list is itself a list of starting values for the \code{BUGS} model,
     \emph{or} a function creating (possibly random) initial values. If inits is 
@@ -41,7 +42,8 @@ jags(data, inits, parameters.to.save, model.file,
   \item{DIC}{Option to report DIC and the estimated number of parameters (pD). Defaults to TRUE.}
   \item{store.data}{Option to store the input dataset and initial values in the output object for future use. Defaults to FALSE.}
   \item{codaOnly}{Optional character vector of parameter names for which you do NOT want to calculate detailed statistics. This may be helpful when you have many output parameters (e.g., predicted values) and you want to save time. For these parameters, only the mean value will be calculated but the mcmc output will still be found in $sims.list and $samples.}
-  \item{seed}{Option to set a custom seed to initialize JAGS chains, for reproducibility. Should be an integer.}
+  \item{seed}{Option to set a custom seed to initialize JAGS chains, for reproducibility. Should be an integer.
+              This argument will be deprecated in the next version, but you can always set the outside the function yourself.}
   \item{bugs.format}{Option to print JAGS output in classic R2WinBUGS format. Default is FALSE.}
   \item{verbose}{If set to FALSE, all text output in the console will be suppressed as the function runs (including most warnings).}
 }
@@ -101,17 +103,9 @@ n <- length(employed)
 #Input data objects must be numeric, and must be
 #scalars, vectors, matrices, or arrays.
   
-#Package together: several possible ways
-  
-#1. A named list of the objects
+#Package together
 data <- list(gnp=gnp,employed=employed,n=n)
-  
-#2. A character vector of the names of the objects
-data <- c('gnp','employed','n')
-  
-#3. A list of names of the objects
-data <- list('gnp','employed','n')
-  
+    
 ######################################
 ##      2. Write model file         ##
 ######################################
@@ -121,6 +115,10 @@ data <- list('gnp','employed','n')
 #Generate model file directly in R
 #(could also read in existing model file)
 
+#Identify filepath of model file
+modfile <- tempfile()
+
+#Write model to file
 writeLines("
 model{
 
@@ -139,11 +137,7 @@ model{
   tau <- pow(sigma,-2)
 
 }
-", con="model.txt")
-
-#Identify filepath of model file;
-#in this case in the working directory
-modfile <- 'model.txt'
+", con=modfile)
   
 ######################################
 ##    3. Initialize Parameters      ##

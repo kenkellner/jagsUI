@@ -11,7 +11,7 @@ importFrom(graphics, "plot", "abline", "axis", "box", "segments", "lines", "par"
 importFrom(utils, "capture.output")
 
 export("jags", "jagsUI","jags.basic","autojags","pp.check", "traceplot", 
-       "whiskerplot", "View")
+       "whiskerplot", "View", "jags.View")
 
 S3method("plot", "jagsUI")
 S3method("xyplot", "jagsUI")

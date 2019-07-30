@@ -2,6 +2,7 @@
 % functions
 \alias{View}
 \alias{View.jagsUI}
+\alias{jags.View}
 
 \title{View a jagsUI output object in a separate window}
 
@@ -21,6 +22,9 @@
 
 \description{
 Show an R object in a separate, spreadsheet-style window. This is an S3 generic version of \code{\link[utils]{View}}.
+
+The method will be deprecated in the next version due to constant issues with IDEs especially RStudio. 
+It will be replacted with a standalone function \code{jags.View()}, which you can use now.
 }
 
 \author{ 

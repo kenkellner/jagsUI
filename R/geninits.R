@@ -2,7 +2,7 @@
 gen.inits <- function(inits,n.chains,seed,parallel){
   
   if(!is.null(seed)){
-    
+    warning("The 'seed' argument will be deprecated in the next version. You can set it yourself with set.seed() instead.") 
     #Save old seed if it exists
     if(exists('.Random.seed')){
       old.seed <- .Random.seed
