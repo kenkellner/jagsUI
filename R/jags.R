@@ -15,7 +15,7 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
   parameters.to.save <- data.check$params
   inits <- data.check$inits
   #if(parallel){n.cores <- data.check$n.cores}
-  n.cores <- data.check$mcmc.info$n.cores
+  n.cores <- data.check$mcmc_info$n.cores
   
   #Save start time
   start.time <- Sys.time()

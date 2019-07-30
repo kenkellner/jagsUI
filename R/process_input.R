@@ -5,11 +5,11 @@ process_input <- function(data, inits, params, n.chains,
                           parallel){
   
   mcmc_info <- mget(c("n.chains", "n.adapt", "n.iter", "n.burnin", "n.thin",
-                    "parallel", "n.cores"))
+                      "parallel", "n.cores"))
 
-  list(data = check_data(data), inits = get_inits(inits, n.chains, n.cores), 
+  list(data = check_data(data), inits = get_inits(inits, n.chains), 
        params = check_params(params, DIC),
-       mcmc.info = check_mcmc_info(mcmc_info))
+       mcmc_info = check_mcmc_info(mcmc_info))
 
 }
 

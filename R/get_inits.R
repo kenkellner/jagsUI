@@ -1,19 +1,12 @@
 ## INIT PROCESSING-------------------------------------------------------------
 
-get_inits <- function(raw_inits, n_chains, n_cores){
+get_inits <- function(raw_inits, n_chains){
   
   all_list <- function(l) all(sapply(l,class)=='list')
 
-  if(is.null(n_cores)) n_cores <- 1
-
   if(is.null(raw_inits)){
-    if(n_cores > 1){
-      #Make blank list of lists to add RNG to later
-      inits <- replicate(n_chains,list())
-    } else {
-      #Do nothing (let JAGS handle inits)
-      return(NULL)
-    }
+    #Make blank list of lists to add RNG to later
+    inits <- replicate(n_chains,list())
   } else if(is.function(raw_inits)){
     #If function provided, run it to generate values
     inits <- replicate(n_chains,raw_inits(),simplify=F)
@@ -35,8 +28,7 @@ get_inits <- function(raw_inits, n_chains, n_cores){
     stop('If provided, inits must be a function or a list of lists')
   }
 
-  #Add RNG to inits if running in parallel
-  if(n_cores > 1) inits <- add_RNG(inits)
+  inits <- add_RNG(inits)
 
   inits
 }
