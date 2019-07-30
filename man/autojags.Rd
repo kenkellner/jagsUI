@@ -16,7 +16,8 @@ autojags(data, inits, parameters.to.save, model.file,
   bugs.format=FALSE, Rhat.limit=1.1, max.iter=100000, verbose=TRUE)}
 
 \arguments{
-  \item{data}{A named list of the data objects required by the model, or a character vector containing the names of the data objects required by the model.}
+  \item{data}{A named list of the data objects required by the model, or a character vector containing the names of the data objects required by the model.
+              Use of a character vector will be deprecated in the next version - switch to using named lists.}
   \item{inits}{A list with \code{n.chains} elements; each element of the
     list is itself a list of starting values for the \code{BUGS} model,
     \emph{or} a function creating (possibly random) initial values. If inits is 
@@ -37,7 +38,8 @@ autojags(data, inits, parameters.to.save, model.file,
   \item{DIC}{Option to report DIC and the estimated number of parameters (pD). Defaults to TRUE.}
   \item{store.data}{Option to store the input dataset and initial values in the output object for future use. Defaults to FALSE.}
   \item{codaOnly}{Optional character vector of parameter names for which you do NOT want to calculate detailed statistics. This may be helpful when you have many output parameters (e.g., predicted values) and you want to save time. For these parameters, only the mean value will be calculated but the mcmc output will still be found in $sims.list and $samples.}
-  \item{seed}{Option to set a custom seed to initialize JAGS chains, for reproducibility. Should be an integer.}
+  \item{seed}{Option to set a custom seed to initialize JAGS chains, for reproducibility. Should be an integer.
+              This argument will be deprecated in the next version, but you can always set the outside the function yourself.}
   \item{bugs.format}{Option to print JAGS output in classic R2WinBUGS format. Default is FALSE.}
   \item{Rhat.limit}{Set the desired cutoff point for convergence; when all Rhat values are less than this value the model assumes convergence has been reached and will stop auto-updating.}
   \item{max.iter}{Maximum number of total iterations allowed via auto-update (including burn-in).}

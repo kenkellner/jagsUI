@@ -70,6 +70,7 @@ process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,n.cores,DIC=F
   } else{stop('Input data must be a list of data objects OR a vector of data object names (as strings)\n')}
   
   if(is.list(x)&&all(sapply(x,is.character))){
+    warning("Suppling a list of character strings to the data argument will be deprecated in the next version")
     x = unlist(x)
   }
   
@@ -78,7 +79,8 @@ process.input = function(x,y,inits,n.chains,n.iter,n.burnin,n.thin,n.cores,DIC=F
   }
   
   #Convert a supplied vector of characters to a list of data objects
-  if((is.character(x)&is.vector(x))){    
+  if((is.character(x)&is.vector(x))){  
+    warning("Suppling a character vector to the data argument will be deprecated in the next version")
     temp = lapply(x,get,envir = parent.frame(2))
     names(temp) = x
     x = temp  

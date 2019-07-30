@@ -37,7 +37,10 @@ employed <- longley$Employed
 n <- length(employed)
 data <- list(gnp=gnp,employed=employed,n=n)
 
-#Read in BUGS model file
+#Identify filepath of model file
+modfile <- tempfile()
+
+#Write model
 #Note calculation of discrepancy stats fit and fit.new
 #(sums of residuals)
 writeLines("
@@ -66,12 +69,8 @@ model{
   fit.new <- sum(res.new[])
 
 }
-", con="model.txt")
+", con=modfile)
 
-#Identify filepath of model file;
-#in this case in the working directory
-modfile <- 'model.txt'
-  
 #Set parameters to monitor
 params <- c('alpha','beta','sigma','fit','fit.new')
 
