@@ -5,12 +5,17 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
                        bugs.format=FALSE,verbose=TRUE){
   
   #Pass input data and parameter list through error check / processing
-  data.check <- process.input(data,parameters.to.save,inits,n.chains,n.iter,n.burnin,n.thin,n.cores,DIC=DIC,
-                              verbose=verbose,parallel=parallel,seed=seed)
+  #data.check <- process.input(data,parameters.to.save,inits,n.chains,n.iter,n.burnin,n.thin,n.cores,DIC=DIC,
+  #                            verbose=verbose,parallel=parallel,seed=seed)
+  data.check <- process_input(data, inits, parameters.to.save, n.chains,
+                              n.adapt, n.iter, n.burnin, n.thin, n.cores,
+                              DIC, parallel)
+
   data <- data.check$data
   parameters.to.save <- data.check$params
   inits <- data.check$inits
-  if(parallel){n.cores <- data.check$n.cores}
+  #if(parallel){n.cores <- data.check$n.cores}
+  n.cores <- data.check$mcmc.info$n.cores
   
   #Save start time
   start.time <- Sys.time()
