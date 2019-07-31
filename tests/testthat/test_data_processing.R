@@ -43,12 +43,13 @@ test_that("Input data is checked properly",{
 test_that("Parallel settings are checked properly",{
   cores_here <- parallel::detectCores()
   miss_inp <- list(n.iter=10, n.burnin=5, n.chains=3)
-  good_inp <- list(n.iter=10, n.burnin=5, n.chains=3, n.cores=3)
+  good_inp <- list(n.iter=10, n.burnin=5, n.chains=3, n.cores=cores_here)
   over_inp <- list(n.iter=10, n.burnin=5, 
                    n.chains=cores_here+1, n.cores=cores_here+1)
 
   expect_equal(check_parallel(miss_inp), 
-               list(n.iter=10,n.burnin=5,n.chains=3,n.cores=3))
+               list(n.iter=10,n.burnin=5,n.chains=3,
+                    n.cores=min(miss_inp$n.chains,cores_here)))
   expect_equal(check_parallel(good_inp), good_inp)
 
   expect_error(check_parallel(over_inp),
@@ -58,6 +59,8 @@ test_that("Parallel settings are checked properly",{
 })
 
 test_that("MCMC info is checked properly", {
+  
+  cores_here <- parallel::detectCores()
   
   bad_mcmc <- list(n.iter = 10, n.burnin=11, parallel=FALSE)
   bad_mcmc2 <- list(n.iter = 10, n.burnin=10, parallel=FALSE)
@@ -72,7 +75,8 @@ test_that("MCMC info is checked properly", {
   mcmc_nopar <- list(n.iter = 10, n.burnin=5, n.chains=3, parallel=TRUE)
   expect_equal(check_mcmc_info(mcmc_nopar),
                list(n.iter=10, n.burnin=5, n.chains=3, 
-                    parallel=TRUE, n.cores=3))
+                    parallel=TRUE, 
+                    n.cores=min(mcmc_nopar$n.chains,cores_here)))
 
 })
 
