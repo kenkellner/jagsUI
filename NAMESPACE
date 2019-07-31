@@ -5,7 +5,7 @@ importFrom(rjags, "jags.model", "adapt", "coda.samples", "list.modules",
 importFrom(coda, "gelman.diag", "as.mcmc.list", "thin", "mcmc", "as.mcmc")
 importFrom(parallel, "detectCores", "makeCluster", "clusterExport", 
            "clusterSetRNGStream", "clusterApply", "stopCluster", "clusterEvalQ")
-importFrom(stats, "runif", "time", "start", "end", "quantile", "var", "sd")
+importFrom(stats, "time", "start", "end", "quantile", "var", "sd")
 importFrom(grDevices, "devAskNewPage", "rainbow")
 importFrom(graphics, "plot", "abline", "axis", "box", "segments", "lines", "par", "legend")
 importFrom(utils, "capture.output")

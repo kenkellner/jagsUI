@@ -1,12 +1,10 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-example.R
 .Rhistory
 .RData
 jagsUI.Rproj
 .gitignore
-modeltest.txt
-model.txt
-example2.R
+.git*
 README.md
-env.R
+Makefile
+.travis.yml

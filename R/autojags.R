@@ -1,16 +1,18 @@
 
 autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=NULL,iter.increment=1000,n.burnin=0,n.thin=1,
-                     save.all.iter=FALSE,modules=c('glm'),factories=NULL,parallel=FALSE,n.cores=NULL,DIC=TRUE,store.data=FALSE,codaOnly=FALSE,seed=NULL,
+                     save.all.iter=FALSE,modules=c('glm'),factories=NULL,parallel=FALSE,n.cores=NULL,DIC=TRUE,store.data=FALSE,codaOnly=FALSE,
                     bugs.format=FALSE,Rhat.limit=1.1,max.iter=100000,verbose=TRUE){
     
-  #Pass input data and parameter list through error check / processing
-  data.check <- process.input(data,parameters.to.save,inits,n.chains,(n.burnin + iter.increment),
-                              n.burnin,n.thin,n.cores,DIC=DIC,autojags=TRUE,max.iter=max.iter,
-                              verbose=verbose,parallel=parallel,seed=seed)    
+  data.check <- process_input(data, inits, parameters.to.save, n.chains,
+                              n.adapt, 
+                              iter.increment + n.burnin, #fix this
+                              n.burnin, n.thin, n.cores,
+                              DIC, parallel)
+
   data <- data.check$data
   parameters.to.save <- data.check$params
   inits <- data.check$inits
-  if(parallel){n.cores <- data.check$n.cores}
+  n.cores <- data.check$mcmc_info$n.cores
   
   #Save start time
   start.time <- Sys.time()
@@ -158,7 +160,6 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   output$parameters <- parameters.to.save
   output$mcmc.info <- mcmc.info
   output$run.date <- date
-  output$random.seed <- seed
   output$parallel <- parallel
   output$bugs.format <- bugs.format
   output$calc.DIC <- DIC

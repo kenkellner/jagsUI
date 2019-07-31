@@ -5,7 +5,7 @@ test_that('inits are generated properly',{
   expect_error(get_inits('test',1))
 
   func_inits_bad <- function() c(a=1,b=2)
-  expect_error(get_inits(func_inits_bad,3,1))
+  expect_error(get_inits(func_inits_bad,3))
   
   list_inits <- replicate(2, list(a=1,b=2), simplify=F)
   expect_error(get_inits(list_inits,3))

@@ -15,7 +15,7 @@
 jags.basic(data, inits, parameters.to.save, model.file,
   n.chains, n.adapt=NULL, n.iter, n.burnin=0, n.thin=1,
   modules=c('glm'), factories=NULL, parallel=FALSE, n.cores=NULL, DIC=TRUE,
-  seed=NULL, save.model=FALSE, verbose=TRUE)}
+  save.model=FALSE, verbose=TRUE)}
 
 \arguments{
   \item{data}{A named list of the data objects required by the model, or a character vector containing the names of the data objects required by the model.
@@ -37,8 +37,6 @@ jags.basic(data, inits, parameters.to.save, model.file,
   \item{parallel}{If TRUE, run MCMC chains in parallel on multiple CPU cores}
   \item{n.cores}{If parallel=TRUE, specify the number of CPU cores used. Defaults to total available cores or the number of chains, whichever is smaller.}
   \item{DIC}{Option to report deviance values. Defaults to TRUE.}
-  \item{seed}{Option to set a custom seed to initialize JAGS chains, for reproducibility. Should be an integer.
-              This argument will be deprecated in the next version, but you can always set the outside the function yourself.}
   \item{save.model}{Returns the JAGS model as part of the output object to allow updating the model later. If TRUE, the output object will instead be a list of class \code{jagsUIbasic}. Default is false.}
   \item{verbose}{If set to FALSE, all text output in the console will be suppressed as the function runs (including most warnings).}
 }
