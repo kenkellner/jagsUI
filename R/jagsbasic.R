@@ -2,24 +2,18 @@
 jags.basic <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=NULL,n.iter,n.burnin=0,n.thin=1,
                            modules=c('glm'),factories=NULL,parallel=FALSE,n.cores=NULL,DIC=TRUE,save.model=FALSE,verbose=TRUE){
   
-  data.check <- process_input(data, inits, parameters.to.save, n.chains,
+  inp <- process_input(data, inits, parameters.to.save, n.chains,
                               n.adapt, n.iter, n.burnin, n.thin, n.cores,
                               DIC, parallel)
 
-  data <- data.check$data
-  parameters.to.save <- data.check$params
-  inits <- data.check$inits
-  #if(parallel){n.cores <- data.check$n.cores}
-  n.cores <- data.check$mcmc_info$n.cores
-  
   #Save start time
   start.time <- Sys.time()
   
   #Stuff to do if parallel=TRUE
   if(parallel && n.chains>1){
     
-    par <- run.parallel(data,inits,parameters.to.save,model.file,n.chains,n.adapt,n.iter,n.burnin,n.thin,
-                        modules=modules,factories=factories,DIC=DIC,verbose=verbose,n.cores=n.cores) 
+    par <- run.parallel(inp$data,inp$inits,inp$params,model.file,n.chains,n.adapt,n.iter,n.burnin,n.thin,
+                        modules=modules,factories=factories,DIC=DIC,verbose=verbose,n.cores=inp$mcmc_info$n.cores) 
     samples <- par$samples
     m <- par$model
     total.adapt <- par$total.adapt
@@ -36,7 +30,7 @@ jags.basic <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
     set.modules(modules,DIC)
     set.factories(factories)
     
-    rjags.output <- run.model(model.file,data,inits,parameters.to.save,n.chains,n.iter,n.burnin,n.thin,n.adapt,
+    rjags.output <- run.model(model.file,inp$data,inp$inits,inp$params,n.chains,n.iter,n.burnin,n.thin,n.adapt,
                               verbose=verbose)
     samples <- rjags.output$samples
     m <- rjags.output$m
@@ -56,10 +50,10 @@ jags.basic <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
   
   if(save.model){
   output <- list()
-  samples <- order.params(samples,parameters.to.save,DIC,verbose=verbose)
+  samples <- order.params(samples,inp$params,DIC,verbose=verbose)
   output$samples <- samples
   output$model <- m
-  output$n.cores <- n.cores
+  output$n.cores <- inp$mcmc_info$n.cores
   class(output) <- 'jagsUIbasic'
   } else {output <- samples}
  

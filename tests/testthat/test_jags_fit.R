@@ -33,7 +33,7 @@ test_that("jags() returns correct output structure",{
   expect_true(is.list(out))
   expect_equal(class(out), "jagsUI")
   expect_equal(names(out), c("sims.list","mean","sd","q2.5","q25","q50",
-                             "q75","q97.5","overlap0","f","Rhat","n.eff",
+                             "q75","q97.5","Rhat","n.eff","overlap0","f",
                              "pD","DIC","summary","samples","modfile","model",
                              "parameters","mcmc.info","run.date","parallel",
                              "bugs.format","calc.DIC"))

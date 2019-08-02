@@ -1,19 +1,14 @@
 
 autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=NULL,iter.increment=1000,n.burnin=0,n.thin=1,
-                     save.all.iter=FALSE,modules=c('glm'),factories=NULL,parallel=FALSE,n.cores=NULL,DIC=TRUE,store.data=FALSE,codaOnly=FALSE,
+                     save.all.iter=FALSE,modules=c('glm'),factories=NULL,parallel=FALSE,n.cores=NULL,DIC=TRUE,store.data=FALSE,codaOnly=NULL,
                     bugs.format=FALSE,Rhat.limit=1.1,max.iter=100000,verbose=TRUE){
     
-  data.check <- process_input(data, inits, parameters.to.save, n.chains,
+  inp <- process_input(data, inits, parameters.to.save, n.chains,
                               n.adapt, 
                               iter.increment + n.burnin, #fix this
                               n.burnin, n.thin, n.cores,
                               DIC, parallel)
 
-  data <- data.check$data
-  parameters.to.save <- data.check$params
-  inits <- data.check$inits
-  n.cores <- data.check$mcmc_info$n.cores
-  
   #Save start time
   start.time <- Sys.time()
   
@@ -28,8 +23,8 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   
   if(parallel){
     
-    par <- run.parallel(data,inits,parameters.to.save,model.file,n.chains,n.adapt,n.iter=(n.burnin + iter.increment),n.burnin,n.thin,
-                        modules=modules,factories=factories,DIC=DIC,verbose=FALSE,n.cores=n.cores) 
+    par <- run.parallel(inp$data,inp$inits,inp$params,model.file,n.chains,n.adapt,n.iter=(n.burnin + iter.increment),n.burnin,n.thin,
+                        modules=modules,factories=factories,DIC=DIC,verbose=FALSE,n.cores=inp$mcmc_info$n.cores) 
     samples <- par$samples
     mod <- par$model
     total.adapt <- par$total.adapt
@@ -42,7 +37,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
     set.modules(modules,DIC)
     set.factories(factories)
     
-    rjags.output <- run.model(model.file,data,inits,parameters.to.save,n.chains,n.iter=(n.burnin + iter.increment),n.burnin,n.thin,n.adapt,
+    rjags.output <- run.model(model.file,inp$data,inp$inits,inp$params,n.chains,n.iter=(n.burnin + iter.increment),n.burnin,n.thin,n.adapt,
                               verbose=FALSE)
     samples <- rjags.output$samples
     mod <- rjags.output$m
@@ -55,7 +50,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   n.samples <- dim(samples[[1]])[1] * n.chains
   mcmc.info <- list(n.chains,n.adapt=total.adapt,sufficient.adapt=sufficient.adapt,n.iter=(n.burnin + iter.increment),n.burnin,n.thin,n.samples,time)
   names(mcmc.info) <- c('n.chains','n.adapt','sufficient.adapt','n.iter','n.burnin','n.thin','n.samples','elapsed.mins')
-  if(parallel){mcmc.info$n.cores <- n.cores}
+  if(parallel){mcmc.info$n.cores <- inp$mcmc_info$n.cores}
   
   test <- test.Rhat(samples,Rhat.limit,codaOnly,verbose=verbose)
   reach.max <- FALSE
@@ -80,9 +75,9 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
        
     if(parallel){
       
-      par <- run.parallel(data=NULL,inits=NULL,parameters.to.save=parameters.to.save,model.file=NULL,n.chains=n.chains
+      par <- run.parallel(data=NULL,inits=NULL,parameters.to.save=inp$params,model.file=NULL,n.chains=n.chains
                           ,n.adapt=n.adapt,n.iter=iter.increment,n.burnin=0,n.thin=n.thin,modules=modules,
-                          factories=factories,DIC=DIC,model.object=mod,update=TRUE,verbose=FALSE,n.cores=n.cores) 
+                          factories=factories,DIC=DIC,model.object=mod,update=TRUE,verbose=FALSE,n.cores=inp$mcmc_info$n.cores) 
       
       if(save.all.iter & index > 1){
         samples <- bind.mcmc(old.samples,par$samples,start=start.iter,n.new.iter=iter.increment)
@@ -97,7 +92,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
       
       set.modules(modules,DIC)
       
-      rjags.output <- run.model(model.file=NULL,data=NULL,inits=NULL,parameters.to.save=parameters.to.save,
+      rjags.output <- run.model(model.file=NULL,data=NULL,inits=NULL,parameters.to.save=inp$params,
                                 n.chains=n.chains,n.iter=iter.increment,n.burnin=0,n.thin,n.adapt=n.adapt,
                                 model.object=mod,update=TRUE,verbose=FALSE)
       
@@ -130,31 +125,17 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   date <- start.time
   
   #Reorganize JAGS output to match input parameter order
-  samples <- order.params(samples,parameters.to.save,DIC,verbose=verbose)
+  samples <- order.params(samples,inp$params,DIC,verbose=verbose)
   
-  #Convert rjags output to jagsUI form 
-  output <- process.output(samples,DIC=DIC,codaOnly,verbose=verbose) 
-  if(is.null(output)){
-    output <- list()
-    samples <- order.params(samples,parameters.to.save,DIC,verbose=verbose)
-    output$samples <- samples
-    output$model <- mod
-    output$n.cores <- n.cores
-    class(output) <- 'jagsUIbasic'
-    return(output)
-  }
+  #Convert rjags output to jagsUI form
+  output <- process_output(samples, exclude_params = codaOnly)
 
-  #Add additional information to output list
-  
-  #Summary
-  output$summary <- summary.matrix(output,samples,n.chains,codaOnly)
-  
   output$samples <- samples
   output$modfile <- model.file
   #If user wants to save input data/inits
   if(store.data){
-    output$inits <- inits
-    output$data <- data
+    output$inits <- inp$inits
+    output$data <- inp$data
   } 
   output$model <- mod
   output$parameters <- parameters.to.save

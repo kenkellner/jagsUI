@@ -12,7 +12,7 @@ autojags(data, inits, parameters.to.save, model.file,
   n.chains, n.adapt=NULL, iter.increment=1000, n.burnin=0, n.thin=1,
   save.all.iter=FALSE, modules=c('glm'), factories=NULL, 
   parallel=FALSE, n.cores=NULL, DIC=TRUE, 
-  store.data=FALSE, codaOnly=FALSE, 
+  store.data=FALSE, codaOnly=NULL, 
   bugs.format=FALSE, Rhat.limit=1.1, max.iter=100000, verbose=TRUE)}
 
 \arguments{
@@ -35,9 +35,9 @@ autojags(data, inits, parameters.to.save, model.file,
   \item{factories}{Optional character vector of factories to enable or disable, in the format <factory> <type> <setting>. For example, to turn \code{TemperedMix} on you would provide \code{'mix::TemperedMix sampler TRUE'} (note spaces between parts). Make sure you have the corresponding modules loaded as well.}
   \item{parallel}{If TRUE, run MCMC chains in parallel on multiple CPU cores}
   \item{n.cores}{If parallel=TRUE, specify the number of CPU cores used. Defaults to total available cores or the number of chains, whichever is smaller.}
-  \item{DIC}{Option to report DIC and the estimated number of parameters (pD). Defaults to TRUE.}
-  \item{store.data}{Option to store the input dataset and initial values in the output object for future use. Defaults to FALSE.}
-  \item{codaOnly}{Optional character vector of parameter names for which you do NOT want to calculate detailed statistics. This may be helpful when you have many output parameters (e.g., predicted values) and you want to save time. For these parameters, only the mean value will be calculated but the mcmc output will still be found in $sims.list and $samples.}
+  \item{DIC}{If TRUE, report DIC and the estimated number of parameters (pD).}
+  \item{store.data}{Option to store the input dataset and initial values in the output object for future use.}
+  \item{codaOnly}{Optional character vector of parameters that will be saved only in $samples and not otherwise processed by jagsUI.}
   \item{bugs.format}{Option to print JAGS output in classic R2WinBUGS format. Default is FALSE.}
   \item{Rhat.limit}{Set the desired cutoff point for convergence; when all Rhat values are less than this value the model assumes convergence has been reached and will stop auto-updating.}
   \item{max.iter}{Maximum number of total iterations allowed via auto-update (including burn-in).}
