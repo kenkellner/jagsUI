@@ -12,7 +12,7 @@ process_output <- function(samples, exclude_params=NULL){
     c(sims.list, stat_list, dic_list, sum_list)
   }, error = function(e) {
     message(paste0("Processing output failed with this error:\n",e,"\n"))
-    c(sims.list=NA, pD=NA, DIC=NA, summary=NA)
+    list(sims.list=NA, pD=NA, DIC=NA, summary=NA)
   })
 }
 
