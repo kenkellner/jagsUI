@@ -52,10 +52,7 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.iter,
   samples <- order.params(samples,parameters,DIC,verbose=verbose)
     
   #Run process output
-  output <- process.output(samples,DIC=DIC,codaOnly,verbose=verbose)
-    
-  #Summary
-  output$summary <- summary.matrix(output,samples,object$mcmc.info$n.chains,codaOnly)
+  output <- process_output(samples, exclude_params=codaOnly)
   
   #Save other information to output object
   output$samples <- samples
