@@ -19,9 +19,9 @@ test_that("Rhat calculation is correct", {
   samples <- readRDS('coda_samples.Rds')
   post_alpha <- mcmc_to_mat(samples, 'alpha')
   expect_equal(Rhat_min(post_alpha), 1.067712, tol=1e-4)
-  if(requireNamespace("rstan", quietly=TRUE)){
-    expect_equal(Rhat_min(post_alpha), rstan::Rhat(post_alpha))
-  }
+  #if(requireNamespace("rstan", quietly=TRUE)){
+  #  expect_equal(Rhat_min(post_alpha), rstan::Rhat(post_alpha))
+  #}
   const_post <- matrix(3, nrow=10, ncol=3)
   expect_true(is.na(Rhat_min(const_post)))
   novar_post <- matrix(rep(1:3, each=3),nrow=3)
@@ -40,9 +40,9 @@ test_that("ESS calculation is correct", {
   samples <- readRDS('coda_samples.Rds')
   post_beta <- mcmc_to_mat(samples, 'beta')
   expect_equal(ess(post_beta), 112.5297, tol=1e-4)
-  if(requireNamespace("rstan", quietly=TRUE)){
-    expect_equal(ess_bulk(post_beta), rstan::ess_bulk(post_beta))
-  } 
+  #if(requireNamespace("rstan", quietly=TRUE)){
+  #  expect_equal(ess_bulk(post_beta), rstan::ess_bulk(post_beta))
+  #} 
   const_post <- matrix(3, nrow=10, ncol=3)
   expect_true(is.na(ess_bulk(const_post)))
   novar_post <- matrix(rep(1:3, each=3),nrow=3)
