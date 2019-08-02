@@ -61,23 +61,14 @@ test_that('select_cols works correctly',{
   expect_equal(dim(out[[1]]),c(30,1))
 })
 
-test_that('remove_params drops correct params',{
+test_that('remove_params drops correct params from list',{
   samples <- readRDS('coda_samples.Rds')
-  rc <- remove_params(samples,params=NULL)
-  expect_equal(param_names(rc,simplify=T),
-               c('alpha','beta','sigma','mu','kappa','deviance'))
-  rc <- remove_params(samples,c('alpha','mu'))
-  expect_equal(param_names(rc,simplify=T),
-               c('beta','sigma','kappa','deviance'))
-  expect_equal(dim(rc[[1]]),c(30,11))
-  expect_equal(length(rc),3)
-  rc <- remove_params(samples,c('beta','mu','sigma','kappa','deviance'))
-  expect_equal(colnames(rc[[1]]),'alpha')
-  expect_equal(dim(rc[[1]]),c(30,1))
-  rc <- remove_params(samples, c('alpha','fake'))
-  expect_equal(dim(rc[[1]]),c(30,27))
-  rc <- remove_params(samples, c('fake'))
-  expect_equal(dim(rc[[1]]),c(30,28))
+  expect_equal(remove_params(samples), param_names(samples))
+  expect_equal(remove_params(samples, 'beta'), param_names(samples)[-2])
+  expect_equal(remove_params(samples, c('mu','kappa')),
+               c('alpha','beta','sigma','deviance'))
+  expect_equal(remove_params(samples, param_names(samples, simplify=TRUE)),
+               character(0))               
 })
 
 test_that('mcmc_to_mat converts properly',{

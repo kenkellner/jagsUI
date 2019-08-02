@@ -34,3 +34,24 @@ test_that("Rhat calculation is correct", {
   post_alpha[1,1] <- NA
   expect_equal(Rhat_min(post_alpha), 1.0645, tol=1e-4)
 })
+
+test_that("ESS calculation is correct", {
+
+  samples <- readRDS('coda_samples.Rds')
+  post_beta <- mcmc_to_mat(samples, 'beta')
+  expect_equal(ess(post_beta), 112.5297, tol=1e-4)
+  if(requireNamespace("rstan", quietly=TRUE)){
+    expect_equal(ess_bulk(post_beta), rstan::ess_bulk(post_beta))
+  } 
+  const_post <- matrix(3, nrow=10, ncol=3)
+  expect_true(is.na(ess_bulk(const_post)))
+  novar_post <- matrix(rep(1:3, each=3),nrow=3)
+  expect_equal(ess_bulk(novar_post), ncol(novar_post)*2)
+  #One chain
+  expect_equal(ess_bulk(post_beta[,1,drop=F]), 44.31364, tol=1e-4)
+  #One sample
+  expect_equal(ess_bulk(post_beta[1,,drop=FALSE]), ncol(post_beta))
+  #With NA
+  post_beta[1,1] <- NA
+  expect_true(is.na(ess_bulk(post_beta)))
+})

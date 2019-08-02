@@ -22,23 +22,50 @@ calc_param_stats <- function(mcmc_mat){
   
   #Handle any unexpected errors during calculation
   tryCatch({
-    mn <- mean(mcmc_mat, na.rm=T)
+    mn <- mean(mcmc_mat, na.rm=TRUE)
     quants <- quantile(mcmc_mat, c(0.025, 0.25, 0.5, 0.75, 0.975), na.rm=TRUE)
-    c(mn, stats::sd(mcmc_mat,na.rm=TRUE), quants, Rhat_min(mcmc_mat), 
-    ess_bulk(mcmc_mat), overlap_0(quants[1], quants[5]),
-    calc_f(mcmc_mat, mn))
+    c(mn, 
+      stats::sd(mcmc_mat,na.rm=TRUE), 
+      quants, 
+      Rhat_min(mcmc_mat), 
+      ess_bulk(mcmc_mat), 
+      overlap_0(quants[1], quants[5]),
+      calc_f(mcmc_mat, mn))
   }, error = function(e) {
-    cat(paste0('Caught error when calculating stats:\n',e,'\n'))
+    message(paste0('Caught error when calculating stats:\n',e,'\n'))
     fallback
   })
 }
 
 #Calculate statistics for all parameters in posterior and organize into matrix
 #Takes mcmc.list as input
-calc_stats <- function(samples){
-  out <- sapply(param_names(samples), 
+calc_stats <- function(samples, exclude=NULL){
+  params <- remove_params(samples, exclude)
+  if(length(params)==0) return(NA)
+  out <- sapply(params, 
                 function(x) calc_param_stats(mcmc_to_mat(samples, x)))
   rownames(out) <- c('mean','sd','q2.5','q25','q50','q75','q97.5','Rhat',
                   'n.eff','overlap0','f')
   t(out)
 }
+
+#------------------------------------------------------------------------------
+#Calculate pD and DIC from deviance if it exists in output samples
+calc_DIC <- function(samples){
+  
+  ind <- which_params('deviance', param_names(samples))
+
+  if(is.null(ind)) return(c(pD=NA, DIC=NA))
+
+  m <- length(samples)
+  n <- nrow(samples[[1]])
+  dev <- mcmc_to_mat(samples, 'deviance')
+  
+  if(any(is.na(dev)) || any(is.infinite(dev))) return(c(pD=NA, DIC=NA))
+
+  pd <- apply(dev,2,FUN=function(x) stats::var(x)/2)
+  dic <- apply(dev,2,mean) + pd
+  
+  c(pD=mean(pd),DIC=mean(dic))
+}
+#------------------------------------------------------------------------------

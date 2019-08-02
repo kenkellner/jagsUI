@@ -56,13 +56,13 @@ select_cols <- function(mcmc_list, col_inds){
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
-#Remove parameters from coda samples for which we don't want to
-#calculate any stats
-remove_params <- function(samples, params){
-  if(is.null(params)) return(samples)
-  inds <- unlist(sapply(params,which_params,param_names(samples)))
-  if(is.null(inds)) return(samples)
-  select_cols(samples,-inds)
+#Remove parameters from list of params
+remove_params <- function(samples, exclude=NULL){
+  all_params <- param_names(samples)
+  if(is.null(exclude)) return(all_params)
+  params_strip <- strip_params(all_params)
+  ind <- unlist(sapply(exclude, which_params, all_params))
+  all_params[-ind]
 }
 #------------------------------------------------------------------------------
 
