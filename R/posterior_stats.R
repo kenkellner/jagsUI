@@ -23,7 +23,8 @@ calc_param_stats <- function(mcmc_mat){
   #Handle any unexpected errors during calculation
   tryCatch({
     mn <- mean(mcmc_mat, na.rm=TRUE)
-    quants <- quantile(mcmc_mat, c(0.025, 0.25, 0.5, 0.75, 0.975), na.rm=TRUE)
+    quants <- stats::quantile(mcmc_mat, c(0.025, 0.25, 0.5, 0.75, 0.975), 
+                              na.rm=TRUE)
     c(mn, 
       stats::sd(mcmc_mat,na.rm=TRUE), 
       quants, 

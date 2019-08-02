@@ -42,6 +42,18 @@ test_that('param_names returns correct names',{
                c('alpha','beta','sigma','mu','kappa','deviance'))
 })
 
+test_that('match_param identifies correct set of params', {
+  params_raw <- c('alpha','beta[1]','beta[2]','gamma[1,1]','gamma[3,1]')
+  expect_equal(match_params('alpha', params_raw),'alpha')
+  expect_equal(match_params('beta', params_raw), c('beta[1]','beta[2]'))
+  expect_equal(match_params('gamma[1,1]', params_raw), 'gamma[1,1]')
+  expect_true(is.null(match_params('fake',params_raw)))
+  expect_equal(match_params(c('alpha','beta'),params_raw),
+               c('alpha','beta[1]','beta[2]'))
+  expect_equal(match_params(c('alpha','fake','beta'),params_raw),
+               c('alpha','beta[1]','beta[2]'))
+})
+
 test_that('select_cols works correctly',{
   samples <- readRDS('coda_samples.Rds')
   expect_equal(dim(samples[[1]]),c(30,28))

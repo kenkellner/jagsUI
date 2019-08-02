@@ -5,11 +5,15 @@ traceplot.default <- function(x, ...) coda::traceplot(x, ...)
 
 traceplot.jagsUI <- function (x, parameters=NULL, ...) {
 
-  samples <- x$samples    
-  
-  if(is.null(parameters)){params <- names(as.data.frame(samples[[1]]))
-  } else {params <- translate.params(x,parameters)}
-  
+  samples <- x$samples
+  params <- param_names(samples)
+  if(!is.null(parameters)){
+    params <- match_params(parameters, params)
+  }
+  if(is.null(params)){
+    stop("None of the provided parameters were found in the output")
+  }
+
   nparams <- length(params)
   nchains <- x$mcmc.info[[1]]
   rhat <- x$Rhat

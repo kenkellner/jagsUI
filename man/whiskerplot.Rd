@@ -89,7 +89,7 @@ whiskerplot(out,parameters='mu')
 
 #Plot a subset of mu
 
-whiskerplot(out,parameters='mu[c(1:3,7)]')
+whiskerplot(out,parameters=c('mu[1]','mu[7]'))
 
 #Plot mu and alpha together
 

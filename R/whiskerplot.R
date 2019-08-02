@@ -1,17 +1,19 @@
 
 whiskerplot <- function(x,parameters,quantiles=c(0.025,0.975),zeroline=TRUE){
   if(class(x)!="jagsUI"){stop('Requires jagsUI object as input')}
-  devAskNewPage(ask=FALSE)
+  devAskNewPage(ask=FALSE) #get rid of this!!!
   
-  #Generate a list of all specified output parameters
-  #Expand from shorthand if necessary
-  parameters <- translate.params(x,parameters)
-  
+  all_params <- param_names(x$samples)
+  parameters <- match_params(parameters, all_params)
+  if(is.null(parameters)){
+    stop("None of the provided parameters were found in the output")
+  }
+
   n <- length(parameters)
   
   xstructure <- c(1:n)
   
-  qs <- function(x,y){as.numeric(quantile(x,y))}
+  qs <- function(x,y){as.numeric(stats::quantile(x,y))}
   
   means <- tops <- bottoms <-ymin <- ymax <- vector(length=n)
   for (i in 1:n){

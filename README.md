@@ -1,10 +1,10 @@
+jagsUI
+==========
+
 [![CRAN status](https://www.r-pkg.org/badges/version/jagsUI)](https://cran.r-project.org/web/packages/jagsUI/index.html)
 [![Downloads](https://cranlogs.r-pkg.org/badges/last-month/jagsUI)](https://www.r-pkg.org/services)
 [![Build Status](https://travis-ci.org/kenkellner/jagsUI.svg?branch=master)](https://travis-ci.org/kenkellner/jagsUI)
 [![codecov](https://codecov.io/gh/kenkellner/jagsUI/branch/master/graph/badge.svg)](https://codecov.io/gh/kenkellner/jagsUI)
-
-jagsUI
-==========
 
 This package runs JAGS (Just Another Gibbs Sampler) analyses from within R. It acts as a wrapper and alternative interface for the functions in the rjags package and adds some custom output and graphical options. 
 

@@ -34,6 +34,8 @@ which_params <- function(param, params_raw){
   which(params_strip == param)
 }
 #------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
 #Get names of parameters from an mcmc.list
 #If simplify=T, also drop brackets/indices
 param_names <- function(mcmc_list, simplify=FALSE){
@@ -41,6 +43,19 @@ param_names <- function(mcmc_list, simplify=FALSE){
   if(!simplify) return(raw)
   strip_params(raw, unique=T)
 }
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+#Match parameter name to scalar or array versions of parameter name
+match_params <- function(params, params_raw){
+  unlist(lapply(params, function(x){
+    if(x %in% params_raw) return(x)
+    if(!x %in% strip_params(params_raw)) return(NULL)
+    params_raw[which_params(x, params_raw)]
+    }))
+}
+#------------------------------------------------------------------------------
+
 #------------------------------------------------------------------------------
 #Subset cols of mcmc.list (simple version of [.mcmc.list method)
 select_cols <- function(mcmc_list, col_inds){
