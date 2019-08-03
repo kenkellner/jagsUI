@@ -1,7 +1,7 @@
 
 update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.iter, n.thin=NULL, 
                           modules=c('glm'), factories=NULL,
-                          DIC=NULL,codaOnly=FALSE, verbose=TRUE, ...){
+                          DIC=NULL, codaOnly=NULL, verbose=TRUE, ...){
   
   mod <- object$model
   
