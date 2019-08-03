@@ -1,5 +1,5 @@
 Package: jagsUI
-Version: 1.5.1.9002
+Version: 1.5.1.9003
 Date: 2019-08-02
 Title: A Wrapper Around 'rjags' to Streamline 'JAGS' Analyses
 Author: Ken Kellner <contact@kenkellner.com>

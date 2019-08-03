@@ -125,7 +125,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   date <- start.time
   
   #Reorganize JAGS output to match input parameter order
-  samples <- order.params(samples,inp$params,DIC,verbose=verbose)
+  samples <- order_samples(samples,inp$params)
   
   #Convert rjags output to jagsUI form
   output <- process_output(samples, exclude_params = codaOnly)

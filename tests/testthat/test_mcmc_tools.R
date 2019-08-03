@@ -105,6 +105,26 @@ test_that('comb_mcmc_list combines correctly',{
   expect_equal(length(comb_object),3)
 })
 
+test_that('order_samples works correctly', {
+  samples <- readRDS('coda_samples.Rds')
+  new_order <- c('beta','mu','alpha')
+  out <- order_samples(samples, new_order)
+  expect_equal(class(out), 'mcmc.list')
+  expect_equal(length(out),length(samples))
+  expect_equal(lapply(out,class),lapply(samples,class))
+  expect_equal(param_names(out),c('beta',paste0('mu[',1:16,']'),'alpha'))
+  expect_equal(dim(out[[1]]), c(30,18))
+  expect_equal(as.numeric(out[[1]][1,1:2]), 
+               c(0.03690717, 59.78175), tol=1e-4)
+  expect_equal(order_samples(samples, 'beta'),
+               order_samples(samples, c('beta','fake')))
+  result <- expect_message(order_samples('fake','beta'))
+  expect_equal(result, 'fake')
+  one_param <- select_cols(samples, 'alpha')
+  expect_equal(order_samples(one_param,'alpha'),one_param)
+  expect_equal(dim(order_samples(one_param, 'beta')[[1]]),c(30,0))
+})
+
 test_that('check_parameter works correctly',{
   samples <- readRDS('coda_samples.Rds')
   expect_error(check_parameter('alpha',samples),NA)

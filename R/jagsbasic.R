@@ -50,7 +50,7 @@ jags.basic <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
   
   if(save.model){
   output <- list()
-  samples <- order.params(samples,inp$params,DIC,verbose=verbose)
+  samples <- order_samples(samples,inp$params)
   output$samples <- samples
   output$model <- m
   output$n.cores <- inp$mcmc_info$n.cores

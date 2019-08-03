@@ -49,7 +49,7 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.iter,
   date <- start.time
   
   #Reorganize JAGS output to match input parameter order
-  samples <- order.params(samples,parameters,DIC,verbose=verbose)
+  samples <- order_samples(samples,parameters)
     
   #Run process output
   output <- process_output(samples, exclude_params=codaOnly)

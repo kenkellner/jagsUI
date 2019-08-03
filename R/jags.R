@@ -58,10 +58,8 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
   if(parallel){mcmc.info$n.cores <- n.cores}
   
   #Reorganize JAGS output to match input parameter order
-  if(dim(samples[[1]])[2]>1){
-    samples <- order.params(samples,inp$params,DIC,verbose=verbose)
-  }
-  
+  samples <- order_samples(samples, inp$params)
+
   #Process output
   output <- process_output(samples, exclude_params=codaOnly)
 

@@ -57,6 +57,19 @@ match_params <- function(params, params_raw){
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
+#Reorder output samples from coda to match input parameter order
+order_samples <- function(samples, params){
+  tryCatch({
+    matched <- match_params(params, param_names(samples))
+    select_cols(samples, matched)
+  }, error = function(e){ 
+    message(paste0("Caught error re-ordering samples:\n",e,"\n"))
+    samples
+  })
+}
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
 #Subset cols of mcmc.list (simple version of [.mcmc.list method)
 select_cols <- function(mcmc_list, col_inds){
   out <- lapply(1:length(mcmc_list), FUN=function(x){
