@@ -70,3 +70,19 @@ calc_DIC <- function(samples){
   c(pD=mean(pd),DIC=mean(dic))
 }
 #------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+#Sequentially check Rhat values for each parameter in samples
+test_Rhat <- function(samples, max_val){
+
+  out <- list(result=FALSE, param=NULL)
+  
+  for(i in param_names(samples)){
+    inp <- mcmc_to_mat(samples, i)
+    if(Rhat_min(inp) > max_val){
+      return(list(result=TRUE, param=i))
+    }
+  }
+  out
+}
+#------------------------------------------------------------------------------

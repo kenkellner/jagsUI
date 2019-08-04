@@ -106,13 +106,14 @@ mcmc_to_mat <- function(samples, param){
 
 #------------------------------------------------------------------------------
 #Combine two mcmc.lists into one; should have same parameters saved
-#TODO: manage start/stop iterations (doesn't work properly with update)
 comb_mcmc_list <- function(x,y){
   x_mcpar <- attr(x[[1]],"mcpar")
   y_mcpar <- attr(y[[1]],"mcpar")
-
+  
   out <- lapply(Map(rbind,x,y), function(z){
-                  attr(z,"mcpar") <- c(x_mcpar[1],y_mcpar[2],x_mcpar[3])
+                  attr(z,"mcpar") <- c(x_mcpar[1],
+                                       x_mcpar[2]+nrow(y[[1]])*x_mcpar[3],
+                                       x_mcpar[3])
                   class(z) <- "mcmc"
                   z 
               })

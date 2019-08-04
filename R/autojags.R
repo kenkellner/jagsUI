@@ -19,7 +19,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   
   #Parallel
   
-  if(verbose){cat('Burn-in + Update 1',' (',(n.burnin + iter.increment),')',sep="")}
+  if(verbose){cat('Burn-in + Update 1',' (',(n.burnin + iter.increment),')\n',sep="")}
   
   if(parallel){
     
@@ -52,7 +52,8 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   names(mcmc.info) <- c('n.chains','n.adapt','sufficient.adapt','n.iter','n.burnin','n.thin','n.samples','elapsed.mins')
   if(parallel){mcmc.info$n.cores <- inp$mcmc_info$n.cores}
   
-  test <- test.Rhat(samples,Rhat.limit,codaOnly,verbose=verbose)
+  #test <- test.Rhat(samples,Rhat.limit,codaOnly,verbose=verbose)
+  test <- test_Rhat(samples, Rhat.limit)
   reach.max <- FALSE
   index = 1
   
@@ -61,10 +62,10 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
     if(verbose){cat('\nMaximum iterations reached.\n\n')}
   }
   
-  while(test==TRUE && reach.max==FALSE){
+  while(test$result==TRUE && reach.max==FALSE){
         
     index <- index + 1
-    if(verbose){cat('Update ',index,' (',mcmc.info$n.iter + iter.increment,')',sep="")}
+    if(verbose){cat('Update ',index,' (',mcmc.info$n.iter + iter.increment,')\n',sep="")}
     
     if(save.all.iter){
       if(index==2){start.iter <- start(samples)}
@@ -80,13 +81,14 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
                           factories=factories,DIC=DIC,model.object=mod,update=TRUE,verbose=FALSE,n.cores=inp$mcmc_info$n.cores) 
       
       if(save.all.iter & index > 1){
-        samples <- bind.mcmc(old.samples,par$samples,start=start.iter,n.new.iter=iter.increment)
+        samples <- comb_mcmc_list(old.samples, par$samples)
       } else {samples <- par$samples}
       
       mod <- par$model
       sufficient.adapt <- par$sufficient.adapt
       
-      test <- test.Rhat(samples,Rhat.limit,codaOnly)
+      test <- test_Rhat(samples, Rhat.limit)
+      #test <- test.Rhat(samples,Rhat.limit,codaOnly)
       
     } else {
       
@@ -97,13 +99,14 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
                                 model.object=mod,update=TRUE,verbose=FALSE)
       
       if(save.all.iter & index > 1){
-        samples <- bind.mcmc(old.samples,rjags.output$samples,start=start.iter,n.new.iter=iter.increment)
+        samples <- comb_mcmc_list(old.samples, rjags.output$samples)
       } else {samples <- rjags.output$samples}
 
       mod <- rjags.output$m
       sufficient.adapt <- rjags.output$sufficient.adapt
 
-      test <- test.Rhat(samples,Rhat.limit,codaOnly)
+      test <- test_Rhat(samples, Rhat.limit)
+      #test <- test.Rhat(samples,Rhat.limit,codaOnly)
 
      
     }

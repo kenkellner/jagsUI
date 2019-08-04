@@ -103,6 +103,7 @@ test_that('comb_mcmc_list combines correctly',{
   comb_object <- comb_mcmc_list(comb_samples1,comb_samples2)
   expect_equal(nrow(comb_object[[1]]),20)
   expect_equal(length(comb_object),3)
+  expect_equal(attr(comb_object[[1]],'mcpar'),c(1101,1120,1))
 })
 
 test_that('order_samples works correctly', {

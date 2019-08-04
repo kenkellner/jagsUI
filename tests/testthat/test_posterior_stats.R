@@ -90,3 +90,11 @@ test_that("Calculation of pD/DIC works", {
   samp_inf[[1]][1,ind] <- -Inf
   expect_true(all(is.na(calc_DIC(samp_na))))
 })
+
+test_that("Sequential tests of Rhat with Rhat_test works", {
+  samples <- readRDS('coda_samples.Rds')
+  vals <- calc_stats(samples)[,'Rhat']
+  expect_equal(test_Rhat(samples, 1.1), list(result=FALSE,param=NULL))
+  expect_equal(test_Rhat(samples, 1.07), list(result=TRUE,param='beta'))
+  expect_equal(test_Rhat(samples, 1.05), list(result=TRUE,param='alpha'))
+})
