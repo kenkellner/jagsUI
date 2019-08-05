@@ -1,7 +1,7 @@
 
 whiskerplot <- function(x,parameters,quantiles=c(0.025,0.975),zeroline=TRUE){
-  if(class(x)!="jagsUI"){stop('Requires jagsUI object as input')}
-  devAskNewPage(ask=FALSE) #get rid of this!!!
+
+  check_class(x)
   
   all_params <- param_names(x$samples)
   parameters <- match_params(parameters, all_params)
@@ -10,8 +10,6 @@ whiskerplot <- function(x,parameters,quantiles=c(0.025,0.975),zeroline=TRUE){
   }
 
   n <- length(parameters)
-  
-  xstructure <- c(1:n)
   
   qs <- function(x,y){as.numeric(stats::quantile(x,y))}
   
@@ -26,17 +24,21 @@ whiskerplot <- function(x,parameters,quantiles=c(0.025,0.975),zeroline=TRUE){
   ymin <- min(bottoms)
   ymax <- max(tops)
   
-  plot(xstructure,means,xaxt="n",ylim=c(ymin,ymax),xlim=c(0,n+1),xlab="Parameters",ylab="Parameter Values",pch=19,cex=1.5,
-       main=paste('Whisker plot, quantiles (',quantiles[1],' - ',quantiles[2],')',sep=""))
-  axis(side=1, at=c(1:n), labels=parameters)
-  box()
+  graphics::plot(1:n, means, xaxt="n", 
+                 ylim=c(ymin,ymax), xlim=c(0,n+1),
+                 xlab="Parameters", ylab="Parameter Values",
+                 pch=19, cex=1.5,
+                 main=paste('Whisker plot, quantiles (',quantiles[1],
+                            ' - ',quantiles[2],')',sep=""))
+  graphics::axis(side=1, at=c(1:n), labels=parameters)
+  graphics::box()
   
-  if(zeroline){abline(h=0)}
+  if(zeroline){graphics::abline(h=0)}
   
   for (i in 1:n){
-    segments(x0=xstructure[i],y0=bottoms[i],x1=xstructure[i],y1=tops[i], lwd=2)
-    segments(x0=xstructure[i]-0.2,y0=bottoms[i],x1=xstructure[i]+0.2,y1=bottoms[i])
-    segments(x0=xstructure[i]-0.2,y0=tops[i],x1=xstructure[i]+0.2,y1=tops[i])
+    graphics::segments(x0=i,y0=bottoms[i], x1=i, y1=tops[i], lwd=2)
+    graphics::segments(x0=i-0.2,y0=bottoms[i],x1=i+0.2, y1=bottoms[i])
+    graphics::segments(x0=i-0.2,y0=tops[i], x1=i+0.2, y1=tops[i])
   }
  
 }
