@@ -81,8 +81,9 @@ test_that("autojags() summary values are correct",{
 test_that("autojags() in parallel produces identical results", {
 
   skip_on_cran()
-  skip_on_travis()
+  #skip_on_travis()
   set_up_input()
+  n_cores <- max(2, parallel::detectCores()-1)
   
   set.seed(789)
   out_ref <- autojags(jags_data, NULL, params, model_file, n_chains, n_adapt,
@@ -90,7 +91,8 @@ test_that("autojags() in parallel produces identical results", {
 
   set.seed(789)
   out <- autojags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F, parallel=TRUE)
+              n_iter, n_warmup, n.thin=1,verbose=F, 
+              parallel=TRUE, n.cores=n_cores)
 
   expect_equal(out$summary, out_ref$summary)
 

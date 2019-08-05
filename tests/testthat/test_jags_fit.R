@@ -105,12 +105,14 @@ test_that("Updating a jags() model produces correct results", {
 test_that("jags() in parallel produces identical results", {
 
   skip_on_cran()
-  skip_on_travis()
+  #skip_on_travis()
   set_up_input()
+  n_cores <- max(2, parallel::detectCores()-1)
   
   set.seed(123)
   out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F, parallel=TRUE)
+              n_iter, n_warmup, n.thin=1,verbose=F, 
+              parallel=TRUE, n.cores=n_cores)
 
   match_out <- readRDS('jags_out1.Rds')
   expect_equal(out$summary, match_out)
@@ -118,7 +120,8 @@ test_that("jags() in parallel produces identical results", {
   #Check update
   set.seed(123)
   out_par <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1, parallel=T, verbose=F)
+                  n_iter, n_warmup, n.thin=1, verbose=F,
+                  parallel=TRUE, n.cores=n_cores)
   out_par <- update(out_par, n.iter=100, verbose=F)
   
   match_out_par <- readRDS('jags_update.Rds')

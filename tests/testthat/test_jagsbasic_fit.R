@@ -65,27 +65,6 @@ test_that("jagsbasic() returns correct values", {
   expect_equal(out, out_ref)
 })
 
-test_that("jagsbasic() in parallel returns correct values", {
-
-  skip_on_cran()
-  skip_on_travis()
-  set_up_input()
-  
-  #reference
-  set.seed(456)
-  out_ref <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)$samples
-
-  #Check parallel
-  set.seed(456)
-  out_par <- jags.basic(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1, parallel=T, verbose=F, 
-              save.model=TRUE)$samples
-
-  expect_equal(out_par, out_ref, check.attributes=FALSE)
-
-})
-
 test_that("Updating a jagsUIbasic object returns correct values", {
 
   skip_on_cran()
@@ -110,11 +89,25 @@ test_that("Updating a jagsUIbasic object returns correct values", {
 
 })
 
-test_that("Updating a jagsUIbasic object in parallel returns correct values", {
+test_that("Running jagsUIbasic object in parallel returns same values", {
 
   skip_on_cran()
-  skip_on_travis()
+  #skip_on_travis()
   set_up_input()
+  n_cores <- max(2, parallel::detectCores()-1)
+
+  #reference
+  set.seed(456)
+  out_ref <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
+              n_iter, n_warmup, n.thin=1,verbose=F)$samples
+
+  #Check parallel
+  set.seed(456)
+  out_par <- jags.basic(jags_data, NULL, params, model_file, n_chains, n_adapt,
+              n_iter, n_warmup, n.thin=1, parallel=T, n.cores=n_cores,
+              verbose=F, save.model=TRUE)$samples
+
+  expect_equal(out_par, out_ref, check.attributes=FALSE)
   
   set.seed(123)
   out_ref <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
@@ -123,10 +116,10 @@ test_that("Updating a jagsUIbasic object in parallel returns correct values", {
   
   set.seed(123)
   out_par <- jags.basic(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F, parallel=T, save.model=TRUE)
+              n_iter, n_warmup, n.thin=1,verbose=F, 
+              parallel=T, n.cores=n_cores, save.model=TRUE)
   out_par <- update(out_par, n.iter=100, verbose=F)$samples
 
-  #Attribute issues will be fixed when I redo the rjags code
   expect_equal(out_par, out_ref, check.attributes=FALSE)
 
 })
