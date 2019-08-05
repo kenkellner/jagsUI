@@ -1,63 +1,28 @@
 
-jags.basic <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=NULL,n.iter,n.burnin=0,n.thin=1,
-                           modules=c('glm'),factories=NULL,parallel=FALSE,n.cores=NULL,DIC=TRUE,save.model=FALSE,verbose=TRUE){
+jags.basic <- function(data, inits=NULL, parameters.to.save ,model.file,
+                       n.chains, n.adapt=NULL, n.iter, n.burnin=0, n.thin=1,
+                       modules=c('glm'), factories=NULL, parallel=FALSE,
+                       n.cores=NULL, DIC=TRUE, save.model=FALSE, verbose=TRUE){
   
-  inp <- process_input(data, inits, parameters.to.save, n.chains,
-                              n.adapt, n.iter, n.burnin, n.thin, n.cores,
-                              DIC, parallel)
-
-  #Save start time
-  start.time <- Sys.time()
+  #Check parameters
+  params <- check_params(parameters.to.save, DIC)
   
-  #Stuff to do if parallel=TRUE
-  if(parallel && n.chains>1){
-    
-    par <- run.parallel(inp$data,inp$inits,inp$params,model.file,n.chains,n.adapt,n.iter,n.burnin,n.thin,
-                        modules=modules,factories=factories,DIC=DIC,verbose=verbose,n.cores=inp$mcmc_info$n.cores) 
-    samples <- par$samples
-    m <- par$model
-    total.adapt <- par$total.adapt
-    sufficient.adapt <- par$sufficient.adapt
-    if(any(!sufficient.adapt)&verbose){warning("JAGS reports adaptation was incomplete. Consider increasing n.adapt")}
-    
-  } else {
-    
-    #######################
-    ##Run rjags functions##
-    #######################
-    
-    #Set modules
-    set.modules(modules,DIC)
-    set.factories(factories)
-    
-    rjags.output <- run.model(model.file,inp$data,inp$inits,inp$params,n.chains,n.iter,n.burnin,n.thin,n.adapt,
-                              verbose=verbose)
-    samples <- rjags.output$samples
-    m <- rjags.output$m
-    total.adapt <- rjags.output$total.adapt
-    sufficient.adapt <- rjags.output$sufficient.adapt
-    
-    ##########################
-    ##End of rjags functions##
-    ##########################
-    
+  #Run regular jags() but all parameters are codaOnly
+  jags_out <- jags(data, inits, params, model.file, n.chains, 
+                   n.adapt, n.iter, n.burnin, n.thin, modules, factories, 
+                   parallel, n.cores, DIC, codaOnly = params, 
+                   verbose=verbose)
+  
+  #Cleanup and output
+  if(save.model){
+    jags_out$n.cores <- jags_out$mcmc.info$n.cores
+    to_remove <- c('sims.list','pD','DIC','summary','modfile','parameters',
+                   'mcmc.info','run.date','parallel','bugs.format','calc.DIC')
+    jags_out[to_remove] <- NULL
+    class(jags_out) <- 'jagsUIbasic'
+    return(jags_out)
   }
   
-  #Get more info about MCMC run
-  end.time <- Sys.time() 
-  time <- round(as.numeric(end.time-start.time,units="mins"),digits=3)
-  if(verbose){cat('MCMC took',time,'minutes.\n')}
-  
-  if(save.model){
-  output <- list()
-  samples <- order_samples(samples,inp$params)
-  output$samples <- samples
-  output$model <- m
-  output$n.cores <- inp$mcmc_info$n.cores
-  class(output) <- 'jagsUIbasic'
-  } else {output <- samples}
- 
-  
-  return(output)
-  
+  jags_out$samples <- order_samples(jags_out$samples, sort(params))
+  jags_out$samples  
 }

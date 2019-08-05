@@ -19,7 +19,7 @@ set_up_input <- function(){
   tau <- pow(sigma,-2)
   }", con=model_file)
   params <<- c('alpha','beta','sigma','mu')
-  n_chains <<- 3; n_iter <<- 100; n_warmup <<- 500; n_adapt <<- 100
+  n_chains <<- 3; n_iter <<- 10; n_warmup <<- 20; n_adapt <<- 100
 }
 
 test_that("autojags() returns correct output structure",{
@@ -45,8 +45,8 @@ test_that("autojags() returns correct output structure",{
   expect_equal(length(out$sims.list), 5)
   expect_equal(names(out$sims.list),c(params,'deviance'))
   actual_iter <- out$mcmc.info$n.iter
-  expect_equal(length(out$sims.list$alpha), (actual_iter-n_warmup)*n_chains)
-  expect_equal(dim(out$sims.list$mu), c((actual_iter-n_warmup)*n_chains, 16))
+  expect_equal(length(out$sims.list$alpha), n_iter*n_chains)
+  expect_equal(dim(out$sims.list$mu), c(n_iter*n_chains, 16))
   expect_equal(length(out$mean$mu), 16)
   expect_equal(length(out$mean),5)
   expect_equal(dim(out$summary), c(20,11))
@@ -84,11 +84,11 @@ test_that("autojags() in parallel produces identical results", {
   skip_on_travis()
   set_up_input()
   
-  set.seed(456)
+  set.seed(789)
   out_ref <- autojags(jags_data, NULL, params, model_file, n_chains, n_adapt,
               n_iter, n_warmup, n.thin=1,verbose=F, parallel=FALSE)
 
-  set.seed(456)
+  set.seed(789)
   out <- autojags(jags_data, NULL, params, model_file, n_chains, n_adapt,
               n_iter, n_warmup, n.thin=1,verbose=F, parallel=TRUE)
 

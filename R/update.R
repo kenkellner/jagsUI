@@ -18,15 +18,18 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.iter,
     } else if(!DIC&'deviance'%in%parameters){parameters <- parameters[parameters!='deviance']}
   
   #Get thin rate
-  if(is.null(n.thin)){n.thin <- object$mcmc.info$n.thin}
-  
+  if(is.null(n.thin)){n.thin <- attr(object$samples[[1]], 'mcpar')[3]} 
+  n.chains <- length(object$samples)
+  n.cores <- object$mcmc.info$n.cores
+  if(is.null(n.cores)) n.cores <- min(n.chains, parallel::detectCores()-1)
+
   start.time <- Sys.time()
   
   if(object$parallel){
     
-    par <- run.parallel(data=NULL,inits=NULL,parameters.to.save=parameters,model.file=NULL,n.chains=object$mcmc.info$n.chains
+    par <- run.parallel(data=NULL,inits=NULL,parameters.to.save=parameters,model.file=NULL,n.chains=n.chains
                  ,n.adapt=n.adapt,n.iter=n.iter,n.burnin=0,n.thin=n.thin,modules=modules,factories=factories,
-                 DIC=DIC,model.object=mod,update=TRUE,verbose=verbose,n.cores=object$mcmc.info$n.cores) 
+                 DIC=DIC,model.object=mod,update=TRUE,verbose=verbose,n.cores=n.cores) 
     samples <- par$samples
     m <- par$model
      
@@ -37,7 +40,7 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.iter,
     set.factories(factories)
     
     rjags.output <- run.model(model.file=NULL,data=NULL,inits=NULL,parameters.to.save=parameters,
-                              n.chains=object$mcmc.info$n.chains,n.iter,n.burnin=0,n.thin,n.adapt,
+                              n.chains=n.chains,n.iter,n.burnin=0,n.thin,n.adapt,
                               model.object=mod,update=TRUE,verbose=verbose)
     samples <- rjags.output$samples
     m <- rjags.output$m

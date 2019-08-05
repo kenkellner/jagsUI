@@ -23,7 +23,7 @@ check_params <- function(inp, DIC){
   #Add deviance to list of parameters to save if it isn't present
   #TODO: check if this is actually necessary?
   if(DIC & !("deviance" %in% inp)) inp <- c(inp, "deviance")
-
+  if(!DIC & ("deviance" %in% inp)) inp <- inp[inp != "deviance"]
   inp
 }
 

@@ -76,6 +76,32 @@ test_that("jags() summary values are correct",{
 
 })
 
+test_that("Updating a jags() model produces correct results", {
+  
+  skip_on_cran()
+  set_up_input()
+  
+  set.seed(123)
+  out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
+              n_iter, n_warmup, n.thin=1,verbose=F)
+  out <- update(out, n.iter=100, verbose=F)
+  
+  expect_equal(class(out), "jagsUI")
+  expect_equal(names(out), c("sims.list","mean","sd","q2.5","q25","q50",
+                             "q75","q97.5","Rhat","n.eff","overlap0","f",
+                             "pD","DIC","summary","samples","modfile","parameters",
+                             "model","mcmc.info","run.date","parallel",
+                             "bugs.format","calc.DIC","update.count"))
+  expect_equal(as.character(unlist(sapply(out, class))), 
+               c(rep("list",12),rep("numeric",2),"matrix","mcmc.list",
+                 "character","character","jags","list","POSIXct","POSIXt",
+                 rep("logical",3),"numeric"))
+  
+  match_out <- readRDS('jags_update.Rds')
+  expect_equal(out$summary, match_out)
+
+})
+
 test_that("jags() in parallel produces identical results", {
 
   skip_on_cran()
@@ -89,4 +115,12 @@ test_that("jags() in parallel produces identical results", {
   match_out <- readRDS('jags_out1.Rds')
   expect_equal(out$summary, match_out)
 
+  #Check update
+  set.seed(123)
+  out_par <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
+              n_iter, n_warmup, n.thin=1, parallel=T, verbose=F)
+  out_par <- update(out_par, n.iter=100, verbose=F)
+  
+  match_out_par <- readRDS('jags_update.Rds')
+  expect_equal(out_par$summary, match_out_par)
 })
