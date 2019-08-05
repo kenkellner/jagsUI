@@ -1,29 +1,16 @@
 
-pp.check <- function(x, observed, simulated, xlab=NULL, ylab=NULL, main=NULL, ...){
+pp.check <- function(x, observed, simulated, 
+                     xlab='Observed data', ylab='Simulated data', 
+                     main='Posterior Predictive Check', ...){
 
   check_class(x)
+  check_parameter(observed, x$samples)
+  check_parameter(simulated, x$samples)
 
-  obs <- eval(parse(text=paste('x$sims.list$',observed,sep="")))
-  if(is.null(obs))
-    stop("MCMC chain ", deparse(substitute(observed)), 
-         " not found.", call.=FALSE)
-  sim <- eval(parse(text=paste('x$sims.list$',simulated,sep="")))
-  if(is.null(sim))
-    stop("MCMC chain ", deparse(substitute(simulated)), 
-         " not found.", call.=FALSE)
+  obs <- c(mcmc_to_mat(x$samples, observed))
+  sim <- c(mcmc_to_mat(x$samples, simulated))
 
-    bpval <- mean(sim > obs)
-
-  if(is.null(xlab)){
-    xlab <- 'Observed Data'
-  }
-  if(is.null(ylab)){
-    ylab <- 'Simulated Data'
-  }
-  if(is.null(main)){
-    main <- paste('Posterior Predictive Check')
-  }
-
+  bpval <- mean(sim > obs)
   plotrange <- range(obs, sim)
 
   graphics::plot(x = obs, y = sim, xlab=xlab, ylab=ylab, main=main,
