@@ -31,10 +31,10 @@ test_that("whiskerplot errors in correct situations", {
   out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
               n_iter, n_warmup, n.thin=1,verbose=F)
   
-  expect_error(pp.check('fake','fake1'))
-  expect_error(pp.check(out,'fake1'))
-  expect_error(pp.check(out,'alpha',quantiles=c(0.5)))
-  expect_error(pp.check(out,'alpha',quantiles=c(0.7,0.3)))
+  expect_error(whiskerplot('fake','fake1'))
+  expect_error(whiskerplot(out,'fake1'))
+  expect_error(whiskerplot(out,'alpha',quantiles=c(0.5)))
+  expect_error(whiskerplot(out,'alpha',quantiles=c(0.7,0.3)))
 
 })
 
