@@ -5,9 +5,9 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
                        bugs.format=FALSE,verbose=TRUE){
   
   #Process inputs
-  inp <- process_input(data, inits, parameters.to.save, n.chains,
-                              n.adapt, n.iter, n.burnin, n.thin, n.cores,
-                              DIC, parallel)
+  inp <- process_input(data, inits, parameters.to.save, model.file, n.chains,
+                              n.adapt, n.iter, n.burnin, n.thin, modules,
+                              factories, parallel, n.cores, DIC)
 
   #Save start time
   start.time <- Sys.time()
@@ -15,8 +15,8 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
   #Stuff to do if parallel=TRUE
   if(parallel && n.chains>1){
  
-  par <- run.parallel(inp$data,inp$inits,inp$params,model.file,n.chains,n.adapt,n.iter,n.burnin,n.thin,
-                      modules=modules,factories=factories,DIC=DIC,verbose=verbose,n.cores=inp$mcmc_info$n.cores) 
+  par <- run.parallel(inp$data,inp$inits,inp$parameters,model.file,n.chains,n.adapt,n.iter,n.burnin,n.thin,
+                      modules=modules,factories=factories,DIC=DIC,verbose=verbose,n.cores=inp$run.info$n.cores) 
   samples <- par$samples
   m <- par$model
   total.adapt <- par$total.adapt
@@ -33,7 +33,7 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
   set.modules(modules,DIC)
   set.factories(factories)
   
-  rjags.output <- run.model(model.file,inp$data,inp$inits,inp$params,n.chains,n.iter,n.burnin,n.thin,n.adapt,verbose=verbose)
+  rjags.output <- run.model(model.file,inp$data,inp$inits,inp$parameters,n.chains,n.iter,n.burnin,n.thin,n.adapt,verbose=verbose)
   samples <- rjags.output$samples
   m <- rjags.output$m
   total.adapt <- rjags.output$total.adapt
@@ -58,7 +58,7 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
   if(parallel){mcmc.info$n.cores <- n.cores}
   
   #Reorganize JAGS output to match input parameter order
-  samples <- order_samples(samples, inp$params)
+  samples <- order_samples(samples, inp$parameters)
 
   #Process output
   output <- process_output(samples, exclude_params=codaOnly)
@@ -71,10 +71,12 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
     output$data <- inp$data
   } 
   output$model <- m
-  output$parameters <- inp$params
+  output$parameters <- inp$parameters
   output$mcmc.info <- mcmc.info
   output$run.date <- date
   output$parallel <- parallel
+  
+  #delete these
   output$bugs.format <- bugs.format
   output$calc.DIC <- DIC
   

@@ -1,15 +1,17 @@
 ## MASTER FUNCTION TO PROCESS INPUT--------------------------------------------
 
-process_input <- function(data, inits, params, n.chains,
-                          n.adapt, n.iter, n.burnin, n.thin, n.cores, DIC,
-                          parallel){
-  
-  mcmc_info <- mget(c("n.chains", "n.adapt", "n.iter", "n.burnin", "n.thin",
-                      "parallel", "n.cores"))
+process_input <- function(data, inits, params, model.file, n.chains,
+                          n.adapt, n.iter, n.burnin, n.thin,
+                          modules, factories, parallel, n.cores, DIC){
+
+  mcmc_info <- mget(c("n.chains", "n.adapt", "n.iter", "n.burnin", "n.thin"))
+  run_info <- mget(c("parallel", "n.cores", "modules", "factories"))
 
   list(data = check_data(data), inits = get_inits(inits, n.chains), 
-       params = check_params(params, DIC),
-       mcmc_info = check_mcmc_info(mcmc_info))
+       parameters = check_params(params, DIC),
+       model.file = model.file,
+       mcmc.info = check_mcmc_info(mcmc_info),
+       run.info = check_run_info(run_info, n.chains))
 
 }
 
@@ -54,16 +56,18 @@ check_data <- function(inp){
 
 ## MCMC SETTINGS PROCESSING----------------------------------------------------
 
-check_parallel <- function(inp){
+check_run_info <- function(inp, n.chains){
   
-  avail_cores <- parallel::detectCores()   
-  if(is.null(avail_cores)) stop("Unable to detect number of available cores")
+  if(inp$parallel){
+    avail_cores <- parallel::detectCores()   
+    if(is.null(avail_cores)) stop("Unable to detect number of available cores")
 
-  if(is.null(inp$n.cores)){
-    inp$n.cores <- min(inp$n.chains, avail_cores)
-  } else if(inp$n.cores > avail_cores){
-    stop(paste0('More cores requested (',inp$n.cores,') than available (',
+    if(is.null(inp$n.cores)){
+      inp$n.cores <- min(n.chains, avail_cores)
+    } else if(inp$n.cores > avail_cores){
+      stop(paste0('More cores requested (',inp$n.cores,') than available (',
                     avail_cores,')'))
+    }
   }
  
   inp
@@ -73,8 +77,5 @@ check_mcmc_info <- function(inp){
   if(inp$n.iter <= inp$n.burnin){
     stop("Number of iterations must be larger than burn-in")
   }
-
-  if(inp$parallel) inp <- check_parallel(inp)
-
   inp
 }

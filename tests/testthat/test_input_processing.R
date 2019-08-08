@@ -40,21 +40,26 @@ test_that("Input data is checked properly",{
 
 })
 
-test_that("Parallel settings are checked properly",{
+test_that("Run info is checked properly",{
   cores_here <- parallel::detectCores()
-  miss_inp <- list(n.iter=10, n.burnin=5, n.chains=3)
-  good_inp <- list(n.iter=10, n.burnin=5, n.chains=3, n.cores=cores_here)
-  over_inp <- list(n.iter=10, n.burnin=5, 
-                   n.chains=cores_here+1, n.cores=cores_here+1)
+  
+  miss_inp <- list(parallel=TRUE, modules=c(), factories=c())
+  expect_equal(check_run_info(miss_inp, 3), 
+               list(parallel=TRUE, modules=c(), factories=c(),
+                    n.cores=min(3,cores_here)))
 
-  expect_equal(check_parallel(miss_inp), 
-               list(n.iter=10,n.burnin=5,n.chains=3,
-                    n.cores=min(miss_inp$n.chains,cores_here)))
-  expect_equal(check_parallel(good_inp), good_inp)
-
-  expect_error(check_parallel(over_inp),
+  good_inp <- list(parallel=TRUE, n.cores=cores_here, 
+                   modules=c(), factories=c())
+  expect_equal(check_run_info(good_inp, 3), good_inp)
+ 
+  over_inp <- list(parallel=TRUE, n.cores=cores_here+1, 
+                   modules=c(), factories=c())
+  expect_error(check_run_info(over_inp, cores_here+1),
       paste0('More cores requested (',over_inp$n.cores,') than available (',
                     cores_here,')'), fixed=TRUE)
+
+  no_par <- list(parallel=FALSE, modules=c(), factories=c())
+  expect_equal(check_run_info(no_par, 3), no_par)
 
 })
 
@@ -71,13 +76,6 @@ test_that("MCMC info is checked properly", {
                "Number of iterations must be larger than burn-in")
   expect_error(check_mcmc_info(bad_mcmc2), 
                "Number of iterations must be larger than burn-in")
-
-  mcmc_nopar <- list(n.iter = 10, n.burnin=5, n.chains=3, parallel=TRUE)
-  expect_equal(check_mcmc_info(mcmc_nopar),
-               list(n.iter=10, n.burnin=5, n.chains=3, 
-                    parallel=TRUE, 
-                    n.cores=min(mcmc_nopar$n.chains,cores_here)))
-
 })
 
 
