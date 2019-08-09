@@ -15,6 +15,30 @@ load_modules <- function(modules){
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
+#Load requested JAGS factories
+load_factories <- function(factories){ 
+  
+  if(is.null(factories)) return(invisible())
+  
+  set_factory <- function(factory){
+    spl <- strsplit(factory,'\\s')[[1]]
+    if(length(spl)!=3){ 
+      stop(paste0("Incorrect input format for factory '",factory,"', see help"))
+    }
+    avail <- as.character(rjags::list.factories(spl[2])[,1])
+    if(spl[1] %in% avail){
+      null <- rjags::set.factory(spl[1],spl[2],spl[3])
+    } else {
+      stop(paste('Factory',spl[1],'is not available. Check loaded modules.'))
+    }  
+  }
+
+  sapply(factories, set_factory)
+  invisible()
+}
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
 #Divide a series of iterations into approx equal-sized chunks
 get_chunks <- function(size){
   if(size<50) return(size)

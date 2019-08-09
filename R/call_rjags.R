@@ -8,10 +8,9 @@ call_rjags <- function(inp, quiet=FALSE, this_chain=NULL){
   #Initialize output object
   out <- list()
   
-  #Start modules
+  #Load modules and factories
   load_modules(ri$modules)
-
-  #Start factories ## NOT IMPLEMENTED YET!
+  load_factories(ri$factories)
 
   #Get chain ID for printing progress (if necessary)
   ch_id <- NULL

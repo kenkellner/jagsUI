@@ -77,7 +77,6 @@ test_that("jags() summary values are correct",{
 test_that("jags() in parallel produces identical results", {
 
   skip_on_cran()
-  #skip_on_travis()
   set_up_input()
   n_cores <- max(2, parallel::detectCores()-1)
   
@@ -88,4 +87,28 @@ test_that("jags() in parallel produces identical results", {
 
   match_out <- readRDS('jags_out1.Rds')
   expect_equal(out$summary, match_out)
+})
+
+test_that("jags() running loudly gives identical results", {
+
+  skip_on_cran()
+  set_up_input()
+  n_cores <- max(2, parallel::detectCores()-1)
+
+  set.seed(123)
+  printed <- capture_output(
+    out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
+    n_iter, n_warmup, n.thin=1,quiet=F))
+
+  match_out <- readRDS('jags_out1.Rds')
+  expect_equal(out$summary, match_out)
+  expect_equal(printed, "Initializing model\nAdapting\nBurn-in\nSampling posterior")
+
+  set.seed(123)
+  printed <- capture_output(
+    out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
+    n_iter, n_warmup, n.thin=1,parallel=T,quiet=F))
+
+  expect_equal(out$summary, match_out)
+
 })

@@ -9,6 +9,19 @@ test_that('load_modules loads and unloads correctly',{
   expect_equal(rjags::list.modules(),c('basemod','bugs'))
 })
 
+test_that('load_factories works correctly', {
+ expect_invisible(load_factories(NULL)) 
+ expect_equal(rjags::list.factories('sampler')[1:2,2], c(TRUE, TRUE))
+ expect_invisible(load_factories(c('bugs::BinomSlice sampler FALSE',
+                                   'bugs::RW1 sampler FALSE')))
+ expect_equal(rjags::list.factories('sampler')[1:2,2], c(FALSE, FALSE))
+ expect_invisible(load_factories(c('bugs::BinomSlice sampler TRUE',
+                                   'bugs::RW1 sampler TRUE')))
+ expect_equal(rjags::list.factories('sampler')[1:2,2], c(TRUE, TRUE))
+ expect_error(load_factories(c('bad bad')))
+ expect_error(load_factories(c('bugs::fake sampler FALSE')))
+})
+
 test_that('get_chunks bins iterations correctly',{
   expect_equal(get_chunks(100),rep(10,10))
   expect_equal(get_chunks(105),c(15,rep(10,9)))

@@ -1,19 +1,8 @@
-importFrom(rjags, "jags.model", "adapt", "coda.samples", "list.modules",
-           "load.module","unload.module","list.factories","set.factory")
-importFrom(coda, "as.mcmc.list", "mcmc", "thin")
-importFrom(parallel, "detectCores", "makeCluster", "clusterExport", 
-           "clusterApply", "stopCluster", "clusterEvalQ")
-importFrom(stats, "time", "start", "end")
-importFrom(utils, "capture.output")
-
 export("jags","jags.basic","autojags","pp.check", "traceplot", 
-       "densityplot", "whiskerplot", "View", "jags.View")
+       "densityplot", "whiskerplot")
 
 S3method("plot", "jagsUI")
 S3method("print","jagsUI")
 S3method("update","jagsUI")
 S3method("update","jagsUIbasic")
 S3method("summary","jagsUI")
-S3method("View", "jagsUI")
-S3method("View","default")
-

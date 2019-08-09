@@ -35,8 +35,7 @@ jags.basic(data, inits=NULL, parameters.to.save, model.file,
     (i.e., the burn-in). Does not include the adaptive phase iterations.}
   \item{n.thin}{Thinning rate. Must be a positive integer.}
   \item{modules}{List of JAGS modules to load before analysis. By default only 
-    module 'glm' is loaded (in addition to 'basemod' and 'bugs'). To force no 
-    additional modules to load, set \code{modules=NULL}.}
+    module 'glm' is loaded (in addition to 'basemod' and 'bugs').}
   \item{factories}{Optional character vector of factories to enable or disable, 
     in the format <factory> <type> <setting>. For example, to turn 
     \code{TemperedMix} on you would provide \code{'mix::TemperedMix sampler TRUE'} 

@@ -46,6 +46,12 @@ test_that("Updating models from jags() works", {
   
   expect_equal(dim(out2$samples[[1]]), c(100,20))
 
+  #Test setting new params and thin
+  out3 <- update(out, n.iter=100, n.adapt=n_adapt, n.thin=2,
+                 parameters.to.save='alpha', quiet=T)
+  expect_equal(out3$parameters, c('alpha','deviance'))
+  expect_equal(colnames(out3$samples[[1]]), c('alpha','deviance'))
+  expect_equal(attr(out3$samples[[1]],'mcpar')[3], 2)
 })
 
 test_that("Updating jags models in parallel works",{

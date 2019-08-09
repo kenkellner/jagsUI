@@ -13,6 +13,7 @@ test_that("Issues with parameters to save inputs are handled",{
     expect_equal(check_params(good_params, DIC=FALSE), good_params)
     expect_equal(check_params(good_params2, DIC=TRUE), good_params2)
     expect_equal(check_params(good_params, DIC=TRUE), good_params2)
+    expect_equal(check_params(good_params2, DIC=FALSE),good_params)
 })
 
 test_that("Input data is checked properly",{
