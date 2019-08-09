@@ -6,12 +6,13 @@ process_input <- function(data, inits, params, model.file, n.chains,
 
   mcmc_info <- mget(c("n.chains", "n.adapt", "n.iter", "n.burnin", "n.thin"))
   run_info <- mget(c("parallel", "n.cores", "modules", "factories"))
+  params <- check_params(params, DIC)
 
   list(data = check_data(data), inits = get_inits(inits, n.chains), 
-       parameters = check_params(params, DIC),
-       model.file = model.file,
+       parameters = params,
+       modfile = model.file,
        mcmc.info = check_mcmc_info(mcmc_info),
-       run.info = check_run_info(run_info, n.chains))
+       run.info = check_run_info(run_info, n.chains, params))
 
 }
 
@@ -56,18 +57,25 @@ check_data <- function(inp){
 
 ## MCMC SETTINGS PROCESSING----------------------------------------------------
 
-check_run_info <- function(inp, n.chains){
+check_run_info <- function(inp, n.chains, params){
   
   if(inp$parallel){
     avail_cores <- parallel::detectCores()   
-    if(is.null(avail_cores)) stop("Unable to detect number of available cores")
-
-    if(is.null(inp$n.cores)){
+    if(n.chains==1){
+      inp$n.cores <- NULL
+      inp$parallel <- FALSE
+    } else if(is.null(avail_cores)){ 
+      stop("Unable to detect number of available cores")
+    } else if(is.null(inp$n.cores)){
       inp$n.cores <- min(n.chains, avail_cores)
     } else if(inp$n.cores > avail_cores){
       stop(paste0('More cores requested (',inp$n.cores,') than available (',
                     avail_cores,')'))
-    }
+    } 
+  }
+
+  if(("deviance" %in% params) & (! "dic" %in% inp$modules)){
+    inp$modules <- c(inp$modules, 'dic')
   }
  
   inp

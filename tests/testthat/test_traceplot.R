@@ -29,7 +29,7 @@ test_that("traceplot errors in correct situations", {
 
   set.seed(123)
   out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
+              n_iter, n_warmup, n.thin=1,quiet=T)
   
   expect_error(traceplot("fake"))
   expect_error(traceplot(out, parameters=c('fake1','fake2')))
@@ -44,7 +44,7 @@ test_that("Single-parameter traceplot works", {
 
   set.seed(123)
   out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
+              n_iter, n_warmup, n.thin=1,quiet=T)
 
   traceplot_alpha <- function() traceplot(out, 'alpha')
   vdiffr::expect_doppelganger("traceplot alpha", traceplot_alpha)
@@ -58,7 +58,7 @@ test_that("Multi-parameter traceplot works", {
 
   set.seed(123)
   out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
+              n_iter, n_warmup, n.thin=1,quiet=T)
 
   traceplot_multi <- function() traceplot(out, c('alpha','beta','sigma'))
   vdiffr::expect_doppelganger("traceplot multi", traceplot_multi)
@@ -72,7 +72,7 @@ test_that("Setting Rhat_min works", {
 
   set.seed(123)
   out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
+              n_iter, n_warmup, n.thin=1,quiet=T)
 
   traceplot_rhat <- function() {traceplot(out, c('alpha','beta','sigma'),
                                           Rhat_min=1.0005)}

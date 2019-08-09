@@ -28,7 +28,7 @@ test_that("Summary method returns correct output", {
   set_up_input()
   
   out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
+              n_iter, n_warmup, n.thin=1,quiet=T)
 
   expect_equal(out$summary, summary(out))
 

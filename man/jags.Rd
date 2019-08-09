@@ -4,25 +4,28 @@
 \alias{jagsUI-class}
 % functions
 \alias{jags}
-\alias{jagsUI}
 
 
 \title{Call JAGS from R}
 \description{
-  The \code{jags} function is a basic user interface for running JAGS analyses via package \code{rjags} inspired by similar packages like \code{R2WinBUGS}, \code{R2OpenBUGS}, and \code{R2jags}. The user provides a model file, data, initial values (optional), and parameters to save. The function
-  compiles the information and sends it to \code{JAGS}, then consolidates and summarizes the MCMC output in an object of class \code{jagsUI}.
+  The \code{jags} function is a basic user interface for running JAGS analyses 
+  via package \code{rjags} inspired by similar packages like \code{R2WinBUGS}, 
+  \code{R2OpenBUGS}, and \code{R2jags}. The user provides a model file, data, 
+  initial values (optional), and parameters to save. The function compiles the 
+  information and sends it to \code{JAGS}, then consolidates and summarizes the 
+  MCMC output in an object of class \code{jagsUI}.
 }
 
 \usage{
 jags(data, inits=NULL, parameters.to.save, model.file,
-  n.chains, n.adapt=NULL, n.iter, n.burnin=0, n.thin=1,
+  n.chains, n.adapt=1000, n.iter, n.burnin=0, n.thin=1,
   modules=c('glm'), factories=NULL, parallel=FALSE, 
-  n.cores=NULL, DIC=TRUE, store.data=FALSE,
-  codaOnly=NULL,bugs.format=FALSE, verbose=TRUE)}
+  n.cores=NULL, DIC=TRUE, no.stats=NULL, quiet=FALSE)}
 
 \arguments{
-  \item{data}{A named list of the data objects required by the model, or a character vector containing the names of the data objects required by the model.
-              Use of a character vector will be deprecated in the next version - switch to using named lists.}
+  \item{data}{A named list of the data objects required by the model, or a 
+    character vector containing the names of the data objects required by the 
+    model.}
   \item{inits}{A list with \code{n.chains} elements; each element of the
     list is itself a list of starting values for the \code{BUGS} model,
     \emph{or} a function creating (possibly random) initial values. If inits is 
@@ -31,19 +34,28 @@ jags(data, inits=NULL, parameters.to.save, model.file,
     parameters in the model which should be monitored.}
   \item{model.file}{Path to file containing the model written in \code{BUGS} code}
   \item{n.chains}{Number of Markov chains to run.}
-  \item{n.adapt}{Number of iterations to run in the \code{JAGS} adaptive phase. The default is \code{NULL}, which will result in the function running groups of 100 adaptation iterations (to a max of 10,000) until \code{JAGS} reports adaptation is sufficient. If you set \code{n.adapt} manually, 1000 is the recommended minimum value.}
+  \item{n.adapt}{Number of iterations to run in the \code{JAGS} adaptive phase.}
   \item{n.iter}{Total number of iterations per chain (including burn-in).}
-  \item{n.burnin}{Number of iterations at the beginning of the chain to discard (i.e., the burn-in). Does not include the adaptive phase iterations.}
+  \item{n.burnin}{Number of iterations at the beginning of the chain to discard 
+    (i.e., the burn-in). Does not include the adaptive phase iterations.}
   \item{n.thin}{Thinning rate. Must be a positive integer.}
-  \item{modules}{List of JAGS modules to load before analysis. By default only module 'glm' is loaded (in addition to 'basemod' and 'bugs'). To force no additional modules to load, set \code{modules=NULL}.}
-  \item{factories}{Optional character vector of factories to enable or disable, in the format <factory> <type> <setting>. For example, to turn \code{TemperedMix} on you would provide \code{'mix::TemperedMix sampler TRUE'} (note spaces between parts). Make sure you have the corresponding modules loaded as well.}
+  \item{modules}{List of JAGS modules to load before analysis. By default only 
+    module 'glm' is loaded (in addition to 'basemod' and 'bugs'). To force no 
+    additional modules to load, set \code{modules=NULL}.}
+  \item{factories}{Optional character vector of factories to enable or disable, 
+    in the format <factory> <type> <setting>. For example, to turn 
+    \code{TemperedMix} on you would provide \code{'mix::TemperedMix sampler TRUE'} 
+    (note spaces between parts). Make sure you have the corresponding modules 
+    loaded as well.}
   \item{parallel}{If TRUE, run MCMC chains in parallel on multiple CPU cores}
-  \item{n.cores}{If parallel=TRUE, specify the number of CPU cores used. Defaults to total available cores or the number of chains, whichever is smaller.}
+  \item{n.cores}{If parallel=TRUE, specify the number of CPU cores used. 
+    Defaults to total available cores or the number of chains, whichever 
+    is smaller.}
   \item{DIC}{If TRUE, report DIC and the estimated number of parameters (pD).}
-  \item{store.data}{Option to store the input dataset and initial values in the output object for future use.}
-  \item{codaOnly}{Optional character vector of parameters that will be saved only in $samples and not otherwise processed by jagsUI.}
-  \item{bugs.format}{Option to print JAGS output in classic R2WinBUGS format. Default is FALSE.}
-  \item{verbose}{If set to FALSE, all text output in the console will be suppressed as the function runs (including most warnings).}
+  \item{no.stats}{Optional character vector of parameters that will be saved 
+    only in $samples and not otherwise processed by jagsUI.}
+  \item{quiet}{If TRUE, all text output in the console will be suppressed 
+    as the function runs.}
 }
 
 \details{
@@ -67,10 +79,14 @@ See example below.
 
 An object of class \code{jagsUI}. Notable elements in the output object include:
 
-\item{sims.list}{A list of values sampled from the posterior distributions of each monitored parameter.}
-\item{summary}{A summary of various statistics calculated based on model output, in matrix form.}
-\item{samples}{The original output object from the \code{rjags} package, as class \code{mcmc.list}.}
-\item{model}{The \code{rjags} model object; this will contain multiple elements if \code{parallel=TRUE}.}
+\item{sims.list}{A list of values sampled from the posterior distributions of 
+  each monitored parameter.}
+\item{summary}{A summary of various statistics calculated based on model output, 
+  in matrix form.}
+\item{samples}{The original output object from the \code{rjags} package, as 
+  class \code{mcmc.list}.}
+\item{model}{The \code{rjags} model object; this will contain multiple elements 
+  if \code{parallel=TRUE}.}
 
 }
 

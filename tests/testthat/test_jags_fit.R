@@ -28,19 +28,17 @@ test_that("jags() returns correct output structure",{
   set_up_input()
   
   out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
+              n_iter, n_warmup, n.thin=1,quiet=T)
   
   expect_true(is.list(out))
   expect_equal(class(out), "jagsUI")
   expect_equal(names(out), c("sims.list","mean","sd","q2.5","q25","q50",
                              "q75","q97.5","Rhat","n.eff","overlap0","f",
-                             "pD","DIC","summary","samples","modfile","model",
-                             "parameters","mcmc.info","run.date","parallel",
-                             "bugs.format","calc.DIC"))
+                             "pD","DIC","summary","samples","model","inits",
+                             "parameters", "modfile","mcmc.info","run.info"))
   expect_equal(as.character(unlist(sapply(out, class))), 
                c(rep("list",12),rep("numeric",2),"matrix","mcmc.list",
-                 "character","jags","character","list","POSIXct","POSIXt",
-                 rep("logical",3)))
+                 "jags","list",rep("character",2),"list","list"))
   expect_equal(length(out$sims.list), 5)
   expect_equal(names(out$sims.list),c(params,'deviance'))
   expect_equal(length(out$sims.list$alpha), (n_iter-n_warmup)*n_chains)
@@ -58,7 +56,7 @@ test_that("jags() summary values are correct",{
   
   set.seed(123)
   out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
+              n_iter, n_warmup, n.thin=1,quiet=T)
 
   match_out <- readRDS('jags_out1.Rds')
   expect_equal(out$summary, match_out)
@@ -66,39 +64,13 @@ test_that("jags() summary values are correct",{
   #Check that setting seed works
   set.seed(123)
   out2 <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
+              n_iter, n_warmup, n.thin=1,quiet=T)
   expect_equal(out$summary, out2$summary)
 
   #Check that output is not fixed
   out3 <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
+              n_iter, n_warmup, n.thin=1,quiet=T)
   expect_true(any(out$summary!=out3$summary))
-
-})
-
-test_that("Updating a jags() model produces correct results", {
-  
-  skip_on_cran()
-  set_up_input()
-  
-  set.seed(123)
-  out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
-  out <- update(out, n.iter=100, verbose=F)
-  
-  expect_equal(class(out), "jagsUI")
-  expect_equal(names(out), c("sims.list","mean","sd","q2.5","q25","q50",
-                             "q75","q97.5","Rhat","n.eff","overlap0","f",
-                             "pD","DIC","summary","samples","modfile","parameters",
-                             "model","mcmc.info","run.date","parallel",
-                             "bugs.format","calc.DIC","update.count"))
-  expect_equal(as.character(unlist(sapply(out, class))), 
-               c(rep("list",12),rep("numeric",2),"matrix","mcmc.list",
-                 "character","character","jags","list","POSIXct","POSIXt",
-                 rep("logical",3),"numeric"))
-  
-  match_out <- readRDS('jags_update.Rds')
-  expect_equal(out$summary, match_out)
 
 })
 
@@ -111,19 +83,9 @@ test_that("jags() in parallel produces identical results", {
   
   set.seed(123)
   out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F, 
+              n_iter, n_warmup, n.thin=1,quiet=T, 
               parallel=TRUE, n.cores=n_cores)
 
   match_out <- readRDS('jags_out1.Rds')
   expect_equal(out$summary, match_out)
-
-  #Check update
-  set.seed(123)
-  out_par <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-                  n_iter, n_warmup, n.thin=1, verbose=F,
-                  parallel=TRUE, n.cores=n_cores)
-  out_par <- update(out_par, n.iter=100, verbose=F)
-  
-  match_out_par <- readRDS('jags_update.Rds')
-  expect_equal(out_par$summary, match_out_par)
 })

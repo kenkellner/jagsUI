@@ -29,7 +29,7 @@ test_that("plot method errors in correct situations", {
 
   set.seed(123)
   out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
+              n_iter, n_warmup, n.thin=1,quiet=T)
   
   expect_error(plot(out, parameters=c('fake1','fake2')))
 
@@ -42,7 +42,7 @@ test_that("Single-parameter plot method works", {
 
   set.seed(123)
   out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
+              n_iter, n_warmup, n.thin=1,quiet=T)
 
   plot_alpha <- function() plot(out, 'alpha')
   vdiffr::expect_doppelganger("plot alpha", plot_alpha)
@@ -56,7 +56,7 @@ test_that("Multi-parameter plot method works", {
 
   set.seed(123)
   out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
+              n_iter, n_warmup, n.thin=1,quiet=T)
 
   plot_multi <- function() plot(out, c('alpha','beta','sigma'))
   vdiffr::expect_doppelganger("plot multi", plot_multi)

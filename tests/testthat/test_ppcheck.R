@@ -37,7 +37,7 @@ test_that("pp.check errors in correct situations", {
 
   set.seed(123)
   out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
+              n_iter, n_warmup, n.thin=1,quiet=T)
   
   expect_error(pp.check('fake','fit','fit.new'))
   expect_error(pp.check(out,'fake','fit.new'))
@@ -51,7 +51,7 @@ test_that("pp.check generates correct plot", {
 
   set.seed(123)
   out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
+              n_iter, n_warmup, n.thin=1,quiet=T)
 
   ppcheck_test <- function() pp.check(out, 'fit', 'fit.new')
   vdiffr::expect_doppelganger("ppcheck test", ppcheck_test)

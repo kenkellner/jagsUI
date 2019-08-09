@@ -29,7 +29,7 @@ test_that("whiskerplot errors in correct situations", {
 
   set.seed(123)
   out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
+              n_iter, n_warmup, n.thin=1,quiet=T)
   
   expect_error(whiskerplot('fake','fake1'))
   expect_error(whiskerplot(out,'fake1'))
@@ -45,7 +45,7 @@ test_that("whiskerplot generates correct plot", {
 
   set.seed(123)
   out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
+              n_iter, n_warmup, n.thin=1,quiet=T)
 
   whiskerplot_test <- function() whiskerplot(out, c('alpha','mu'))
   vdiffr::expect_doppelganger("whiskerplot test", whiskerplot_test)

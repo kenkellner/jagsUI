@@ -28,7 +28,7 @@ test_that("Print method returns correct output", {
   set_up_input()
 
   out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
+              n_iter, n_warmup, n.thin=1,quiet=T)
 
   test <- round(out$summary[,-c(4,6,10,11)],digits=3)
   colnames(test)[3:5] <- c('2.5%','50%','97.5%')
@@ -63,9 +63,9 @@ test_that("Print method warns when adaption was insufficient", {
   set_up_input()
   n_adapt <- 5
 
-  out <- jags(jags_data, NULL, params, model_file, 
+  out <- expect_warning(jags(jags_data, NULL, params, model_file, 
                              n_chains, n_adapt, n_iter, n_warmup, 
-                             n.thin=1,verbose=F)
+                             n.thin=1,quiet=T))
 
   capture_output(expect_warning(print(out)))
   

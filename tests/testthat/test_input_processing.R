@@ -44,22 +44,30 @@ test_that("Run info is checked properly",{
   cores_here <- parallel::detectCores()
   
   miss_inp <- list(parallel=TRUE, modules=c(), factories=c())
-  expect_equal(check_run_info(miss_inp, 3), 
+  expect_equal(check_run_info(miss_inp, 3, NULL), 
                list(parallel=TRUE, modules=c(), factories=c(),
                     n.cores=min(3,cores_here)))
 
   good_inp <- list(parallel=TRUE, n.cores=cores_here, 
                    modules=c(), factories=c())
-  expect_equal(check_run_info(good_inp, 3), good_inp)
+  expect_equal(check_run_info(good_inp, 3, NULL), good_inp)
  
   over_inp <- list(parallel=TRUE, n.cores=cores_here+1, 
                    modules=c(), factories=c())
-  expect_error(check_run_info(over_inp, cores_here+1),
+  expect_error(check_run_info(over_inp, cores_here+1, NULL),
       paste0('More cores requested (',over_inp$n.cores,') than available (',
                     cores_here,')'), fixed=TRUE)
 
+  one_chain <- list(parallel=TRUE, modules=c(), factories=c())
+  expect_equal(check_run_info(one_chain, 1, NULL),
+               list(parallel=FALSE, modules=c(), factories=c())) 
+
   no_par <- list(parallel=FALSE, modules=c(), factories=c())
-  expect_equal(check_run_info(no_par, 3), no_par)
+  expect_equal(check_run_info(no_par, 3, NULL), no_par)
+
+  no_dic <- list(parallel=FALSE, modules=c('glm'), factories=c())
+  expect_equal(check_run_info(no_dic, 3, c('alpha','deviance')),
+               list(parallel=FALSE,modules=c('glm','dic'),factories=c()))
 
 })
 

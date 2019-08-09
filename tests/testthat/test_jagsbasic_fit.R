@@ -29,7 +29,7 @@ test_that("jagsbasic() returns correct output structure",{
   
   set.seed(123)
   out <- jags.basic(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
+              n_iter, n_warmup, n.thin=1,quiet=T)
   
   expect_equal(class(out),"mcmc.list")
   expect_equal(length(out), n_chains)
@@ -38,11 +38,13 @@ test_that("jagsbasic() returns correct output structure",{
   
   set.seed(123)
   out2 <- jags.basic(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F,save.model=TRUE)
+              n_iter, n_warmup, n.thin=1,quiet=T,save.model=TRUE)
 
   expect_equal(class(out2),"jagsUIbasic")
-  expect_equal(names(out2),c("samples","model"))
-  expect_equal(sapply(out2,class), c(samples='mcmc.list',model='jags')) 
+  expect_equal(names(out2),c("samples","model","parameters","modfile",
+                             "mcmc.info","run.info"))
+  expect_equal(as.character(unlist(sapply(out2,class))), 
+               c('mcmc.list','jags','character','character','list','list'))
   expect_equal(colnames(out2$samples[[1]])[1:4], c("alpha","beta","sigma","mu[1]"))
   expect_equal(out[,1:2],out2$samples[,1:2])
   
@@ -56,70 +58,31 @@ test_that("jagsbasic() returns correct values", {
   #reference
   set.seed(456)
   out_ref <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)$samples
+              n_iter, n_warmup, n.thin=1,quiet=T)$samples
 
   set.seed(456)
   out <- jags.basic(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F, save.model=TRUE)$samples
+              n_iter, n_warmup, n.thin=1,quiet=T, save.model=TRUE)$samples
 
   expect_equal(out, out_ref)
-})
-
-test_that("Updating a jagsUIbasic object returns correct values", {
-
-  skip_on_cran()
-  set_up_input()
-  
-  set.seed(123)
-  out_ref <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
-  out_ref <- update(out_ref, n.iter=100, verbose=F)$samples
-  
-  set.seed(123)
-  out <- jags.basic(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F, save.model=TRUE)
-  out <- update(out, n.iter=100, verbose=F)
-
-  expect_equal(class(out),"jagsUIbasic")
-  expect_equal(names(out),c("samples","model"))
-  expect_equal(sapply(out,class), c(samples='mcmc.list',model='jags')) 
-  expect_equal(colnames(out$samples[[1]])[1:4], c("alpha","beta","sigma","mu[1]"))
-
-  expect_equal(out$samples, out_ref)
-
 })
 
 test_that("Running jagsUIbasic object in parallel returns same values", {
 
   skip_on_cran()
-  #skip_on_travis()
   set_up_input()
   n_cores <- max(2, parallel::detectCores()-1)
 
   #reference
   set.seed(456)
   out_ref <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)$samples
+              n_iter, n_warmup, n.thin=1,quiet=T)$samples
 
   #Check parallel
   set.seed(456)
   out_par <- jags.basic(jags_data, NULL, params, model_file, n_chains, n_adapt,
               n_iter, n_warmup, n.thin=1, parallel=T, n.cores=n_cores,
-              verbose=F, save.model=TRUE)$samples
+              quiet=T, save.model=TRUE)$samples
 
   expect_equal(out_par, out_ref, check.attributes=FALSE)
-  
-  set.seed(123)
-  out_ref <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
-  out_ref <- update(out_ref, n.iter=100, verbose=F)$samples
-  
-  set.seed(123)
-  out_par <- jags.basic(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F, 
-              parallel=T, n.cores=n_cores, save.model=TRUE)
-  out_par <- update(out_par, n.iter=100, verbose=F)$samples
-
-  expect_equal(out_par, out_ref, check.attributes=FALSE)
-
 })

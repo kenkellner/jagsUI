@@ -29,7 +29,7 @@ test_that("densityplot errors in correct situations", {
 
   set.seed(123)
   out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
+              n_iter, n_warmup, n.thin=1, quiet=T)
   
   expect_error(densityplot("fake"))
   expect_error(densityplot(out, parameters=c('fake1','fake2')))
@@ -43,7 +43,7 @@ test_that("Single-parameter densityplot works", {
 
   set.seed(123)
   out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
+              n_iter, n_warmup, n.thin=1,quiet=T)
 
   densityplot_alpha <- function() densityplot(out, 'alpha')
   vdiffr::expect_doppelganger("densityplot alpha", densityplot_alpha)
@@ -57,7 +57,7 @@ test_that("Multi-parameter densityplot works", {
 
   set.seed(123)
   out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
-              n_iter, n_warmup, n.thin=1,verbose=F)
+              n_iter, n_warmup, n.thin=1,quiet=T)
 
   densityplot_multi <- function() densityplot(out, c('alpha','beta','sigma'))
   vdiffr::expect_doppelganger("densityplot multi", densityplot_multi)

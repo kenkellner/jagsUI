@@ -2,11 +2,11 @@ importFrom(rjags, "jags.model", "adapt", "coda.samples", "list.modules",
            "load.module","unload.module","list.factories","set.factory")
 importFrom(coda, "as.mcmc.list", "mcmc", "thin")
 importFrom(parallel, "detectCores", "makeCluster", "clusterExport", 
-           "clusterSetRNGStream", "clusterApply", "stopCluster", "clusterEvalQ")
+           "clusterApply", "stopCluster", "clusterEvalQ")
 importFrom(stats, "time", "start", "end")
 importFrom(utils, "capture.output")
 
-export("jags", "jagsUI","jags.basic","autojags","pp.check", "traceplot", 
+export("jags","jags.basic","autojags","pp.check", "traceplot", 
        "densityplot", "whiskerplot", "View", "jags.View")
 
 S3method("plot", "jagsUI")
