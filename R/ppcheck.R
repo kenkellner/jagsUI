@@ -4,8 +4,12 @@ pp.check <- function(x, observed, simulated,
                      main='Posterior Predictive Check', ...){
 
   check_class(x)
-  check_parameter(observed, x$samples)
-  check_parameter(simulated, x$samples)
+  if(is.null(match_params(observed, param_names(x$samples)))){
+    stop("Observed parameter not found in output")
+  }
+  if(is.null(match_params(simulated, param_names(x$samples)))){
+    stop("Simulated parameter not found in output")
+  }
 
   obs <- c(mcmc_to_mat(x$samples, observed))
   sim <- c(mcmc_to_mat(x$samples, simulated))

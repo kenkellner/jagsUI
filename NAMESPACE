@@ -1,5 +1,5 @@
 export("jags","jags.basic","autojags","pp.check", "traceplot", 
-       "densityplot", "whiskerplot")
+       "densityplot", "whiskerplot", "shinyjags")
 
 S3method("plot", "jagsUI")
 S3method("print","jagsUI")
