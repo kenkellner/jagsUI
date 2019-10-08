@@ -119,5 +119,5 @@ update_model <- function(model_object, n_iter){
 sample_model <- function(model_object, params, n_iter, n_thin){
   #recompile_model(model_object)
   rjags::coda.samples(model_object, variable.names=params, n.iter=n_iter,
-                      thin=n_thin)
+                      thin=n_thin, na.rm=FALSE)
 }

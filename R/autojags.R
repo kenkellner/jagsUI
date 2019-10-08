@@ -19,6 +19,7 @@ autojags <- function(data, inits=NULL, parameters.to.save, model.file,
   Rhat_fail <- test_Rhat(out$samples, Rhat.limit)
   reach_max <- cur_iter >= max.iter
   index <- 0
+  new_burnin = n.burnin
 
   while(Rhat_fail$result & !reach_max){
     
