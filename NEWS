@@ -1,3 +1,11 @@
+# Changes from Version 1.5.0 to 1.5.1 [30 July 2019] #
+
+Fix issue when chains adapted for different numbers of iterations
+Fix crash when DIC was requested but JAGS couldn't calculate it
+Stop auto-converting 1 row/1 col matrices into vectors
+Improve pp.check plotting function
+Add some warnings about functions and arguments that will be deprecated soon
+
 # Changes from Version 1.4.9 to 1.5.0 [9 September 2018] #
 
 Fix issues with NAs in parameters.

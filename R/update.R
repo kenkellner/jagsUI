@@ -1,94 +1,61 @@
-
-update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.iter, n.thin=NULL, 
-                          modules=c('glm'), factories=NULL,
-                          DIC=NULL,codaOnly=FALSE, verbose=TRUE, ...){
+#------------------------------------------------------------------------------
+#Update method for regular jagsUI-class objects
+update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=1000, 
+                          n.iter, n.thin=NULL, no.stats=NULL, 
+                          quiet=FALSE, ...){ 
   
-  mod <- object$model
+  #Process input
+  inp <- get_update_input(object, parameters.to.save, n.adapt, n.iter, n.thin)
   
-  #Get list of parameters to save
-  if(is.null(parameters.to.save)){parameters <- object$parameters
-  } else {parameters <- parameters.to.save}
+  #Run JAGS
+  out <- run_model(inp, quiet)
+ 
+  #Process output
+  stats <- process_output(out$samples, exclude_params=no.stats)
   
-  #Set up DIC monitoring
-  if(is.null(DIC)){
-    DIC <- object$calc.DIC
-  }
-  
-  if(DIC&!'deviance'%in%parameters){parameters <- c(parameters,'deviance')
-    } else if(!DIC&'deviance'%in%parameters){parameters <- parameters[parameters!='deviance']}
-  
-  #Get thin rate
-  if(is.null(n.thin)){n.thin <- object$mcmc.info$n.thin}
-  
-  start.time <- Sys.time()
-  
-  if(object$parallel){
-    
-    par <- run.parallel(data=NULL,inits=NULL,parameters.to.save=parameters,model.file=NULL,n.chains=object$mcmc.info$n.chains
-                 ,n.adapt=n.adapt,n.iter=n.iter,n.burnin=0,n.thin=n.thin,modules=modules,factories=factories,
-                 DIC=DIC,model.object=mod,update=TRUE,verbose=verbose,n.cores=object$mcmc.info$n.cores) 
-    samples <- par$samples
-    m <- par$model
-     
-  } else {
-    
-    #Set modules
-    set.modules(modules,DIC)
-    set.factories(factories)
-    
-    rjags.output <- run.model(model.file=NULL,data=NULL,inits=NULL,parameters.to.save=parameters,
-                              n.chains=object$mcmc.info$n.chains,n.iter,n.burnin=0,n.thin,n.adapt,
-                              model.object=mod,update=TRUE,verbose=verbose)
-    samples <- rjags.output$samples
-    m <- rjags.output$m
-    
-  }
-  
-  end.time <- Sys.time() 
-  time <- round(as.numeric(end.time-start.time,units="mins"),digits=3)
-  date <- start.time
-  
-  #Reorganize JAGS output to match input parameter order
-  samples <- order.params(samples,parameters,DIC,verbose=verbose)
-    
-  #Run process output
-  output <- process.output(samples,DIC=DIC,codaOnly,verbose=verbose)
-    
-  #Summary
-  output$summary <- summary.matrix(output,samples,object$mcmc.info$n.chains,codaOnly)
-  
-  #Save other information to output object
-  output$samples <- samples
-  
-  output$modfile <- object$modfile
-  
-  #If user wants to save input data/inits
-  if(!is.null(object$inits)){
-    output$inits <- object$inits
-    output$data <- object$data
-  } 
-  
-  output$parameters <- parameters  
-  output$model <- m
-  output$mcmc.info <- object$mcmc.info
-  output$mcmc.info$n.burnin <- object$mcmc.info$n.iter
-  output$mcmc.info$n.iter <- n.iter + output$mcmc.info$n.burnin
-  output$mcmc.info$n.thin <- n.thin
-  output$mcmc.info$n.samples <- (output$mcmc.info$n.iter-output$mcmc.info$n.burnin) / n.thin * output$mcmc.info$n.chains
-  output$mcmc.info$elapsed.mins <- time
-  output$run.date <- date
-  output$random.seed <- object$random.seed
-  output$parallel <- object$parallel
-  output$bugs.format <- object$bugs.format
-  output$calc.DIC <- DIC
-  
-  #Keep a record of how many times model has been updated
-  if(is.null(object$update.count)){output$update.count <- 1
-  } else {output$update.count <- object$update.count + 1}
-  
-  #Classify final output object
-  class(output) <- 'jagsUI'
-  
-  return(output)
-  
+  #Build jagsUI object
+  out <- c(stats, out)
+  class(out) <- 'jagsUI'
+  out 
 }
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+#Update method for jagsUIbasic-class objects
+update.jagsUIbasic <- function(object, parameters.to.save=NULL, n.adapt=1000,
+                               n.iter, n.thin=NULL, quiet=FALSE, ...){
+
+  #Process input
+  inp <- get_update_input(object, parameters.to.save, n.adapt, n.iter, n.thin)
+  
+  #Run JAGS
+  out <- run_model(inp, quiet)
+
+  out <- out[c('samples','model','parameters','modfile',
+               'mcmc.info','run.info')]
+
+  class(out) <- 'jagsUIbasic'
+  out
+}
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+#Utility function for compiling run info for updates
+get_update_input <- function(object, params, n.adapt, n.iter, n.thin){
+  
+  #Set up input
+  inp <- object[c("parameters", "modfile", "mcmc.info", "run.info", "model")]
+  
+  if(!is.null(params)){
+    DIC <- 'deviance' %in% param_names(object$samples)
+    inp$parameters <- check_params(params, DIC)
+  }
+  
+  inp$mcmc.info$n.adapt <- n.adapt
+  inp$mcmc.info$n.burnin <- 0
+  inp$mcmc.info$n.iter <- n.iter
+  if(!is.null(n.thin)) inp$mcmc.info$n.thin <- n.thin
+
+  inp
+}
+#------------------------------------------------------------------------------
