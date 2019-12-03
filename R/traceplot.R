@@ -1,16 +1,16 @@
 #Get traceplots for series of parameters
 traceplot <- function(x, parameters=NULL, Rhat_min=NULL,
-                      per_plot=9, ask=TRUE){
-  
+                      per_plot=9, ask=dev.interactive(orNone = TRUE)){
+
   #Check input class and get basic plot settings
-  check_class(x)  
+  check_class(x)
   plot_info <- get_plot_info(x, parameters, per_plot, ask, Rhat_min)
-  
+
   #Handle par()
   old_par <- graphics::par(no.readonly=TRUE)
-  on.exit(graphics::par(old_par))  
+  on.exit(graphics::par(old_par))
   graphics::par(plot_info$new_par)
-  
+
   #Generate plot
   n <- length(plot_info$params)
   for (i in 1:n){
@@ -22,20 +22,20 @@ traceplot <- function(x, parameters=NULL, Rhat_min=NULL,
 
 #Traceplot for single parameter
 param_trace <- function(x, parameter, m_labels=FALSE){
-  
+
   #Get samples and Rhat values
   vals <- mcmc_to_mat(x$samples, parameter)
   Rhat <- sprintf("%.3f",round(x$summary[parameter, 'Rhat'],3))
 
   #Draw plot
   cols <- grDevices::rainbow(ncol(vals))
-  graphics::plot(1:nrow(vals), vals[,1], type='l', col=cols[1], 
+  graphics::plot(1:nrow(vals), vals[,1], type='l', col=cols[1],
                  ylim=range(vals), xlab='Iterations', ylab='Value',
                  main=paste('Trace of',parameter))
   for (i in 2:ncol(vals)) graphics::lines(1:nrow(vals), vals[,i], col=cols[i])
-  
+
   #Add Rhat value
-  graphics::legend('bottomright', legend=bquote(hat(R) == .(Rhat)), 
+  graphics::legend('bottomright', legend=bquote(hat(R) == .(Rhat)),
                    bty='o', bg='white', cex=1.2)
 
   #Add margin labels if necessary
@@ -47,7 +47,7 @@ param_trace <- function(x, parameter, m_labels=FALSE){
 
 #General function for setting up plots
 get_plot_info <- function(x, parameters, per_plot, ask, Rhat_min=NULL){
-  
+
   #Expand non-scalar parameters and check they exist
   all_params <- param_names(x$samples)
   if(!is.null(parameters)){
@@ -58,14 +58,14 @@ get_plot_info <- function(x, parameters, per_plot, ask, Rhat_min=NULL){
   } else{
     parameters <- all_params
   }
- 
+
   #If rhat_min, check parameters against it
   if(!is.null(Rhat_min)){
     Rhats <- x$summary[parameters, 'Rhat']
     parameters <- parameters[Rhats >= Rhat_min]
     if(length(parameters)==0) stop("No parameters > Rhat_min")
   }
-  
+
   #Reduce max panels per plot if larger than number of parameters
   if(length(parameters) <= per_plot){
     per_plot <- length(parameters)
