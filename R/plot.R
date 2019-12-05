@@ -1,6 +1,6 @@
 
 #Plot method for jagsUI objects
-plot.jagsUI <- function(x, parameters=NULL, per_plot=4, ask=dev.interactive(orNone = TRUE), ...){
+plot.jagsUI <- function(x, parameters=NULL, per_plot=4, ask=grDevices::dev.interactive(orNone = TRUE), ...){
 
   plot_info <- get_plot_info(x, parameters, per_plot, ask)
   dims <- c(min(length(plot_info$params), per_plot), 2)

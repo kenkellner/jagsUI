@@ -1,6 +1,6 @@
 #Get traceplots for series of parameters
 traceplot <- function(x, parameters=NULL, Rhat_min=NULL,
-                      per_plot=9, ask=dev.interactive(orNone = TRUE)){
+                      per_plot=9, ask=grDevices::dev.interactive(orNone = TRUE)){
 
   #Check input class and get basic plot settings
   check_class(x)
