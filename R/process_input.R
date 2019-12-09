@@ -2,9 +2,9 @@
 
 process_input <- function(data, inits, params, model.file, n.chains,
                           n.adapt, n.iter, n.burnin, n.thin,
-                          modules, factories, parallel, n.cores, DIC){
+                          modules, factories, parallel, n.cores, DIC, na.rm){
 
-  mcmc_info <- mget(c("n.chains", "n.adapt", "n.iter", "n.burnin", "n.thin"))
+  mcmc_info <- mget(c("n.chains", "n.adapt", "n.iter", "n.burnin", "n.thin", "na.rm"))
   run_info <- mget(c("parallel", "n.cores", "modules", "factories"))
   params <- check_params(params, DIC)
 

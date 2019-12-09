@@ -2,10 +2,10 @@
 #Update method for regular jagsUI-class objects
 update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=1000, 
                           n.iter, n.thin=NULL, no.stats=NULL, 
-                          quiet=FALSE, ...){ 
+                          quiet=FALSE, na.rm=NULL, ...){ 
   
   #Process input
-  inp <- get_update_input(object, parameters.to.save, n.adapt, n.iter, n.thin)
+  inp <- get_update_input(object, parameters.to.save, n.adapt, n.iter, n.thin, na.rm)
   
   #Run JAGS
   out <- run_model(inp, quiet)
@@ -23,10 +23,10 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=1000,
 #------------------------------------------------------------------------------
 #Update method for jagsUIbasic-class objects
 update.jagsUIbasic <- function(object, parameters.to.save=NULL, n.adapt=1000,
-                               n.iter, n.thin=NULL, quiet=FALSE, ...){
+                               n.iter, n.thin=NULL, quiet=FALSE, na.rm=NULL, ...){
 
   #Process input
-  inp <- get_update_input(object, parameters.to.save, n.adapt, n.iter, n.thin)
+  inp <- get_update_input(object, parameters.to.save, n.adapt, n.iter, n.thin, na.rm)
   
   #Run JAGS
   out <- run_model(inp, quiet)
@@ -41,7 +41,7 @@ update.jagsUIbasic <- function(object, parameters.to.save=NULL, n.adapt=1000,
 
 #------------------------------------------------------------------------------
 #Utility function for compiling run info for updates
-get_update_input <- function(object, params, n.adapt, n.iter, n.thin){
+get_update_input <- function(object, params, n.adapt, n.iter, n.thin, na.rm){
   
   #Set up input
   inp <- object[c("parameters", "modfile", "mcmc.info", "run.info", "model")]
@@ -55,6 +55,10 @@ get_update_input <- function(object, params, n.adapt, n.iter, n.thin){
   inp$mcmc.info$n.burnin <- 0
   inp$mcmc.info$n.iter <- n.iter
   if(!is.null(n.thin)) inp$mcmc.info$n.thin <- n.thin
+  if(!is.null(na.rm)) inp$mcmc.info$na.rm <- na.rm
+  # Older objects will not have na.rm info:
+  if(!is.null(inp$mcmc.info$na.rm)) inp$mcmc.info$na.rm <- TRUE
+  
 
   inp
 }

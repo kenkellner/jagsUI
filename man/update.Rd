@@ -12,7 +12,7 @@
 
 \usage{  
   \method{update}{jagsUI}(object, parameters.to.save=NULL, n.adapt=1000, 
-  n.iter, n.thin=NULL, no.stats=NULL, quiet=FALSE, ...)}
+  n.iter, n.thin=NULL, no.stats=NULL, quiet=FALSE, na.rm=NULL, ...)}
 
 \arguments{
   \item{object}{A \code{jagsUI} or \code{jagsUIbasic}-class object to update.}
@@ -26,6 +26,7 @@
     only in $samples and not otherwise processed by jagsUI.}
   \item{quiet}{If TRUE, all text output in the console will be suppressed 
     as the function runs.}
+  \item{na.rm}{If TRUE, columns in the output which contain all NAs will be removed; set to FALSE if chains differ in which columns are all NA. Defaults to the same setting as the original run.}
  \item{...}{Further arguments pass to or from other methods.}
 }
 \author{ 
