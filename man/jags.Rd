@@ -20,7 +20,7 @@
 jags(data, inits=NULL, parameters.to.save, model.file,
   n.chains, n.adapt=1000, n.iter, n.burnin=0, n.thin=1,
   modules=c('glm'), factories=NULL, parallel=FALSE, 
-  n.cores=NULL, DIC=TRUE, no.stats=NULL, quiet=FALSE)}
+  n.cores=NULL, DIC=TRUE, no.stats=NULL, quiet=FALSE, na.rm=TRUE)}
 
 \arguments{
   \item{data}{A named list of the data objects required by the model, or a 
@@ -55,6 +55,7 @@ jags(data, inits=NULL, parameters.to.save, model.file,
     only in $samples and not otherwise processed by jagsUI.}
   \item{quiet}{If TRUE, all text output in the console will be suppressed 
     as the function runs.}
+  \item{na.rm}{If TRUE, columns in the output which contain all NAs will be removed; set to FALSE if chains differ in which columns are all NA.}
 }
 
 \details{

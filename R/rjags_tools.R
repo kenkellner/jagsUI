@@ -116,8 +116,8 @@ update_model <- function(model_object, n_iter){
 
 #Sample from model posterior
 #TODO: tests
-sample_model <- function(model_object, params, n_iter, n_thin){
+sample_model <- function(model_object, params, n_iter, n_thin, na.rm){
   #recompile_model(model_object)
   rjags::coda.samples(model_object, variable.names=params, n.iter=n_iter,
-                      thin=n_thin, na.rm=FALSE)
+                      thin=n_thin, na.rm=na.rm)
 }

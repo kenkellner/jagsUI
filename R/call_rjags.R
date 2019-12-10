@@ -64,7 +64,7 @@ call_rjags <- function(inp, quiet=FALSE, this_chain=NULL){
 
   #Common function for generating samples
   get_samples <- function(n_samples){
-    sample_model(inp$model, inp$parameters, n_samples, mc$n.thin)
+    sample_model(inp$model, inp$parameters, n_samples, mc$n.thin, na.rm=mc$na.rm)
   }
   
   #Get samples

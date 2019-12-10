@@ -1,5 +1,5 @@
 #Get density plots for series of parameters
-densityplot <- function(x, parameters=NULL, per_plot=9, ask=TRUE){
+densityplot <- function(x, parameters=NULL, per_plot=9, ask=grDevices::dev.interactive(orNone = TRUE)){
   
   #Check input class and get basic plot settings
   check_class(x)  
