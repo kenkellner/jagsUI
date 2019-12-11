@@ -4,7 +4,8 @@
 \title{Density plots of JAGS output}
 
 \usage{
-  densityplot(x, parameters=NULL, per_plot=9, ask=grDevices::dev.interactive(orNone = TRUE))
+  densityplot(x, parameters=NULL, per_plot=9,
+              ask=grDevices::dev.interactive(orNone = TRUE))
 }
 
 \arguments{

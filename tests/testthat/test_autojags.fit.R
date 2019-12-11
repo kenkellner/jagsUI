@@ -48,7 +48,7 @@ test_that("autojags() returns correct output structure",{
   expect_equal(length(out$mean$mu), 16)
   expect_equal(length(out$mean),5)
   expect_equal(dim(out$summary), c(20,11))
-  expect_equal(out$mcmc.info$n.samples, 30)
+  expect_equal(out$mcmc.info$n.draws, 30)
   expect_equal(out$mcmc.info$n.burnin, 440)
   expect_equal(out$mcmc.info$n.iter, 450)
 })
@@ -63,7 +63,7 @@ test_that("autojags() summary values are correct",{
               n_iter, n_warmup, n.thin=1,quiet=T)
 
   match_out <- readRDS('autojags_out1.Rds')
-  expect_equal(out$summary, match_out)
+  expect_equal(out$summary, match_out, tol=1e-3)
 
   #Check that setting seed works
   set.seed(123)
@@ -110,14 +110,14 @@ test_that("autojags() running loudly gives identical results", {
     n_iter, n_warmup, n.thin=1,quiet=F))
 
   match_out <- readRDS('autojags_out1.Rds')
-  expect_equal(out$summary, match_out)
+  expect_equal(out$summary, match_out, tol=1e-3)
 
   set.seed(123)
   printed <- capture_output(
     out <- autojags(jags_data, NULL, params, model_file, n_chains, n_adapt,
     n_iter, n_warmup, n.thin=1,parallel=T,quiet=F))
 
-  expect_equal(out$summary, match_out)
+  expect_equal(out$summary, match_out, tol=1e-3)
 
 })
 
@@ -130,7 +130,7 @@ test_that("Saving all iterations in autojags works", {
   out <- autojags(jags_data, NULL, params, model_file, n_chains, n_adapt,
               n_iter, n_warmup, save.all.iter=T, n.thin=1,quiet=T)
   expect_equal(nrow(out$samples[[1]]), 20)
-  expect_equal(out$mcmc.info$n.samples, 60)
+  expect_equal(out$mcmc.info$n.draws, 60)
   expect_equal(out$mcmc.info$n.burnin, 20)
   expect_equal(out$mcmc.info$n.iter, 40)
 })

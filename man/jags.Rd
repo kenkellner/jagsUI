@@ -55,7 +55,8 @@ jags(data, inits=NULL, parameters.to.save, model.file,
     only in $samples and not otherwise processed by jagsUI.}
   \item{quiet}{If TRUE, all text output in the console will be suppressed 
     as the function runs.}
-  \item{na.rm}{If TRUE, columns in the output which contain all NAs will be removed; set to FALSE if chains differ in which columns are all NA.}
+  \item{na.rm}{If TRUE, columns in the output which contain all NAs will be
+    removed; set to FALSE if chains differ in which columns are all NA.}
 }
 
 \details{

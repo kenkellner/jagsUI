@@ -42,7 +42,7 @@ test_that("Updating models from jags() works", {
                  "jags",rep("character",2),"list","list"))
   
   match_out <- readRDS('jags_update.Rds')
-  expect_equal(out2$summary, match_out)
+  expect_equal(out2$summary, match_out, tol=1e-4)
   
   expect_equal(dim(out2$samples[[1]]), c(100,20))
 
@@ -67,7 +67,7 @@ test_that("Updating jags models in parallel works",{
   out_par2 <- update(out_par, n.iter=100, n.adapt=n_adapt, quiet=T)
   
   match_out_par <- readRDS('jags_update.Rds')
-  expect_equal(out_par2$summary, match_out_par)
+  expect_equal(out_par2$summary, match_out_par, tol=1e-4)
 
 })
 

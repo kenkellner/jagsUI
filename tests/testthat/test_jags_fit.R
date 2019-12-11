@@ -59,7 +59,7 @@ test_that("jags() summary values are correct",{
               n_iter, n_warmup, n.thin=1,quiet=T)
 
   match_out <- readRDS('jags_out1.Rds')
-  expect_equal(out$summary, match_out)
+  expect_equal(out$summary, match_out, tol=1e-4)
 
   #Check that setting seed works
   set.seed(123)
@@ -86,7 +86,7 @@ test_that("jags() in parallel produces identical results", {
               parallel=TRUE, n.cores=n_cores)
 
   match_out <- readRDS('jags_out1.Rds')
-  expect_equal(out$summary, match_out)
+  expect_equal(out$summary, match_out, tol=1e-4)
 })
 
 test_that("jags() running loudly gives identical results", {
@@ -101,7 +101,7 @@ test_that("jags() running loudly gives identical results", {
     n_iter, n_warmup, n.thin=1,quiet=F))
 
   match_out <- readRDS('jags_out1.Rds')
-  expect_equal(out$summary, match_out)
+  expect_equal(out$summary, match_out, tol=1e-4)
   expect_equal(printed, "Initializing model\nAdapting\nBurn-in\nSampling posterior")
 
   set.seed(123)
@@ -109,6 +109,6 @@ test_that("jags() running loudly gives identical results", {
     out <- jags(jags_data, NULL, params, model_file, n_chains, n_adapt,
     n_iter, n_warmup, n.thin=1,parallel=T,quiet=F))
 
-  expect_equal(out$summary, match_out)
+  expect_equal(out$summary, match_out, tol=1e-4)
 
 })

@@ -4,7 +4,8 @@
 \title{Traceplots of JAGS output}
 
 \usage{
-  traceplot(x, parameters=NULL, Rhat_min=NULL, per_plot=9, ask=grDevices::dev.interactive(orNone = TRUE))
+  traceplot(x, parameters=NULL, Rhat_min=NULL, per_plot=9,
+            ask=grDevices::dev.interactive(orNone = TRUE))
 }
 
 \arguments{
