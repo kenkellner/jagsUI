@@ -9,7 +9,7 @@ run_model <- function(inp, quiet){
   }
 
   inp$run.info$end.time <- Sys.time()
-  inp$mcmc.info$n.samples <- nrow(out$samples[[1]]) * length(out$samples)
+  inp$mcmc.info$n.draws <- nrow(out$samples[[1]]) * length(out$samples)
   inp$mcmc.info$sufficient.adapt <- all(out$sufficient.adapt)
 
   #Reorganize

@@ -60,28 +60,28 @@ call_rjags <- function(inp, quiet=FALSE, this_chain=NULL){
   #----------------------------------------------------------------------------
 
   #Sample from posterior-------------------------------------------------------
-  n.samples <- mc$n.iter - mc$n.burnin
+  n.draws <- mc$n.iter - mc$n.burnin
 
-  #Common function for generating samples
-  get_samples <- function(n_samples){
-    sample_model(inp$model, inp$parameters, n_samples, mc$n.thin, na.rm=mc$na.rm)
+  #Common function for generating sample
+  get_sample <- function(n_draws){
+    sample_model(inp$model, inp$parameters, n_draws, mc$n.thin, na.rm=mc$na.rm)
   }
   
-  #Get samples
-  if ( !ri$parallel | n.samples < 10 | quiet ){
-    #Get all samples at once if single-core or few iterations
+  #Get draws
+  if ( !ri$parallel | n.draws < 10 | quiet ){
+    #Get all draws at once if single-core or few iterations
     if (!quiet) cat(paste0(ch_id,'Sampling posterior\n'))
-    out$samples <- get_samples(n.samples)
+    out$samples <- get_sample(n.draws)
 
   } else {   
     #Run in ~10% chunks to show progress
-    chunks <- get_chunks(n.samples)
+    chunks <- get_chunks(n.draws)
     sample_chunks <- vector(length=length(chunks),"list")
     for (i in 1:length(chunks)){
-      sample_chunks[[i]] <- get_samples(chunks[i])
+      sample_chunks[[i]] <- get_sample(chunks[i])
       tl <- time_left(st_time, mc$n.burnin + sum(chunks[1:i]), 
                       mc$n.iter)
-      pct <- round(sum(chunks[1:i])/n.samples*100)
+      pct <- round(sum(chunks[1:i])/n.draws*100)
       if(!quiet) cat(paste0(ch_id,'Sampling ', pct,'%, ',tl,'\n'))
     }
 

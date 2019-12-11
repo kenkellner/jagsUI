@@ -41,8 +41,8 @@ get_posterior_array <- function(parameter, samples){
 
     #If parameter is array, get indices
     ind_raw <- get_inds(parameter, colnames(posterior_raw))
-    nsamples <- nrow(posterior_raw)
-    ind_array <- cbind(1:nsamples, ind_raw[rep(1:nrow(ind_raw), each=nsamples),])
+    ndraws <- nrow(posterior_raw)
+    ind_array <- cbind(1:ndraws, ind_raw[rep(1:nrow(ind_raw), each=ndraws),])
 
     #Create, fill, return output object
     fill_array(as.vector(posterior_raw), ind_array)

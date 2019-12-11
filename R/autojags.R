@@ -50,7 +50,7 @@ autojags <- function(data, inits=NULL, parameters.to.save, model.file,
   out$mcmc.info$n.burnin <- new_burnin
   if(save.all.iter){
     out$mcmc.info$n.burnin <- n.burnin
-    out$mcmc.info$n.samples <- nrow(out$samples[[1]]) * out$mcmc.info$n.chains
+    out$mcmc.info$n.draws <- nrow(out$samples[[1]]) * out$mcmc.info$n.chains
   }
   
   #Process output

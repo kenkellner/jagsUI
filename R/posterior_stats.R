@@ -72,7 +72,7 @@ calc_DIC <- function(samples){
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
-#Sequentially check Rhat values for each parameter in samples
+#Sequentially check Rhat values for each parameter in posterior samples
 test_Rhat <- function(samples, max_val){
 
   out <- list(result=FALSE, param=NULL)

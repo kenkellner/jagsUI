@@ -133,7 +133,7 @@ shinyjags <- function(object){
                   shiny::HTML(paste("<b>Thinning rate:</b>",object$mcmc.info$n.thin)),
                   shiny::br(),
                   shiny::br(),
-                  shiny::HTML(paste("<b>Total samples:</b>",object$mcmc.info$n.samples))
+                  shiny::HTML(paste("<b>Total draws:</b>",object$mcmc.info$n.draws))
                   ),
                  shiny::column(9,
                   shiny::h4(paste("Model file:", object$modfile)),
@@ -186,7 +186,7 @@ shinyjags <- function(object){
       output$ess_sum <- shiny::renderText(ess_sum(object))
       output$rhat_val <- shiny::renderText(diag_text(object, 'Rhat',input$prm))
       output$samples_val <- shiny::renderText(paste('<b>Samples:</b>',
-                                             object$mcmc.info$n.samples))
+                                             object$mcmc.info$n.draws))
       output$ess_val <- shiny::renderText(diag_text(object, 'ess',input$prm))
       output$trace <- shiny::renderPlot(traceplot(object, input$prm))
       output$dens <- shiny::renderPlot(densityplot(object, input$prm))

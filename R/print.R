@@ -1,6 +1,8 @@
 #Print method for jagsUI output
 print.jagsUI <- function(x,digits=3, tests=FALSE, bugs=FALSE, ...){
   
+  #For backwards compatibility
+  if(is.null(x$mcmc.info$n.draws)) x$mcmc.info$n.draws <- x$mcmc.info$n.samples
   if(bugs) return(bugs_print(x, digits))
 
   out <- as.data.frame(round(x$summary[,-c(4,6)], digits))
@@ -9,8 +11,8 @@ print.jagsUI <- function(x,digits=3, tests=FALSE, bugs=FALSE, ...){
   rh <- out$Rhat <= 1.05
   ef_lim <- 100*x$mcmc.info$n.chains
   ef <- out$n.eff >= ef_lim 
-  rc <- ifelse(mean(rh)==1, ' \u2713','')
-  ec <- ifelse(mean(ef)==1, ' \u2713','') 
+  rc <- ifelse(mean(rh)==1, ' :)','')
+  ec <- ifelse(mean(ef)==1, ' :)','')
   
   #Adaption check
   ad <- all(x$mcmc.info$sufficient.adapt)
@@ -25,7 +27,7 @@ print.jagsUI <- function(x,digits=3, tests=FALSE, bugs=FALSE, ...){
 
   #Print info
   message(paste0("Inference for BUGS model: ",x$modfile), " (", 
-                  x$mcmc.info$n.samples, " samples)")
+                  x$mcmc.info$n.draws, " draws)")
   message(paste0('Rhat: ',sum(rh),'/',length(rh),' parameters (',
                  round(mean(rh)*100),'%) had split Rhat < 1.05',rc))
   message(paste0('ESS:  ',sum(ef),'/',length(ef),' parameters (',
@@ -51,7 +53,7 @@ bugs_print <- function(x, digits=3){
   message(paste0(m$n.chains,' chains, each with ',m$n.iter,
                  ' iterations (first ',m$n.burnin,
                  ' discarded), n.thin = ',m$n.thin))
-  message(paste0('n.sims = ',m$n.samples,' iterations saved'))
+  message(paste0('n.sims = ',m$n.draws,' iterations saved'))
 
   out$overlap0 <- out$f <- NULL
   print(out)
