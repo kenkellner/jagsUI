@@ -86,7 +86,7 @@ test_that('remove_params drops correct params from list',{
 test_that('mcmc_to_mat converts properly',{
   samples <- readRDS('coda_samples.Rds')
   mat <- mcmc_to_mat(samples, 'alpha')
-  expect_equal(class(mat),'matrix')
+  expect_true(inherits(mat, 'matrix'))
   expect_equal(dim(mat),c(nrow(samples[[1]]),length(samples)))
   expect_equal(mat[,1],as.numeric(samples[[1]][,'alpha'])) 
   one_sample <- readRDS('one_sample.Rds')

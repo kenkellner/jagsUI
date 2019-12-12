@@ -21,7 +21,7 @@ test_that('get_posterior_array output structure is correct',{
   expect_equal(class(out),'numeric')
   expect_equal(length(out),n_samples*n_chains)
   out <- get_posterior_array('mu',samples)
-  expect_equal(class(out),'matrix')
+  expect_true(inherits(out,'matrix'))
   expect_equal(dim(out),c(n_samples*n_chains,16))
   out <- get_posterior_array('kappa',samples)
   expect_equal(class(out),'array')
@@ -36,16 +36,16 @@ test_that('sims_list generates correct sims.list',{
   out <- sims_list(samples)
   expect_equal(class(out),'list')
   expect_equal(names(out),param_names(samples,T))
-  expect_equal(sapply(out,class), c(alpha = "numeric", beta = "numeric", 
-                                   sigma = "numeric", mu = "matrix",
-                                   kappa = "array", deviance = "numeric"))
+  expect_equal(sapply(out, function(x) class(x)[1]),
+               c(alpha = "numeric", beta = "numeric", sigma = "numeric",
+                 mu = "matrix", kappa = "array", deviance = "numeric"))
   expect_equal(sapply(out,dim), list(alpha = NULL, beta = NULL, sigma = NULL, 
                                     mu = c(90L, 16L), 
                                     kappa = c(90L, 2L, 2L, 2L), 
                                     deviance = NULL))
   #With some parameters excluded
   out_sub <- sims_list(samples, exclude=c('alpha','mu','kappa')) 
-  expect_equal(class(out_sub),'list')
+  expect_true(inherits(out_sub,'list'))
   expect_equal(names(out_sub), c('beta','sigma','deviance'))
   expect_equal(sapply(out_sub,class), c(beta='numeric',sigma='numeric',
                                     deviance='numeric'))

@@ -114,6 +114,6 @@ check_stat <- function(stat, model_summary){
 #------------------------------------------------------------------------------
 #Check that an object is the right class
 check_class <- function(output){
-  if(class(output) != "jagsUI"){ stop("Requires jagsUI object") }
+  if(!inherits(output, "jagsUI")) stop("Requires jagsUI object")
 }
 #------------------------------------------------------------------------------
