@@ -32,12 +32,12 @@ test_that("autojags() returns correct output structure",{
               n_iter, n_warmup, n.thin=1,quiet=T)
   
   expect_true(is.list(out))
-  expect_equal(class(out), "jagsUI")
+  expect_true(inherits(out, "jagsUI"))
   expect_equal(names(out), c("sims.list","mean","sd","q2.5","q25","q50",
                              "q75","q97.5","Rhat","n.eff","overlap0","f",
                              "pD","DIC","summary","samples","model",
                              "parameters", "modfile","mcmc.info","run.info"))
-  expect_equal(as.character(unlist(sapply(out, class))), 
+  expect_equal(as.character(unlist(sapply(out, function(x) class(x)[1]))),
                c(rep("list",12),rep("numeric",2),"matrix","mcmc.list",
                  "jags",rep("character",2),"list","list"))
   expect_equal(length(out$sims.list), 5)
@@ -83,7 +83,7 @@ test_that("autojags() in parallel produces identical results", {
   skip_on_cran()
   #skip_on_travis()
   set_up_input()
-  n_cores <- max(2, parallel::detectCores()-1)
+  n_cores <- max(2, min(parallel::detectCores()-1, n_chains))
   
   set.seed(789)
   out_ref <- autojags(jags_data, NULL, params, model_file, n_chains, n_adapt,
@@ -102,7 +102,7 @@ test_that("autojags() running loudly gives identical results", {
 
   skip_on_cran()
   set_up_input()
-  n_cores <- max(2, parallel::detectCores()-1)
+  n_cores <- max(2, min(parallel::detectCores()-1, n_chains))
 
   set.seed(123)
   printed <- capture_output(

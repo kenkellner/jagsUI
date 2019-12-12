@@ -37,7 +37,7 @@ test_that("Updating models from jags() works", {
                              "q75","q97.5","Rhat","n.eff","overlap0","f",
                              "pD","DIC","summary","samples","model",
                              "parameters", "modfile","mcmc.info","run.info"))
-  expect_equal(as.character(unlist(sapply(out2, class))), 
+  expect_equal(as.character(unlist(sapply(out2, function(x) class(x)[1]))),
                c(rep("list",12),rep("numeric",2),"matrix","mcmc.list",
                  "jags",rep("character",2),"list","list"))
   
