@@ -25,19 +25,35 @@ param_density <- function(x, parameter, m_labels=FALSE){
   #Get samples
   vals <- mcmc_to_mat(x$samples, parameter)
   
-  #Get densities
-  dens <- lapply(1:ncol(vals), function(x) stats::density(vals[,x]))
+  # Get bandwidth, one value for all chains
+  bw <- mean(apply(vals, 2, stats::bw.nrd0))
 
-  #Get plot limits
-  xlims <- range(unlist(lapply(dens, function(d) range(d$x))))
-  ylims <- range(unlist(lapply(dens, function(d) range(d$y))))
+  from <- min(vals) - 3*bw  # these are 'density's defaults...
+  to <- max(vals) + 3*bw    # ... use these if no constraints
+  xx <- vals
+  mult <- 1
 
-  #Draw plot
+  # Check for non-negative constraint or probability
+  if (min(vals) >= 0 && min(vals) < 2 * bw) { # it's non-negative
+    from <- 0
+    xx <- rbind(vals, -vals)
+    mult <- 2
+  }
+  if (min(vals) >= 0 && max(vals) <= 1 &&
+        (min(vals) < 2 * bw || 1 - max(vals) < 2 * bw)) { # it's a probability
+    xx <- rbind(vals, -vals, 2-vals)
+    mult <- 3
+    to <- 1
+  }
+
+  # Get densities
+  dens <- apply(xx, 2, function(x) stats::density(x, bw=bw, from=from, to=to)$y) * mult
+
+  # Draw plot
+  x <- seq(from, to, length=nrow(dens))
   cols <- grDevices::rainbow(ncol(vals))
-  graphics::plot(dens[[1]], type='l', col=cols[1], 
-                 xlim=xlims, ylim=ylims, xlab='Value', ylab='Density',
-                 main=paste('Density of',parameter))
-  for (i in 2:ncol(vals)) graphics::lines(dens[[i]], col=cols[i])
+  graphics::matplot(x, dens, type='l', lty=1, col=cols,
+      xlab='Value', ylab='Density', main=paste('Density of',parameter))
 
   #Add margin labels if necessary
   if(m_labels){

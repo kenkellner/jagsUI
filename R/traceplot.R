@@ -30,10 +30,13 @@ param_trace <- function(x, parameter, m_labels=FALSE){
 
   #Draw plot
   cols <- grDevices::rainbow(ncol(vals))
-  graphics::plot(1:nrow(vals), vals[,1], type='l', col=cols[1],
-                 ylim=range(vals), xlab='Iterations', ylab='Value',
+  graphics::matplot(1:nrow(vals), vals, type='l', lty=1, col=cols,
+                 xlab='Iterations', ylab='Value',
                  main=paste('Trace of',parameter))
-  for (i in 2:ncol(vals)) graphics::lines(1:nrow(vals), vals[,i], col=cols[i])
+  # graphics::plot(1:nrow(vals), vals[,1], type='l', col=cols[1],
+                 # ylim=range(vals), xlab='Iterations', ylab='Value',
+                 # main=paste('Trace of',parameter))
+  # for (i in 2:ncol(vals)) graphics::lines(1:nrow(vals), vals[,i], col=cols[i]) # this fails with 1 chain
 
   #Add Rhat value
   graphics::legend('bottomright', legend=bquote(hat(R) == .(Rhat)),
