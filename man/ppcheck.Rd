@@ -20,7 +20,7 @@
 }
 
 \description{
-  A simple interface for generating a posterior predictive check plot for a JAGS analysis fit using jagsUI, based on the posterior distributions of discrepency metrics specified by the user and calculated and returned by JAGS (for example, sums of residuals). The user supplies the name of the discrepancy metric calculated for the real data in the argument \code{actual}, and the corresponding discrepancy for data simulated by the model in argument \code{new}. The posterior distributions of the two parameters will be plotted in X-Y space and a Bayesian p-value calculated.
+  A simple interface for generating a posterior predictive check plot for a JAGS analysis fit using jagsUI, based on the posterior distributions of discrepency metrics specified by the user and calculated and returned by JAGS (for example, sums of residuals). The user supplies the name of the discrepancy metric calculated for the real data in the argument \code{observed}, and the corresponding discrepancy for data simulated by the model in argument \code{simulated}. The posterior distributions of the two parameters will be plotted in X-Y space and a Bayesian p-value calculated.
 }
 
 \author{ 
