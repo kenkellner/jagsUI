@@ -440,7 +440,7 @@ get_runtime <- function(object){
   } else if(rt<3600){
     return(paste(round(rt/60,2),'min'))
   }
-  return(paste(round(rt/3600,2)),'hr')
+  return(paste(round(rt/3600,2),'hr'))
 }
 
 get_type <- function(data_list, data_el){
