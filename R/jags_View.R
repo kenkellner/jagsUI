@@ -1,21 +1,7 @@
 
-View <- function(x, title, ...) UseMethod("View")
+# Removed View.jagsUI (was already deprecated)
 
-View.default <- function(x, title, ...){
-  
-  if(missing(title)){
-    title <- deparse(substitute(x))
-  }
-  
-  utils::View(x, title)
-}  
-
-View.jagsUI <- function(x,title,digits=3, ...){
-  .Deprecated("jags.View") 
-  jags.View(x, title, digits=3, ...) 
-}
-
-jags.View <- function(x,title,digits=3, ...){
+jags.View <- function(x, title, digits=3){
   # grab object name
   if(missing(title)){
     title <- paste("jagsUI:", deparse(substitute(x)))
@@ -29,13 +15,12 @@ jags.View <- function(x,title,digits=3, ...){
     #row.names(z) <- rownames(x$summary)
   }
   z[,6] <- z[,6]==1
-  
+
   view.out <- cbind(parameter=rownames(x$summary),z)
   row.names(view.out) <- NULL
-  
+
   # View the output
   utils::View(view.out, title=title)
 
   invisible(view.out)
-  
 }

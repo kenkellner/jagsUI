@@ -1,27 +1,22 @@
-import(lattice)
+# import(lattice) # no longer needed?
 
 importFrom(rjags, "jags.model", "adapt", "coda.samples", "list.modules",
            "load.module","unload.module","list.factories","set.factory")
 importFrom(coda, "gelman.diag", "as.mcmc.list", "thin", "mcmc", "as.mcmc")
-importFrom(parallel, "detectCores", "makeCluster", "clusterExport", 
+importFrom(parallel, "detectCores", "makeCluster", "clusterExport",
            "clusterSetRNGStream", "clusterApply", "stopCluster", "clusterEvalQ")
 importFrom(stats, "runif", "time", "start", "end", "quantile", "var", "sd")
 importFrom(grDevices, "devAskNewPage", "rainbow")
 importFrom(graphics, "plot", "abline", "axis", "box", "segments", "lines", "par", "legend")
 importFrom(utils, "capture.output")
 
-export("jags", "jagsUI","jags.basic","autojags","pp.check", "traceplot", 
-       "whiskerplot", "View", "jags.View")
+export("jags", "jagsUI","jags.basic","autojags","pp.check", "traceplot",
+       "densityplot", "whiskerplot", "jags.View")
 
 S3method("plot", "jagsUI")
-S3method("xyplot", "jagsUI")
-S3method("densityplot", "jagsUI")
+# S3method("xyplot", "jagsUI")
 S3method("print","jagsUI")
 S3method("update","jagsUI")
 S3method("update","jagsUIbasic")
 S3method("summary","jagsUI")
-S3method("traceplot", "jagsUI")
-S3method("traceplot", "default")
-S3method("View", "jagsUI")
-S3method("View","default")
 

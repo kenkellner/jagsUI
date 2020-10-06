@@ -1,12 +1,11 @@
 Package: jagsUI
-Version: 1.5.1
-Date: 2019-07-30
+Version: 1.5.1.5000
+Date: 2020-10-06
 Title: A Wrapper Around 'rjags' to Streamline 'JAGS' Analyses
 Author: Ken Kellner <contact@kenkellner.com>
 Maintainer: Ken Kellner <contact@kenkellner.com>
 Depends:
     R (>= 2.14.0),
-    lattice
 Imports:
     rjags (>= 3-13),
     coda (>= 0.13),
@@ -16,7 +15,7 @@ Imports:
     graphics,
     utils
 SystemRequirements: JAGS (http://mcmc-jags.sourceforge.net)
-Description: A set of wrappers around 'rjags' functions to run Bayesian analyses in 'JAGS' (specifically, via 'libjags').  A single function call can control adaptive, burn-in, and sampling MCMC phases, with MCMC chains run in sequence or in parallel. Posterior distributions are automatically summarized (with the ability to exclude some monitored nodes if desired) and functions are available to generate figures based on the posteriors (e.g., predictive check plots, traceplots). Function inputs, argument syntax, and output format are nearly identical to the 'R2WinBUGS'/'R2OpenBUGS' packages to allow easy switching between MCMC samplers. 
+Description: A set of wrappers around 'rjags' functions to run Bayesian analyses in 'JAGS' (specifically, via 'libjags').  A single function call can control adaptive, burn-in, and sampling MCMC phases, with MCMC chains run in sequence or in parallel. Posterior distributions are automatically summarized (with the ability to exclude some monitored nodes if desired) and functions are available to generate figures based on the posteriors (e.g., predictive check plots, traceplots). Function inputs, argument syntax, and output format are nearly identical to the 'R2WinBUGS'/'R2OpenBUGS' packages to allow easy switching between MCMC samplers.
 License: GPL-3
 URL: https://github.com/kenkellner/jagsUI
 NeedsCompilation: no
