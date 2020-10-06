@@ -1,40 +1,46 @@
 
-whiskerplot <- function(x,parameters,quantiles=c(0.025,0.975),zeroline=TRUE){
-  if(class(x)!="jagsUI"){stop('Requires jagsUI object as input')}
-  devAskNewPage(ask=FALSE)
+whiskerplot <- function(x,parameters,quantiles=c(0.025,0.975),
+                        zeroline=TRUE, ...){
   
-  #Generate a list of all specified output parameters
-  #Expand from shorthand if necessary
-  parameters <- translate.params(x,parameters)
+  #Check input object class
+  check_class(x)
   
+  #Check parameters given
+  all_params <- param_names(x$samples)
+  parameters <- match_params(parameters, all_params)
+  if(is.null(parameters)){
+    stop("None of the provided parameters were found in the output")
+  }
+  
+  #Check quantile argument
+  if((length(quantiles)!=2) | (quantiles[2] <= quantiles[1])){
+    stop("Incompatible quantile values provided")
+  }
+
+  #Calculate means and CIs
+  post_stats <- sapply(parameters, 
+                       function(i){
+                          sims <- mcmc_to_mat(x$samples, i)
+                          c(mean(sims,na.rm=TRUE), 
+                            stats::quantile(sims,na.rm=TRUE,quantiles))
+                        })
+
+  #Plot parameter means
   n <- length(parameters)
+  graphics::plot(1:n, post_stats[1,], xaxt="n", 
+                 ylim=range(post_stats), xlim=c(0,n+1),
+                 xlab="Parameters", 
+                 ylab=paste0('Parameter mean and quantiles (',quantiles[1],
+                            ' - ',quantiles[2],')'), pch=19, cex=1.5, ...)
+  graphics::axis(side=1, at=1:n, labels=parameters)
+  graphics::box()
   
-  xstructure <- c(1:n)
+  #Draw line at zero
+  if(zeroline) graphics::abline(h=0)
   
-  qs <- function(x,y){as.numeric(quantile(x,y))}
-  
-  means <- tops <- bottoms <-ymin <- ymax <- vector(length=n)
-  for (i in 1:n){
-    hold <- unlist(x$samples[,parameters[i]])
-    means[i] <- mean(hold)
-    tops[i] <- qs(hold,quantiles[2])
-    bottoms[i] <- qs(hold,quantiles[1])   
-  }
-  
-  ymin <- min(bottoms)
-  ymax <- max(tops)
-  
-  plot(xstructure,means,xaxt="n",ylim=c(ymin,ymax),xlim=c(0,n+1),xlab="Parameters",ylab="Parameter Values",pch=19,cex=1.5,
-       main=paste('Whisker plot, quantiles (',quantiles[1],' - ',quantiles[2],')',sep=""))
-  axis(side=1, at=c(1:n), labels=parameters)
-  box()
-  
-  if(zeroline){abline(h=0)}
-  
-  for (i in 1:n){
-    segments(x0=xstructure[i],y0=bottoms[i],x1=xstructure[i],y1=tops[i], lwd=2)
-    segments(x0=xstructure[i]-0.2,y0=bottoms[i],x1=xstructure[i]+0.2,y1=bottoms[i])
-    segments(x0=xstructure[i]-0.2,y0=tops[i],x1=xstructure[i]+0.2,y1=tops[i])
-  }
- 
+  #Draw error bars
+  wd <- (n+2)/40
+  graphics::segments(1:n, post_stats[2,], 1:n, post_stats[3,], lwd=2)
+  graphics::segments(1:n-wd, post_stats[2,], 1:n+wd, post_stats[2,])
+  graphics::segments(1:n-wd, post_stats[3,], 1:n+wd, post_stats[3,])
 }
