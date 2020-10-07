@@ -5,6 +5,9 @@ get_plot_info <- function(x, parameters, per_plot, ask, Rhat_min=NULL){
   #Expand non-scalar parameters and check they exist
   all_params <- param_names(x$samples)
   if(!is.null(parameters)){
+    #Expand bracketed parameter names
+    parameters <- expand_params(parameters)
+    #Check parameters are in output
     parameters <- match_params(parameters, all_params)
     if(is.null(parameters)){
       stop("None of the provided parameters were found in the output")
@@ -32,4 +35,22 @@ get_plot_info <- function(x, parameters, per_plot, ask, Rhat_min=NULL){
     new_par$mfrow <- c(ceiling(sqrt(per_plot)), round(sqrt(per_plot)))
 
   list(params=parameters, new_par=new_par, per_plot=per_plot)
+}
+
+
+has_brackets <- function(x){
+  grepl("\\[.*\\]", x)
+}
+
+expand_brackets <- function(x){
+  if(!has_brackets(x)) return(x)
+
+  pname <- strsplit(x, "\\[")[[1]][1]
+  rng <- gsub(paste0(pname,"|\\[|\\]"), "", x)
+  rng <- eval(parse(text=rng))
+  paste0(pname, "[",rng,"]")
+}
+
+expand_params <- function(params){
+  unlist(lapply(params, expand_brackets))
 }
