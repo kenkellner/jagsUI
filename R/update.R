@@ -53,7 +53,15 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.iter,
     
   #Run process output
   output <- process.output(samples,DIC=DIC,codaOnly,verbose=verbose)
-    
+  if(is.null(output)){
+    output <- list()
+    output$samples <- samples
+    output$model <- m
+    output$n.cores <- object$mcmc.info$n.cores
+    class(output) <- 'jagsUIbasic'
+    return(output)
+  }
+ 
   #Summary
   output$summary <- summary.matrix(output,samples,object$mcmc.info$n.chains,codaOnly)
   
