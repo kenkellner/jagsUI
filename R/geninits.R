@@ -67,7 +67,8 @@ gen.inits <- function(inits,n.chains,seed,parallel){
     needs.RNG <- is.null(init.values)|!other.RNG
     
     #If parallel and no custom RNG has been set, add one. Otherwise all chains will start with same seed.
-    if(needs.RNG&parallel){
+    # if(needs.RNG&parallel){
+    if(needs.RNG){
       
       init.rand <- floor(runif(n.chains,1,100000))
       
