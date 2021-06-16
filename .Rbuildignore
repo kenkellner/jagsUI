@@ -11,3 +11,4 @@ example2.R
 README.md
 env.R
 .travis.yml
+^\.github$
