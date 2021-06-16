@@ -40,10 +40,13 @@ get_plot_info <- function(x, parameters, layout, ask, Rhat_min=NULL){
   per_plot <- prod(layout)
   
   #Set up new par settings
-  new_par <- list(mar=c(1.5,1.5,2.5,1), oma=c(3,3,0,0), ask=ask)
-  if(per_plot > 1)
+  new_par <- list(ask=ask)
+  if(per_plot > 1) {
     new_par$mfrow <- layout
-
+    new_par$oma <- c(3,3,0,0)
+    new_par$mar <- c(1.5,1.5,2.5,1)
+  }
+  
   list(params=parameters, new_par=new_par, per_plot=per_plot)
 }
 
