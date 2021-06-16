@@ -1,12 +1,12 @@
 #Get traceplots for series of parameters
 traceplot <- function(x, parameters=NULL, Rhat_min=NULL,
-                      per_plot=9, ask=NULL){
+                      layout=NULL, ask=NULL){
 
   #Check input class and get basic plot settings
   check_class(x)
   if(is.null(ask))
     ask <- grDevices::dev.interactive(orNone = TRUE)
-  plot_info <- get_plot_info(x, parameters, per_plot, ask, Rhat_min)
+  plot_info <- get_plot_info(x, parameters, layout, ask, Rhat_min)
 
   #Handle par()
   old_par <- graphics::par(plot_info$new_par)

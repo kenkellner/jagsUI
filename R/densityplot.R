@@ -1,11 +1,11 @@
 #Get density plots for series of parameters
-densityplot <- function(x, parameters=NULL, per_plot=9, ask=NULL){
+densityplot <- function(x, parameters=NULL, layout=NULL, ask=NULL){
   
   #Check input class and get basic plot settings
   check_class(x)  
   if(is.null(ask))
     ask <- grDevices::dev.interactive(orNone = TRUE)
-  plot_info <- get_plot_info(x, parameters, per_plot, ask)
+  plot_info <- get_plot_info(x, parameters, layout, ask)
   
   #Handle par()
   old_par <- graphics::par(plot_info$new_par)

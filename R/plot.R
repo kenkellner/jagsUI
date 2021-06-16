@@ -4,7 +4,7 @@ plot.jagsUI <- function(x, parameters=NULL, per_plot=4, ask=NULL, ...){
 
   if(is.null(ask))
     ask <- grDevices::dev.interactive(orNone = TRUE)
-  plot_info <- get_plot_info(x, parameters, per_plot, ask)
+  plot_info <- get_plot_info(x, parameters, NULL, ask)
   dims <- c(min(length(plot_info$params), per_plot), 2)
   if(length(plot_info$params) <= per_plot)
     ask <- FALSE
