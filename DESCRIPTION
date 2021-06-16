@@ -1,9 +1,11 @@
 Package: jagsUI
-Version: 1.5.1.9104
+Version: 1.5.1.9105
 Date: 2021-06-16
 Title: A Wrapper Around 'rjags' to Streamline 'JAGS' Analyses
-Author: Ken Kellner <contact@kenkellner.com>
-Maintainer: Ken Kellner <contact@kenkellner.com>
+Authors@R: c(
+    person("Ken", "Kellner", email="contact@kenkellner.com", role=c("cre","aut")),
+    person("Mike", "Meredith", role="ctb")    
+    )
 Depends:
     R (>= 2.14.0),
 Imports:
