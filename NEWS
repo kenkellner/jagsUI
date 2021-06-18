@@ -1,3 +1,10 @@
+# Changes from Version 1.5.1 to 1.5.2 [18 June 2021] #
+
+Remove View function due to problematic interactions with RStudio
+Improvements to traceplot and densityplot
+Make sure output is reproducible when parallel=FALSE
+Minor bugfixes
+
 # Changes from Version 1.5.0 to 1.5.1 [30 July 2019] #
 
 Fix issue when chains adapted for different numbers of iterations
