@@ -1,7 +1,7 @@
 
 run.model <- function(model.file=NULL,data=NULL,inits=NULL,parameters.to.save,n.chains=NULL,
                       n.iter,n.burnin,n.thin,n.adapt,verbose=TRUE,model.object=NULL,update=FALSE,parallel=FALSE){
-  
+
 if(verbose){pb="text"} else {pb="none"}
 
 if(update){
@@ -12,9 +12,9 @@ if(update){
   } else {null <- capture.output(
           m$recompile()
           )}
-  
+
 } else {
-  #Compile model 
+  #Compile model
   if(verbose | parallel==TRUE){
     m <- jags.model(file=model.file,data=data,inits=inits,n.chains=n.chains,n.adapt=0)
   } else {
@@ -26,7 +26,7 @@ if(update){
 
 #Adaptive phase using adapt()
 total.adapt <- 0
-  
+
 if(!is.null(n.adapt)){
   if(n.adapt>0){
     if(verbose){
@@ -47,16 +47,16 @@ if(!is.null(n.adapt)){
         sufficient.adapt <- adapt(object=m,n.iter=1,end.adaptation=TRUE)
       } else {
         null <- capture.output(
-          sufficient.adapt <- adapt(object=m,n.iter=1,end.adaptation=TRUE)  
-        )} 
+          sufficient.adapt <- adapt(object=m,n.iter=1,end.adaptation=TRUE)
+        )}
     }
     total.adapt <- 0
   }
 } else {
-  
+
   maxloops <- 100
   n.adapt.iter <- 100
-  
+
   for (i in 1:maxloops){
     if(verbose){cat('Adaptive phase.....','\n')}
     sufficient.adapt <- adapt(object=m,n.iter=n.adapt.iter,progress.bar='none')
@@ -72,11 +72,11 @@ if(!is.null(n.adapt)){
       break
     }
   }
-  
-} 
+
+}
 if(!sufficient.adapt&total.adapt!=0&verbose){warning("JAGS reports adaptation was incomplete. Consider increasing n.adapt")}
 
-#Burn-in phase using update()  
+#Burn-in phase using update()
 if(n.burnin>0){
   if(verbose){
     cat('\n','Burn-in phase,',n.burnin,'iterations x',n.chains,'chains','\n','\n')
@@ -84,20 +84,20 @@ if(n.burnin>0){
     cat('\n')
   } else {
     null <- capture.output(
-    update(object=m,n.iter=n.burnin,progress.bar=pb)  
+    update(object=m,n.iter=n.burnin,progress.bar=pb)
   )}
 } else if(verbose){cat('No burn-in specified','\n','\n')}
 
-#Sample from posterior using coda.samples() 
+#Sample from posterior using coda.samples()
 if(verbose){
   cat('Sampling from joint posterior,',(n.iter-n.burnin),'iterations x',n.chains,'chains','\n','\n')
   samples <- coda.samples(model=m,variable.names=parameters.to.save,n.iter=(n.iter-n.burnin),thin=n.thin,
-                          progress.bar=pb)
+                          na.rm=FALSE, progress.bar=pb)
   cat('\n')
 } else {
   null <- capture.output(
   samples <- coda.samples(model=m,variable.names=parameters.to.save,n.iter=(n.iter-n.burnin),thin=n.thin,
-                          progress.bar=pb)
+                          na.rm=FALSE, progress.bar=pb)
   )}
 
 return(list(m=m,samples=samples,total.adapt=total.adapt,sufficient.adapt=sufficient.adapt))
