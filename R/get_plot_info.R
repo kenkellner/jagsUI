@@ -5,7 +5,7 @@
 get_plot_info <- function(x, parameters, layout, ask, Rhat_min=NULL){
 
   #Expand non-scalar parameters and check they exist
-  all_params <- param_names(x$samples)
+  all_params <- rownames(x$summary)
   if(!is.null(parameters)){
     #Expand bracketed parameter names
     parameters <- expand_params(parameters)
@@ -38,7 +38,7 @@ get_plot_info <- function(x, parameters, layout, ask, Rhat_min=NULL){
     layout <- rep(layout[1], 2)
   }
   per_plot <- prod(layout)
-  
+
   #Set up new par settings
   new_par <- list(ask=ask)
   if(per_plot > 1) {
@@ -46,7 +46,7 @@ get_plot_info <- function(x, parameters, layout, ask, Rhat_min=NULL){
     new_par$oma <- c(3,3,0,0)
     new_par$mar <- c(1.5,1.5,2.5,1)
   }
-  
+
   list(params=parameters, new_par=new_par, per_plot=per_plot)
 }
 
