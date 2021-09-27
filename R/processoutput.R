@@ -3,7 +3,7 @@ process.output <- function(x,DIC,params.omit,verbose=TRUE) {
 
 out <- tryCatch({
 
-if(verbose){cat('Calculating statistics.......','\n')}  
+if(verbose){cat('Calculating statistics.......','\n')}
 
 # Get parameter names
 params <- colnames(x[[1]])
@@ -25,24 +25,24 @@ expand <- sapply(strsplit(params, "\\["), "[", 1)
 params.simple <- unique(sapply(strsplit(params, "\\["), "[", 1))
 
 #Functions for statistics
-qs <- function(x,y){as.numeric(quantile(x,y))}
+qs <- function(x,y){as.numeric(quantile(x,y, na.rm=TRUE))}
 #Overlap 0 function
 ov <- function(x){findInterval(0,sort(c(qs(x,0.025),qs(x,0.975))))==1}
 #f function (proportion of posterior with same sign as mean)
-gf <- function(x){if(mean(x)>=0){mean(x>=0)}else{mean(x<0)}}
+gf <- function(x){if(mean(x, na.rm=TRUE)>=0){mean(x>=0, na.rm=TRUE)}else{mean(x<0, na.rm=TRUE)}}
 #n.eff function
 calcneff <- function(x,n,m){
   xp <- matrix(x,nrow=n,ncol=m)
-  xdot <- apply(xp,2,mean)
-  s2 <- apply(xp,2,var)
+  xdot <- apply(xp,2,mean, na.rm=TRUE)
+  s2 <- apply(xp,2,var, na.rm=TRUE)
   W <- mean(s2)
-  
+
   #Non-degenerate case
   if (is.na(W)){
 	  n.eff <- NA
   } else if ((W > 1.e-8) && (m > 1)) {
     B <- n*var(xdot)
-    sig2hat <- ((n-1)*W + B)/n      
+    sig2hat <- ((n-1)*W + B)/n
     n.eff <- round(m*n*min(sig2hat/B,1),0)
     #Degenerate case
   } else {
@@ -70,17 +70,17 @@ names(overlap0) <- names(f) <- params.simple
 #This function modifies objects in global environment (output is discarded)
 #Calculates statistics for each parameter
 calc.stats <- function(i){
-  
+
   #If parameter is not a scalar (e.g. vector/array)
   if(!is.na(dim[i][1])){
-    
+
     #Get all samples
     sims.list[[i]] <<- mat[,expand==i,drop=FALSE]
 
 	#if every iteration is NA, don't do anything else
 	if(all(is.na(sims.list[[i]]))){return(NA)}
 
-    #If more than 1 chain, calculate rhat 
+    #If more than 1 chain, calculate rhat
     #Done separately for each element of non-scalar parameter to avoid errors
     if(m > 1 && (!i%in%params.omit)){
       hold <- x[,expand==i,drop=FALSE]
@@ -92,10 +92,10 @@ calc.stats <- function(i){
       hold <- x[,expand==i]
       rhat[[i]] <<- array(NA,dim=dim[[i]])
     }
-    
+
     #Calculate other statistics
     ld <- length(dim(sims.list[[i]]))
-    means[[i]] <<- populate(colMeans(sims.list[[i]]),dim[[i]])
+    means[[i]] <<- populate(colMeans(sims.list[[i]], na.rm=TRUE),dim[[i]])
     if(!i%in%params.omit){
     se[[i]] <<- populate(apply(sims.list[[i]],c(2:ld),sd),dim=dim[[i]])
     q2.5[[i]] <<- populate(apply(sims.list[[i]],c(2:ld),qs,0.025),dim=dim[[i]])
@@ -105,11 +105,11 @@ calc.stats <- function(i){
     q97.5[[i]] <<- populate(apply(sims.list[[i]],c(2:ld),qs,0.975),dim=dim[[i]])
     overlap0[[i]] <<- populate(apply(sims.list[[i]],c(2:ld),ov),dim=dim[[i]])
     f[[i]] <<- populate(apply(sims.list[[i]],c(2:ld),gf),dim=dim[[i]])
-    n.eff[[i]] <<- populate(apply(sims.list[[i]],c(2:ld),calcneff,n,m),dim=dim[[i]])   
+    n.eff[[i]] <<- populate(apply(sims.list[[i]],c(2:ld),calcneff,n,m),dim=dim[[i]])
     }
-    
+
     sims.list[[i]] <<- populate(sims.list[[i]],dim=dim[[i]],simslist=T,samples=dim(mat)[1])
-  
+
   #If parameter is a scalar
   } else {
 
@@ -119,9 +119,9 @@ calc.stats <- function(i){
 
 	if(all(is.na(sims.list[[i]]))){return(NA)}
 
-    means[[i]] <<- mean(sims.list[[i]])
+    means[[i]] <<- mean(sims.list[[i]], na.rm=TRUE)
     if(!i%in%params.omit){
-    se[[i]] <<- sd(sims.list[[i]])
+    se[[i]] <<- sd(sims.list[[i]], na.rm=TRUE)
     q2.5[[i]] <<- qs(sims.list[[i]],0.025)
     q25[[i]] <<- qs(sims.list[[i]],0.25)
     q50[[i]] <<- qs(sims.list[[i]],0.5)
@@ -131,7 +131,7 @@ calc.stats <- function(i){
     f[[i]] <<- gf(sims.list[[i]])
     n.eff[[i]] <<- calcneff(sims.list[[i]],n,m)}
   }
-  
+
 }
 
 #Actually run function(nullout not used for anything)
@@ -147,13 +147,13 @@ if(NA%in%rhat.sub&&verbose){
 
 #Do DIC/pD calculations if requested by user
 if(DIC & 'deviance' %in% params){
-  dev <- matrix(data=mat[,'deviance'],ncol=m,nrow=n)   
+  dev <- matrix(data=mat[,'deviance'],ncol=m,nrow=n)
   pd <- numeric(m)
-  dic <- numeric(m)    
+  dic <- numeric(m)
   for (i in 1:m){
     pd[i] <- var(dev[,i])/2
     dic[i] <- mean(dev[,i]) + pd[i]
-  }    
+  }
   pd <- mean(pd)
   dic <- mean(dic)
 

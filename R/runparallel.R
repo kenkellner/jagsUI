@@ -24,11 +24,11 @@ set.factories(factories)
 if(update){
   #Recompile model
   cluster.mod <- model.object[[i]]
-  
+
   #Run model
   rjags.output <- run.model(model.file=NULL,data=NULL,inits=NULL,parameters.to.save,n.chains=1,n.iter,n.burnin=0,n.thin,n.adapt,
-                            verbose=FALSE,model.object=cluster.mod,update=TRUE,parallel=TRUE)
-   
+                            verbose=FALSE,model.object=cluster.mod,update=TRUE,parallel=TRUE, na.rm=FALSE)
+
 } else {
 
   #Set initial values for cluster
@@ -37,8 +37,8 @@ if(update){
   #Run model
 
   rjags.output <- run.model(model.file,data,inits=cluster.inits,parameters.to.save,n.chains=1,n.iter,
-                  n.burnin,n.thin,n.adapt,verbose=FALSE,parallel=TRUE)
-  
+                  n.burnin,n.thin,n.adapt,verbose=FALSE,parallel=TRUE, na.rm=FALSE)
+
 }
 
 return(list(samp=rjags.output$samples[[1]],mod=rjags.output$m,total.adapt=rjags.output$total.adapt,sufficient.adapt=rjags.output$sufficient.adapt))
@@ -60,6 +60,11 @@ for (i in 1:n.chains){
   sufficient.adapt[i] <- par[[i]][[4]]
 }
 out$samples <- as.mcmc.list(samples)
+# Remove columns with all NA
+try({
+  all_na <- apply(as.matrix(out$samples),2, function(x) all(is.na(x)))
+  out$samples <- out$samples[,!all_na]
+})
 out$model <- model
 out$total.adapt <- total.adapt
 out$sufficient.adapt <- sufficient.adapt

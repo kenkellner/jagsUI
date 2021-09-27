@@ -1,6 +1,7 @@
 
 run.model <- function(model.file=NULL,data=NULL,inits=NULL,parameters.to.save,n.chains=NULL,
-                      n.iter,n.burnin,n.thin,n.adapt,verbose=TRUE,model.object=NULL,update=FALSE,parallel=FALSE){
+                      n.iter,n.burnin,n.thin,n.adapt,verbose=TRUE,model.object=NULL,
+                      update=FALSE,parallel=FALSE,na.rm=TRUE){
 
 if(verbose){pb="text"} else {pb="none"}
 
@@ -92,12 +93,12 @@ if(n.burnin>0){
 if(verbose){
   cat('Sampling from joint posterior,',(n.iter-n.burnin),'iterations x',n.chains,'chains','\n','\n')
   samples <- coda.samples(model=m,variable.names=parameters.to.save,n.iter=(n.iter-n.burnin),thin=n.thin,
-                          na.rm=FALSE, progress.bar=pb)
+                          na.rm=na.rm, progress.bar=pb)
   cat('\n')
 } else {
   null <- capture.output(
   samples <- coda.samples(model=m,variable.names=parameters.to.save,n.iter=(n.iter-n.burnin),thin=n.thin,
-                          na.rm=FALSE, progress.bar=pb)
+                          na.rm=na.rm, progress.bar=pb)
   )}
 
 return(list(m=m,samples=samples,total.adapt=total.adapt,sufficient.adapt=sufficient.adapt))
