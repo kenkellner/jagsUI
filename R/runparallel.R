@@ -63,7 +63,7 @@ out$samples <- as.mcmc.list(samples)
 # Remove columns with all NA
 try({
   all_na <- apply(as.matrix(out$samples),2, function(x) all(is.na(x)))
-  out$samples <- out$samples[,!all_na]
+  out$samples <- out$samples[,!all_na,drop=FALSE]
 })
 out$model <- model
 out$total.adapt <- total.adapt
