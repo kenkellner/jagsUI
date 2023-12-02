@@ -20,7 +20,7 @@ whiskerplot <- function(x,parameters,quantiles=c(0.025,0.975),
   #Calculate means and CIs
   post_stats <- sapply(parameters, 
                        function(i){
-                          sims <- mcmc_to_mat(x$samples, i)
+                          sims <- mcmc_to_mat(x$samples[, i])
                           c(mean(sims,na.rm=TRUE), 
                             stats::quantile(sims,na.rm=TRUE,quantiles))
                         })

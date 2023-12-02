@@ -25,7 +25,7 @@ traceplot <- function(x, parameters=NULL, Rhat_min=NULL,
 param_trace <- function(x, parameter, m_labels=FALSE){
 
   #Get samples and Rhat values
-  vals <- mcmc_to_mat(x$samples, parameter)
+  vals <- mcmc_to_mat(x$samples[, parameter])
   Rhat <- sprintf("%.3f",round(x$summary[parameter, 'Rhat'],3))
 
   #Draw plot
