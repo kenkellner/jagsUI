@@ -70,3 +70,10 @@ get_inds <- function(param, params_raw){
   inds <- as.integer(unlist(inds_raw))
   matrix(inds, byrow=T, ncol=length(inds_raw[[1]]))
 }
+
+
+#------------------------------------------------------------------------------
+# Check if mcmc.list has only one parameter (one column)
+has_one_parameter <- function(mcmc_list){
+  coda::nvar(mcmc_list) == 1
+}

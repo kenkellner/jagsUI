@@ -66,7 +66,8 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
   }
   
   #Convert rjags output to jagsUI form 
-  output <- process.output(samples,DIC=DIC,codaOnly,verbose=verbose)
+  #output <- process.output(samples,DIC=DIC,codaOnly,verbose=verbose)
+  output <- process_output(samples, coda_only = codaOnly, quiet = !verbose)
   if(is.null(output)){
     output <- list()
     samples <- order.params(samples,parameters.to.save,DIC,verbose=verbose)
@@ -80,7 +81,7 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
   #Add additional information to output list
   
   #Summary
-  output$summary <- summary.matrix(output,samples,n.chains,codaOnly)
+  #output$summary <- summary.matrix(output,samples,n.chains,codaOnly)
  
   output$samples <- samples
   output$modfile <- model.file

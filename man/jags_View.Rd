@@ -18,8 +18,6 @@
 
 \description{
 Show an R object in a separate, spreadsheet-style window via a call to \code{\link[utils]{View}}.
-
-This function replaces the \code{View} method for class \code{jagsUI}, which caused problems with RStudio.
 }
 
 \author{
