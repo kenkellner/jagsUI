@@ -149,7 +149,10 @@ calc_f <- function(values, mn){
 
 calc_Rhat <- function(mcmc_list){
   stopifnot(has_one_parameter(mcmc_list))
-  coda::gelman.diag(mcmc_list)$psrf[1]
+  out <- try(coda::gelman.diag(mcmc_list, 
+            autoburnin=FALSE, multivariate=FALSE)$psrf[1])
+  if(inherits(out, "try-error") || !is.finite(out)) out <- NA
+  out
 }
 
 mcmc_to_mat <- function(mcmc_list){
