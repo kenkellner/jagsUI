@@ -64,7 +64,7 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.iter,
   }
  
   #Summary
-  output$summary <- summary.matrix(output,samples,object$mcmc.info$n.chains,codaOnly)
+  #output$summary <- summary.matrix(output,samples,object$mcmc.info$n.chains,codaOnly)
   
   #Save other information to output object
   output$samples <- samples
