@@ -53,17 +53,6 @@ which_params <- function(param, params_raw){
 
 
 #------------------------------------------------------------------------------
-#Remove parameters from list of params
-subset_params <- function(samples, exclude=NULL){
-  all_params <- param_names(samples)
-  if(is.null(exclude)) return(all_params)
-  params_strip <- strip_params(all_params)
-  ind <- unlist(sapply(exclude, which_params, all_params))
-  all_params[-ind]
-}
-
-
-#------------------------------------------------------------------------------
 mcmc_to_mat <- function(mcmc_list){
   stopifnot(coda::nvar(mcmc_list) == 1)
   matrix(unlist(mcmc_list), 

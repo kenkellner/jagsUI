@@ -51,3 +51,42 @@ pdf(NULL)
 pp <- pp.check(out, "alpha", "beta")
 dev.off()
 expect_equal(pp, 0)
+
+# codaOnly---------------------------------------------------------------------
+out <- jags(data = data, inits = inits, parameters.to.save = params,
+            model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
+            n.burnin = 50, n.thin = 1, codaOnly=c("mu", "sigma"), verbose=FALSE)
+ref <- readRDS("reference_codaOnly.Rds")
+
+out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
+expect_identical(out[-c(17,18,21)], ref[-c(17,18,21)])
+
+# DIC = FALSE------------------------------------------------------------------
+out <- jags(data = data, inits = inits, parameters.to.save = params,
+            model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
+            n.burnin = 50, n.thin = 1, DIC=FALSE, verbose=FALSE)
+expect_false(out$calc.DIC)
+
+ref <- readRDS("reference_noDIC.Rds")
+out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
+expect_identical(out[-c(15,16,19)], ref[-c(15,16,19)])
+
+# Reordered parameter names----------------------------------------------------
+pars_new <- c("mu", "sigma", "alpha", "beta")
+out <- jags(data = data, inits = inits, parameters.to.save = pars_new,
+            model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
+            n.burnin = 50, n.thin = 1, verbose=FALSE)
+ref <- readRDS("reference_parsorder.Rds")
+
+out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
+expect_identical(out[-c(17,18,21)], ref[-c(17,18,21)])
+
+# Reordered parameter names and no DIC-----------------------------------------
+pars_new <- c("mu", "sigma", "alpha", "beta")
+out <- jags(data = data, inits = inits, parameters.to.save = pars_new,
+            model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
+            n.burnin = 50, n.thin = 1, DIC = FALSE, verbose=FALSE)
+ref <- readRDS("reference_parsorder_noDIC.Rds")
+
+out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
+expect_identical(out[-c(15,16,19)], ref[-c(15,16,19)])

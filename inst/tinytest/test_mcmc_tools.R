@@ -63,16 +63,6 @@ expect_equal(which_params('gamma',params_raw),c(4,5))
 expect_null(which_params('kappa',params_raw))
 
 
-# test that subset_params drops correct params from list-----------------------
-subset_params <- jagsUI:::subset_params
-samples <- readRDS('coda_samples.Rds')
-expect_equal(subset_params(samples), param_names(samples))
-expect_equal(subset_params(samples, 'beta'), param_names(samples)[-2])
-expect_equal(subset_params(samples, c('mu','kappa')),
-               c('alpha','beta','sigma','deviance'))
-expect_equal(subset_params(samples, param_names(samples, simplify=TRUE)),
-              character(0))
-
 # test that mcmc_to_mat converts properly--------------------------------------
 mcmc_to_mat <- jagsUI:::mcmc_to_mat
 samples <- readRDS('coda_samples.Rds')
