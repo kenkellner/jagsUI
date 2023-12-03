@@ -40,8 +40,8 @@ out <- order_samples(samples, new_order)
 expect_equal(class(out), 'mcmc.list')
 expect_equal(length(out),length(samples))
 expect_equal(lapply(out,class),lapply(samples,class))
-expect_equal(param_names(out),c('beta',paste0('mu[',1:16,']'),'alpha'))
-expect_equal(dim(out[[1]]), c(30,18))
+expect_equal(param_names(out),c('beta',paste0('mu[',1:16,']'),'alpha', "deviance"))
+expect_equal(dim(out[[1]]), c(30,19))
 expect_equal(as.numeric(out[[1]][1,1:2]), 
                c(0.03690717, 59.78175), tol=1e-4)
 expect_equal(order_samples(samples, 'beta'),
@@ -52,7 +52,9 @@ expect_equal(test, 'fake')
 one_param <- samples[, 'alpha',drop=FALSE]
 expect_equal(order_samples(one_param,'alpha'),one_param)
 expect_equal(dim(order_samples(one_param, 'beta')[[1]]),c(30,0))
-
+new_order <- c('deviance', 'beta','mu','alpha')
+out <- order_samples(samples, new_order)
+expect_equal(param_names(out),c('deviance', 'beta',paste0('mu[',1:16,']'),'alpha'))
 
 # test that which_params gets param col indices--------------------------------
 which_params <- jagsUI:::which_params

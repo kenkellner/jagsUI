@@ -32,6 +32,9 @@ match_params <- function(params, params_raw){
 order_samples <- function(samples, params){
   tryCatch({
     matched <- match_params(params, param_names(samples))
+    if("deviance" %in% param_names(samples) & ! "deviance" %in% matched){
+      matched <- c(matched, "deviance")
+    }
     samples[,matched,drop=FALSE]
   }, error = function(e){ 
     message(paste0("Caught error re-ordering samples:\n",e,"\n"))

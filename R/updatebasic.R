@@ -46,7 +46,7 @@ update.jagsUIbasic <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.
     m <- rjags.output$m    
   }
   
-  samples <- order.params(samples,parameters,DIC)
+  samples <- order_samples(samples, parameters)
   
   end.time <- Sys.time() 
   time <- round(as.numeric(end.time-start.time,units="mins"),digits=3)
