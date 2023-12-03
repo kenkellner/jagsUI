@@ -90,3 +90,11 @@ ref <- readRDS("reference_parsorder_noDIC.Rds")
 
 out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
 expect_identical(out[-c(15,16,19)], ref[-c(15,16,19)])
+
+# Single parameter saved-------------------------------------------------------
+pars_new <- c("alpha")
+out <- jags(data = data, inits = inits, parameters.to.save = pars_new,
+            model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
+            n.burnin = 50, n.thin = 1, DIC = FALSE, verbose=FALSE)
+expect_equal(nrow(out$summary), 1)
+expect_equal(ncol(out$samples[[1]]), 1)

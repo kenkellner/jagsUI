@@ -126,7 +126,7 @@ all_stat_arrays <- function(summary_stats, coda_only){
 stat_summary_table <- function(stats, coda_only){
   # Move overlap 0 and f to the end of the table
   stats <- stats[,c("mean", "sd", "q2.5", "q25", "q50", "q75", "q97.5",
-                    "Rhat", "n.eff", "overlap0", "f")]
+                    "Rhat", "n.eff", "overlap0", "f"), drop=FALSE]
   # Rename the quantile columns
   colnames(stats)[3:7] <- c("2.5%", "25%", "50%", "75%", "97.5%")
   # Remove rows marked as coda_only

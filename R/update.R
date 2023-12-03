@@ -52,7 +52,8 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.iter,
   samples <- order.params(samples,parameters,DIC,verbose=verbose)
     
   #Run process output
-  output <- process.output(samples,DIC=DIC,codaOnly,verbose=verbose)
+  #output <- process.output(samples,DIC=DIC,codaOnly,verbose=verbose)
+  output <- process_output(samples, coda_only = codaOnly, quiet = !verbose)
   if(is.null(output)){
     output <- list()
     output$samples <- samples
