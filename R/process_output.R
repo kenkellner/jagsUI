@@ -22,7 +22,7 @@ process_output <- function(mcmc_list, coda_only=NULL, quiet=FALSE){
     c(sims, stats_list, dic_list, sum_list)
   }, error = function(e) {
     message(paste0("Processing output failed with this error:\n",e,"\n"))
-    list(sims.list=NA, pD=NA, DIC=NA, summary=NA)
+    NULL
   })
 }
 
