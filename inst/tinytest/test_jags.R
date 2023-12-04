@@ -111,3 +111,38 @@ out <- jags(data = data, inits = inits, parameters.to.save = pars_new,
 expect_equal(nrow(out$summary), 1)
 expect_equal(ncol(out$samples[[1]]), 1)
 expect_equal(out$mean$mu, mu2_est)
+
+# Ragged arrays----------------------------------------------------------------
+set.seed(123)
+
+# Should trigger creation of a bunch of missing values in mu[,2] in output
+modfile <- tempfile()
+writeLines("
+model{
+  for (i in 1:n){ 
+    employed[i] ~ dnorm(mu[i,1], tau)     
+    mu[i,1] <- alpha + beta*gnp[i] 
+  }
+
+  mu[1,2] <- 1
+
+  alpha ~ dnorm(0, 0.00001)
+  beta ~ dnorm(0, 0.00001)
+  sigma ~ dunif(0,1000)
+  tau <- pow(sigma,-2)
+}", con=modfile)
+
+inits <- function(){  
+  list(alpha=rnorm(1,0,1),beta=rnorm(1,0,1),sigma=runif(1,0,3))  
+}
+params <- c('alpha','beta','sigma', 'mu')     
+
+out <- jags(data = data, inits = inits, parameters.to.save = params,
+            model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
+            n.burnin = 50, n.thin = 1, verbose=FALSE)
+
+expect_equal(dim(out$mean$mu), c(16, 2))
+expect_true(all(is.na(out$mean$mu[2:16,2])))
+expect_equal(dim(out$sims.list$mu), c(150, 16, 2))
+expect_equal(nrow(out$summary), 21)
+expect_equal(rownames(out$summary)[20], "mu[1,2]")
