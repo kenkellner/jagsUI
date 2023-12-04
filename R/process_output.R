@@ -2,7 +2,7 @@
 #Process output master function
 #To generate backwards-compatible jagsUI output
 #WIP
-process_output <- function(mcmc_list, coda_only=NULL, quiet=FALSE){
+process_output <- function(mcmc_list, coda_only=NULL, DIC, quiet=FALSE){
   if(!quiet){cat('Calculating statistics.......','\n')} 
 
   tryCatch({
@@ -15,7 +15,7 @@ process_output <- function(mcmc_list, coda_only=NULL, quiet=FALSE){
     # Get final summary table
     sum_list <- list(summary = stat_summary_table(stats, coda_only))
     # DIC stuff
-    dic_list <- calc_DIC(mcmc_list)
+    dic_list <- calc_DIC(mcmc_list, DIC)
     
     # Bind it all together
     if(!quiet){cat('\nDone.','\n')}
@@ -149,6 +149,7 @@ calc_f <- function(values, mn){
 
 calc_Rhat <- function(mcmc_list){
   stopifnot(has_one_parameter(mcmc_list))
+  if(length(mcmc_list) == 1) return(NA)
   out <- try(coda::gelman.diag(mcmc_list, 
             autoburnin=FALSE, multivariate=FALSE)$psrf[1])
   if(inherits(out, "try-error") || !is.finite(out)) out <- NA
@@ -241,10 +242,10 @@ calc_stats <- function(mcmc_list, coda_only=NULL){
 
 #------------------------------------------------------------------------------
 #Calculate pD and DIC from deviance if it exists in output samples
-calc_DIC <- function(samples){ 
-  ind <- which_params('deviance', param_names(samples))
-  #if(is.null(ind)) return(c(pD=NA, DIC=NA))
-  if(is.null(ind)) return(NULL)
+calc_DIC <- function(samples, DIC){ 
+  if(!DIC | !("deviance" %in% param_names(samples))){
+    return(NULL)
+  }
 
   dev <- mcmc_to_mat(samples[,'deviance'])  
   #if(any(is.na(dev)) || any(is.infinite(dev))) return(c(pD=NA, DIC=NA))

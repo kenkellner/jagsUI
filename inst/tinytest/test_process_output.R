@@ -16,7 +16,7 @@ param_names <- jagsUI:::param_names
 
 # test that process_output generates correct list of output--------------------
 samples <- readRDS('coda_samples.Rds')
-out <- process_output(samples, quiet=TRUE)
+out <- process_output(samples, DIC=TRUE, quiet=TRUE)
 expect_inherits(out,'list')
 expect_equal(length(out),15)
 expect_equal(names(out),c("sims.list", "mean", "sd", "q2.5", "q25", "q50", 
@@ -31,16 +31,19 @@ colnames(cs)[3:7] <- c("2.5%","25%","50%","75%","97.5%")
 cs <- cs[,c(1:7,10,11,8,9)]
 expect_equal(out$summary, cs)
 #Check error handling
-expect_message(result <- process_output("junk", quiet=TRUE))
+expect_message(result <- process_output("junk", DIC=TRUE, quiet=TRUE))
 expect_true(all(is.na(result)))
 
 #DIC=FALSE
-out2 <- process_output(samples[,-coda::nvar(samples)], quiet=TRUE)
+out2 <- process_output(samples[,-coda::nvar(samples)], DIC=FALSE, quiet=TRUE)
+expect_true(is.null(out2$DIC))
+expect_true(is.null(out2$pD))
+out2 <- process_output(samples[,-coda::nvar(samples)], DIC=TRUE, quiet=TRUE)
 expect_true(is.null(out2$DIC))
 expect_true(is.null(out2$pD))
 
 #Exclude parameters
-out3 <- process_output(samples, coda_only=c("alpha","kappa", "mu"),quiet=TRUE)
+out3 <- process_output(samples, coda_only=c("alpha","kappa", "mu"), DIC=TRUE, quiet=TRUE)
 expect_identical(names(out3$sims.list), names(out$sims.list))
 expect_identical(names(out3$mean), names(out$mean))
 expect_false(any(is.na(unlist(out3$mean))))
@@ -48,7 +51,7 @@ expect_identical(rownames(out3$summary), c("beta", "sigma", "deviance"))
 
 #test that process_output matches old jagsUI process.output--------------------
 old_all <- readRDS("old_jagsUI_output.Rds")
-new_po <- process_output(old_all$samples, quiet=TRUE)
+new_po <- process_output(old_all$samples, DIC=TRUE, quiet=TRUE)
 old_po <- readRDS("old_process_output.Rds")  
 expect_identical(new_po$summary, old_all$summary)
 new_po$summary <- NULL
@@ -227,16 +230,18 @@ expect_identical(ref_output, st_sub)
 
 # test that calculation of pD/DIC works----------------------------------------
 samples <- readRDS('coda_samples.Rds')
-expect_equal(calc_DIC(samples), c(pD=6.660906,DIC=40.712014), tol=1e-4)
+expect_equal(calc_DIC(samples, DIC=TRUE), c(pD=6.660906,DIC=40.712014), tol=1e-4)
 dev_ind <- which_params('deviance', param_names(samples))
 no_dev <- samples[,-coda::nvar(samples)]
-expect_true(is.null(calc_DIC(no_dev)))
+expect_true(is.null(calc_DIC(no_dev, DIC=TRUE)))
+expect_true(is.null(calc_DIC(no_dev, DIC=FALSE)))
+expect_true(is.null(calc_DIC(samples, DIC=FALSE)))
 samp_na <- samples
 ind <- which_params('deviance',param_names(samples))
 samp_na[[1]][1,ind] <- NA 
-expect_true(is.null(calc_DIC(samp_na)))
+expect_true(is.null(calc_DIC(samp_na, DIC=TRUE)))
 samp_inf <- samples
 samp_inf[[1]][1,ind] <- Inf
-expect_true(all(is.na(calc_DIC(samp_na))))
+expect_true(all(is.na(calc_DIC(samp_na, DIC=TRUE))))
 samp_inf[[1]][1,ind] <- -Inf
-expect_true(is.null(calc_DIC(samp_na)))
+expect_true(is.null(calc_DIC(samp_na, DIC=TRUE)))

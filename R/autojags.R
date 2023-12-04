@@ -131,7 +131,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   samples <- order_samples(samples, parameters.to.save)
   
   #Convert rjags output to jagsUI form 
-  output <- process_output(samples, coda_only = codaOnly, quiet = !verbose)
+  output <- process_output(samples, coda_only = codaOnly, DIC, quiet = !verbose)
   if(is.null(output)){
     output <- list()
     output$samples <- samples
