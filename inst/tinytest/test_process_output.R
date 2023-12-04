@@ -52,7 +52,7 @@ expect_identical(rownames(out3$summary), c("beta", "sigma", "deviance"))
 # Unexpected error happens during process_output-------------------------------
 
 # Here one of the arguments is missing
-expect_message(out_fail <- process_output(samples))
+expect_message(out_fail <- process_output(samples, quiet=TRUE))
 expect_true(is.null(out_fail)) # result is NULL
 
 #test that process_output matches old jagsUI process.output--------------------

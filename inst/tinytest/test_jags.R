@@ -122,6 +122,17 @@ out <- jags(data = dataList, parameters.to.save = c("v", "lambda"),
             n.burnin = 100, n.thin = 5, verbose=FALSE)
 expect_equal(rownames(out$summary), c("v", "lambda","deviance"))
 
+
+# Single chain and single iteration--------------------------------------------
+out <- jags(data = data, inits = inits, parameters.to.save = params,
+            model.file = modfile, n.chains = 1, n.adapt = 100, n.iter = 100,
+            n.burnin = 99, n.thin = 1, DIC = FALSE, verbose=FALSE)
+expect_true(all(is.na(out$summary[,"sd"])))
+expect_true(all(is.na(out$summary[,"Rhat"])))
+expect_true(all(is.na(out$summary[,"n.eff"])))
+expect_true(all(out$summary["alpha",3:7] == out$summary["alpha",3]))
+
+
 # Single parameter slice-------------------------------------------------------
 set.seed(123)
 pars_new <- c("mu[2]")
