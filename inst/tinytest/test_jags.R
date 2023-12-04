@@ -102,6 +102,26 @@ out <- jags(data = data, inits = inits, parameters.to.save = pars_new,
 expect_equal(nrow(out$summary), 1)
 expect_equal(ncol(out$samples[[1]]), 1)
 
+# Another example from Github issues
+modfile2 <- tempfile()
+writeLines("
+model{
+  for (i in 1:n) {
+    y[i] ~ dinterval(t[i], c[i, ])
+    t[i] ~ dweib(v, lambda)
+  }
+  v      ~ dunif(0, 10)
+  lambda ~ dunif(0, 10)
+}
+", con=modfile2)
+
+dataList <- list(n = 7L, c = structure(c(5, 7.5, 8, 9, 8, 8, 8, 15, 15, 15,
+15, 10, 10, 10), dim = c(7L, 2L)), y = c(1, 1, 1, 1, 1, 1, 1))
+out <- jags(data = dataList, parameters.to.save = c("v", "lambda"),
+            model.file =modfile2 ,n.chains = 3,n.adapt = 100, n.iter = 100+100,
+            n.burnin = 100, n.thin = 5, verbose=FALSE)
+expect_equal(rownames(out$summary), c("v", "lambda","deviance"))
+
 # Single parameter slice-------------------------------------------------------
 set.seed(123)
 pars_new <- c("mu[2]")
@@ -146,3 +166,22 @@ expect_true(all(is.na(out$mean$mu[2:16,2])))
 expect_equal(dim(out$sims.list$mu), c(150, 16, 2))
 expect_equal(nrow(out$summary), 21)
 expect_equal(rownames(out$summary)[20], "mu[1,2]")
+
+# When no stochastic nodes (and deviance is not calculated)--------------------
+library(jagsUI)
+
+data <- list(a = 1, b = Inf)
+
+modfile <- tempfile()
+writeLines("
+model{
+  x <- a * b
+} ", con=modfile)
+
+expect_warning(out <- jags(data=data, parameters.to.save="x", model.file=modfile,
+                      n.chains=3, n.iter=10, n.burnin=5, n.adapt=10, DIC=TRUE, verbose=FALSE))
+
+expect_equal(coda::varnames(out$samples), c("x"))
+expect_true(is.na(out$Rhat$x))
+expect_true(is.null(out$pD))
+expect_true(is.null(out$DIC))
