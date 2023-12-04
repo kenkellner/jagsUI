@@ -25,6 +25,9 @@ out <- jags(data = data, inits = inits, parameters.to.save = params,
             model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 1000,
             n.burnin = 500, n.thin = 2, verbose=FALSE)
 
+# Used below
+mu2_est <- out$mean$mu[2]
+
 ref <- readRDS("longley_reference_fit.Rds")
 
 # Remove time/date based elements
@@ -98,3 +101,13 @@ out <- jags(data = data, inits = inits, parameters.to.save = pars_new,
             n.burnin = 50, n.thin = 1, DIC = FALSE, verbose=FALSE)
 expect_equal(nrow(out$summary), 1)
 expect_equal(ncol(out$samples[[1]]), 1)
+
+# Single parameter slice-------------------------------------------------------
+set.seed(123)
+pars_new <- c("mu[2]")
+out <- jags(data = data, inits = inits, parameters.to.save = pars_new,
+            model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 1000,
+            n.burnin = 500, n.thin = 2, DIC = FALSE, verbose=FALSE)
+expect_equal(nrow(out$summary), 1)
+expect_equal(ncol(out$samples[[1]]), 1)
+expect_equal(out$mean$mu, mu2_est)
