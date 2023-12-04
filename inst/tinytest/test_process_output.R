@@ -49,6 +49,12 @@ expect_identical(names(out3$mean), names(out$mean))
 expect_false(any(is.na(unlist(out3$mean))))
 expect_identical(rownames(out3$summary), c("beta", "sigma", "deviance"))
 
+# Unexpected error happens during process_output-------------------------------
+
+# Here one of the arguments is missing
+expect_message(out_fail <- process_output(samples))
+expect_true(is.null(out_fail)) # result is NULL
+
 #test that process_output matches old jagsUI process.output--------------------
 old_all <- readRDS("old_jagsUI_output.Rds")
 new_po <- process_output(old_all$samples, DIC=TRUE, quiet=TRUE)
