@@ -1,46 +1,75 @@
-gen.inits <- jagsUI:::gen.inits
-process.input <- jagsUI:::process.input
+process_input <- jagsUI:::process_input
+check_inits <- jagsUI:::check_inits
 
+# Overall structure------------------------------------------------------------
+data1 <- list(a=1, b=c(1,2), c=matrix(rnorm(4), 2,2), 
+              d=array(rnorm(8), c(2,2,2)), e=c(NA, 1))
+test <- process_input(data1, params="a", NULL, 2, 1, 100, 50, 2, 
+                      NULL, DIC=TRUE, quiet=TRUE, parallel=FALSE)
+expect_inherits(test, "list")
+expect_equal(names(test), c("data", "params", "n.cores", "inits", "mcmc.info"))
 
 # Data processing--------------------------------------------------------------
 # Stuff that gets passed through unchanged
 data1 <- list(a=1, b=c(1,2), c=matrix(rnorm(4), 2,2), 
               d=array(rnorm(8), c(2,2,2)), e=c(NA, 1))
-test <- process.input(data1, "a", NULL, 2, 100, 50, 2, NULL, verbose=FALSE)
+test <- process_input(data1, params="a", NULL, 2, 1, 100, 50, 2, 
+                      NULL, DIC=TRUE, quiet=TRUE, parallel=FALSE)
 expect_identical(test$data, data1)
 
+# Data frame handling
 data2 <- list(a=data.frame(v1=c(1,2)), b=data.frame(v1=c(0,1), v2=c(2,3)))
-co <- capture.output(test <- process.input(data2, "a", NULL, 2, 100, 50, 2, NULL))
-ref_msg <- c("", "Processing function input....... ", "", "Converting data frame 'a' to matrix.","", "Converting data frame 'b' to matrix.", "", "Done. ", " ")
+co <- capture.output(
+test <- process_input(data2, params="a", NULL, 2, 1, 100, 50, 2, 
+                      NULL, DIC=TRUE, quiet=FALSE, parallel=FALSE)
+)
+ref_msg <- c("", "Processing function input....... ", "", 
+             "Converted data.frame a to matrix","", 
+             "Converted data.frame b to matrix", "", "Done. ", " ")
 expect_equal(co, ref_msg)
 expect_equivalent(test$data, list(a=matrix(c(1,2), ncol=1),
                                   b=matrix(c(0:3), ncol=2)))
 
+# non-numeric data frame errors
+data2$v3 <- data.frame(v1=c("a","b"))
+expect_error(process_input(data2, params="a", NULL, 2, 1, 100, 50, 2, 
+                      NULL, DIC=TRUE, quiet=TRUE, parallel=FALSE))
+
 # Factor in data
 data3 <- list(a=1, b=factor(c("1","2")))
-expect_error(process.input(data3, "a", NULL, 2, 100, 50, 2, NULL, verbose=FALSE))
+expect_error(process_input(data3, params="a", NULL, 2, 1, 100, 50, 2, 
+                      NULL, DIC=TRUE, quiet=TRUE, parallel=FALSE))
 
 # Character in data
 data4 <- list(a=1, b=c("a","b"))
-expect_error(process.input(data4, "a", NULL, 2, 100, 50, 2, NULL, verbose=FALSE))
+expect_error(process_input(data4, params="a", NULL, 2, 1, 100, 50, 2, 
+                      NULL, DIC=TRUE, quiet=TRUE, parallel=FALSE))
 
 # Vector with attributes is allowed
-#vec <- c(1,2)
-#attr(vec, "test") <- "test"
-#expect_false(is.vector(vec))
-#data5 <- list(vec=vec)
-#test <- process.input(data5, "a", NULL, 2, 100, 50, 2, NULL, verbose=FALSE)
-#expect_equal(data5, test$data5)
+vec <- c(1,2)
+attr(vec, "test") <- "test"
+expect_false(is.vector(vec))
+data5 <- list(vec=vec)
+test <- process_input(data5, params="a", NULL, 2, 1, 100, 50, 2, 
+                      NULL, DIC=TRUE, quiet=TRUE, parallel=FALSE)
+expect_equal(data5, test$data)
 
 # One-column matrix is not converted to vector
 data6 <- list(a=matrix(c(1,2), ncol=1))
-test <- process.input(data6, "a", NULL, 2, 100, 50, 2, NULL, verbose=FALSE)
+test <- process_input(data6, params="a", NULL, 2, 1, 100, 50, 2, 
+                      NULL, DIC=TRUE, quiet=TRUE, parallel=FALSE)
 expect_equal(test$data, data6)
 
 # Non-list as input errors
-#t1 <- 1; t2 <- 2
-#data7 <- c("t1", "t2")
-#expect_error(process.input(data7, "a", NULL, 2, 100, 50, 2, NULL, verbose=FALSE))
+t1 <- 1; t2 <- 2
+data7 <- c("t1", "t2")
+expect_error(process_input(data7, params="a", NULL, 2, 1, 100, 50, 2, 
+                      NULL, DIC=TRUE, quiet=TRUE, parallel=FALSE))
+
+# List without names as input errors
+data8 <- list(1, 2)
+expect_error(process_input(data8, params="a", NULL, 2, 1, 100, 50, 2, 
+                      NULL, DIC=TRUE, quiet=TRUE, parallel=FALSE))
 
 
 # Parameter vector processing--------------------------------------------------
@@ -49,39 +78,43 @@ pars1 <- c("a", "b")
 pars2 <- c("deviance","a", "b")
 
 # DIC = FALSE
-test <- process.input(dat, pars1, NULL, 2, 100, 50, 2, NULL, verbose=FALSE)
+test <- process_input(dat, params=pars1, NULL, 2, 1, 100, 50, 2, 
+                      NULL, DIC=FALSE, quiet=TRUE, parallel=FALSE)
 expect_equal(pars1, test$params)
 
 # DIC = TRUE
-test <- process.input(dat, pars1, NULL, 2, 100, 50, 2, NULL, verbose=FALSE, DIC=TRUE)
+test <- process_input(dat, params=pars1, NULL, 2, 1, 100, 50, 2, 
+                      NULL, DIC=TRUE, quiet=TRUE, parallel=FALSE)
 expect_equal(c(pars1, "deviance"), test$params)
 
 # Deviance already in vector
-test <- process.input(dat, pars2, NULL, 2, 100, 50, 2, NULL, verbose=FALSE, DIC=TRUE)
+test <- process_input(dat, params=pars2, NULL, 2, 1, 100, 50, 2, 
+                      NULL, DIC=TRUE, quiet=TRUE, parallel=FALSE)
 expect_equal(pars2, test$params)
 
 # Incorrect format
-expect_error(process.input(dat, c(1,2), NULL, 2, 100, 50, 2, NULL, verbose=FALSE))
+expect_error(process_input(dat, params=c(1,2), NULL, 2, 1, 100, 50, 2, 
+                      NULL, DIC=FALSE, quiet=TRUE, parallel=FALSE))
 
 
 # MCMC info processing---------------------------------------------------------
 dat <- list(a=1, b=2)
 pars1 <- c("a", "b")
 # n.iter/n.burnin mismatch
-expect_error(process.input(dat, pars1, NULL, 2, n.iter=100, n.burnin=100, 
-                      2, NULL, verbose=FALSE, DIC=TRUE))
-expect_error(process.input(dat, pars1, NULL, 2, n.iter=100, n.burnin=150, 
-                      2, NULL, verbose=FALSE, DIC=TRUE))
+expect_error(process_input(dat, params=pars1, NULL, 2, 1, n_iter=100, n_burnin=100, 2, 
+                      NULL, DIC=FALSE, quiet=TRUE, parallel=FALSE))
+expect_error(process_input(dat, params=pars1, NULL, 2, 1, n_iter=100, n_burnin=150, 2, 
+                      NULL, DIC=FALSE, quiet=TRUE, parallel=FALSE))
 
 # n.cores
 # when parallel=FALSE
-test <- process.input(dat, pars1, NULL, 2, n.iter=100, n.burnin=50, 
-                      2, NULL, verbose=FALSE, DIC=TRUE)
+test <- process_input(dat, params=pars1, NULL, 2, 1, n_iter=100, n_burnin=50, 2, 
+                      n_cores=NULL, DIC=FALSE, quiet=TRUE, parallel=FALSE)
 expect_true(is.null(test$n.cores))
 
 # when parallel=TRUE defaults to min of nchains and ncores
-test <- process.input(dat, pars1, NULL, 2, n.iter=100, n.burnin=50, 
-                      2, NULL, verbose=FALSE, DIC=TRUE, parallel=TRUE)
+test <- process_input(dat, params=pars1, NULL, 2, 1, n_iter=100, n_burnin=50, 2, 
+                      n_cores=NULL, DIC=FALSE, quiet=TRUE, parallel=TRUE)
 expect_equal(test$n.cores, 2)
 
 avail_cores <- parallel::detectCores()
@@ -89,8 +122,10 @@ if(avail_cores > 1){
   try_cores <- avail_cores + 1
   n_chain <- try_cores
   expect_warning(nul <- capture.output(
-    test <- process.input(dat, pars1, NULL, n.chains=n_chain, n.iter=100, n.burnin=50, 
-    n.thin=2, verbose=TRUE, DIC=TRUE, parallel=TRUE, n.cores=try_cores)))
+  test <- process_input(dat, params=pars1, NULL, n_chains=n_chain, 1, 
+                        n_iter=100, n_burnin=50, 2, 
+                      n_cores=try_cores, DIC=FALSE, quiet=TRUE, parallel=TRUE)
+  ))
   expect_equal(test$n.cores, avail_cores)
 }
 
@@ -100,31 +135,32 @@ inits2 <- list(list(a=1, b=2), list(a=3, b=4))
 inits3 <- list(a=1, b=2)
 inits4 <- function() list(a=1, b=2)
 inits5 <- function() list()
-inits6 <- 1
+inits6 <- function() 1
+inits7 <- 1
 
 # No inits provided
 set.seed(123)
-test <- gen.inits(inits1, seed=NULL, n.chains=2)
+test <- check_inits(inits1, n_chains=2)
 ref <- list(list(.RNG.name = "base::Mersenne-Twister", .RNG.seed = 28758),
     list(.RNG.name = "base::Mersenne-Twister", .RNG.seed = 78830))
 expect_identical(test, ref)
 
 # A list of lists
 set.seed(123)
-test <- gen.inits(inits2, seed=NULL, n.chains=2)
+test <- check_inits(inits2, n_chains=2)
 ref <- list(list(a = 1, b = 2, .RNG.name = "base::Mersenne-Twister",
     .RNG.seed = 28758), list(a = 3, b = 4, .RNG.name = "base::Mersenne-Twister",
     .RNG.seed = 78830))
 expect_identical(test, ref)
 # Wrong number of list elements for number of chains
-expect_error(gen.inits(inits2, seed=NULL, n.chains=3))
+expect_error(check_inits(inits2, n_chains=3))
 
 # A single list
-expect_error(gen.inits(inits3, seed=NULL, n.chains=1))
+expect_error(check_inits(inits3, n_chains=1))
 
 # A function
 set.seed(123)
-test <- gen.inits(inits4, seed=NULL, n.chains=2)
+test <- check_inits(inits4, n_chains=2)
 ref <- list(list(a = 1, b = 2, .RNG.name = "base::Mersenne-Twister",
     .RNG.seed = 28758), list(a = 1, b = 2, .RNG.name = "base::Mersenne-Twister",
     .RNG.seed = 78830))
@@ -132,10 +168,13 @@ expect_identical(test, ref)
 
 # An empty list
 set.seed(123)
-test <- gen.inits(inits5, seed=NULL, n.chains=2)
+test <- check_inits(inits5, n_chains=2)
 ref <- list(list(.RNG.name = "base::Mersenne-Twister", .RNG.seed = 28758),
     list(.RNG.name = "base::Mersenne-Twister", .RNG.seed = 78830))
 expect_identical(test, ref)
 
+# Function but doesn't return list
+expect_error(check_inits(inits6, n_chains=2))
+
 # A number
-expect_error(gen.inits(inits6, seed=NULL, n.chains=2))
+expect_error(check_inits(inits7, n_chains=2))
