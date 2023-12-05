@@ -48,3 +48,8 @@ ref <- readRDS('jagsbasic_ref_update.Rds')
 expect_identical(names(out2), names(ref))
 out2$model <- ref$model
 expect_equal(out2, ref)
+
+# Error if seed is set
+expect_error(jags.basic(data = data, inits = inits, parameters.to.save = params,
+            model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
+            n.burnin = 50, n.thin = 2, verbose=FALSE, save.model=TRUE, seed=123))

@@ -134,6 +134,18 @@ out <- jags(data = data, inits = inits, parameters.to.save = params,
             codaOnly = params)
 expect_equal(nrow(out$summary), 0)
 
+# Saved data and inits---------------------------------------------------------
+set.seed(123)
+run_inits <- jagsUI:::check_inits(inits, 3)
+
+set.seed(123)
+out <- jags(data = data, inits = inits, 
+            parameters.to.save = c("alpha","beta"),
+            model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
+            n.burnin = 50, n.thin = 1, verbose=FALSE, store.data=TRUE)
+expect_identical(out$data, data)
+expect_identical(out$inits, run_inits)
+
 # Check recovery after process_output errors-----------------------------------
 # Setting DIC to -999 forces process_output to error for testing
 expect_message(out <- jags(data = data, inits = inits, 
@@ -153,6 +165,10 @@ expect_true(all(is.na(out$summary[,"Rhat"])))
 expect_true(all(is.na(out$summary[,"n.eff"])))
 expect_true(all(out$summary["alpha",3:7] == out$summary["alpha",3]))
 
+# Error when user tries to set seed--------------------------------------------
+expect_error(jags(data = data, inits = inits, parameters.to.save = params,
+            model.file = modfile, n.chains = 1, n.adapt = 100, n.iter = 100,
+            n.burnin = 50, n.thin = 1, DIC = FALSE, verbose=FALSE, seed=123))
 
 # Single parameter slice-------------------------------------------------------
 set.seed(123)
