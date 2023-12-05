@@ -7,7 +7,7 @@ data1 <- list(a=1, b=c(1,2), c=matrix(rnorm(4), 2,2),
 test <- process_input(data1, params="a", NULL, 2, 1, 100, 50, 2, 
                       NULL, DIC=TRUE, quiet=TRUE, parallel=FALSE)
 expect_inherits(test, "list")
-expect_equal(names(test), c("data", "params", "n.cores", "inits", "mcmc.info"))
+expect_equal(names(test), c("data", "params", "inits", "mcmc.info"))
 
 # Data processing--------------------------------------------------------------
 # Stuff that gets passed through unchanged
@@ -110,12 +110,12 @@ expect_error(process_input(dat, params=pars1, NULL, 2, 1, n_iter=100, n_burnin=1
 # when parallel=FALSE
 test <- process_input(dat, params=pars1, NULL, 2, 1, n_iter=100, n_burnin=50, 2, 
                       n_cores=NULL, DIC=FALSE, quiet=TRUE, parallel=FALSE)
-expect_true(is.null(test$n.cores))
+expect_true(is.null(test$mcmc.info$n.cores))
 
 # when parallel=TRUE defaults to min of nchains and ncores
 test <- process_input(dat, params=pars1, NULL, 2, 1, n_iter=100, n_burnin=50, 2, 
                       n_cores=NULL, DIC=FALSE, quiet=TRUE, parallel=TRUE)
-expect_equal(test$n.cores, 2)
+expect_equal(test$mcmc.info$n.cores, 2)
 
 avail_cores <- parallel::detectCores()
 if(avail_cores > 1){
@@ -126,7 +126,7 @@ if(avail_cores > 1){
                         n_iter=100, n_burnin=50, 2, 
                       n_cores=try_cores, DIC=FALSE, quiet=TRUE, parallel=TRUE)
   ))
-  expect_equal(test$n.cores, avail_cores)
+  expect_equal(test$mcmc.info$n.cores, avail_cores)
 }
 
 # Initial value processing-----------------------------------------------------
@@ -178,3 +178,16 @@ expect_error(check_inits(inits6, n_chains=2))
 
 # A number
 expect_error(check_inits(inits7, n_chains=2))
+
+# Check exact match when inits is a function with random numbers
+set.seed(123)
+inits_fun <- function() list(a = rnorm(1), b=rnorm(1))
+#inits_ref <- jagsUI:::gen.inits(inits_fun, seed=NULL, 2)
+inits_ref <- list(list(a = -0.560475646552213, b = -0.23017748948328, 
+                       .RNG.name = "base::Mersenne-Twister",
+    .RNG.seed = 55143), list(a = 1.55870831414912, b = 0.070508391424576,
+    .RNG.name = "base::Mersenne-Twister", .RNG.seed = 45662))
+
+set.seed(123)
+test <- check_inits(inits_fun, 2)
+expect_equal(inits_ref, test)

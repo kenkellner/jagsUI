@@ -5,10 +5,9 @@ process_input <- function(data, params, inits, n_chains, n_adapt, n_iter, n_burn
   if(!quiet){cat('\nProcessing function input.......','\n')}
   out <- list(data = check_data(data, quiet),
               params = check_params(params, DIC),
-              n.cores = check_cores(n_cores, n_chains, parallel),
               inits = check_inits(inits, n_chains),
               mcmc.info = check_mcmc_info(n_chains, n_adapt, n_iter, n_burnin, 
-                                          n_thin)
+                                          n_thin, n_cores, parallel)
   )
   if(!quiet){cat('\nDone.','\n','\n')}
   out
@@ -19,7 +18,7 @@ process_input <- function(data, params, inits, n_chains, n_adapt, n_iter, n_burn
 check_data <- function(inp_data, quiet){
   # Check data is a list
   if(!is.list(inp_data)){
-    stop("Input data must be a list", call.=FALSE)
+    stop("Input data must be a named list", call.=FALSE)
   }
   # Check list is named
   nms <- names(inp_data)
@@ -84,10 +83,14 @@ check_mcmc_info <- function(n_chains, n_adapt, n_iter, n_burnin,
   }
   # Removed warnings about small numbers of iterations and uneven iterations
   
+  n_cores = check_cores(n_cores, n_chains, parallel)
+
   # Create list structure and save available elements
-  list(n.chains = n_chains, n.adapt = n_adapt, sufficient_adapt = NA,
+  out <- list(n.chains = n_chains, n.adapt = n_adapt, sufficient.adapt = NA,
        n.iter = n_iter, n.burnin = n_burnin, n.thin = n_thin,
        n.samples = NA, end.values = NA, elapsed.mins = NA)
+  if(parallel) out$n.cores <- n_cores
+  out
 }
 
 
@@ -126,11 +129,10 @@ check_inits <- function(inits, n_chains){
            call.=FALSE)
     }
   } else if(is.function(inits)){
-    test <- inits()
-    if(!is.list(test)){
+    inits <- lapply(1:n_chains, function(x) inits())
+    if(!is.list(inits[[1]])){
       stop("inits function must return list", call.=FALSE)
     }
-    inits <- lapply(1:n_chains, function(x) inits())
   } else if(is.null(inits)){
     inits <- vector("list", n_chains)
   } else {

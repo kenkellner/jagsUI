@@ -4,13 +4,20 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
                        modules=c('glm'),factories=NULL,parallel=FALSE,n.cores=NULL,DIC=TRUE,store.data=FALSE,codaOnly=FALSE,seed=NULL,
                        bugs.format=FALSE,verbose=TRUE){
   
-  #Pass input data and parameter list through error check / processing
-  data.check <- process.input(data,parameters.to.save,inits,n.chains,n.iter,n.burnin,n.thin,n.cores,DIC=DIC,
-                              verbose=verbose,parallel=parallel,seed=seed)
-  data <- data.check$data
-  parameters.to.save <- data.check$params
-  inits <- data.check$inits
-  if(parallel){n.cores <- data.check$n.cores}
+  if(!is.null(seed)){
+    stop("The seed argument is no longer supported, use set.seed() instead", call.=FALSE)
+  }
+
+  # Check input data
+  inps_check <- process_input(data=data, params=parameters.to.save, inits=inits,
+                              n_chains=n.chains, n_adapt=n.adapt, n_iter=n.iter, 
+                              n_burnin=n.burnin, n_thin=n.thin, n_cores=n.cores,
+                              DIC=DIC, quiet=!verbose, parallel=parallel)
+  data <- inps_check$data
+  parameters.to.save <- inps_check$params
+  inits <- inps_check$inits
+  mcmc.info <- inps_check$mcmc.info
+  if(parallel) n.cores <- inps_check$mcmc.info$n.cores
   
   #Save start time
   start.time <- Sys.time()
@@ -48,18 +55,13 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
   
   }
   
-  #Get more info about MCMC run
-  end.time <- Sys.time() 
-  time <- round(as.numeric(end.time-start.time,units="mins"),digits=3)
-  date <- start.time
-  
-  #Combine mcmc info into list
-  n.samples <- dim(samples[[1]])[1] * n.chains
-  end.values <- samples[(n.samples/n.chains),]
-  mcmc.info <- list(n.chains,n.adapt=total.adapt,sufficient.adapt,n.iter,n.burnin,n.thin,n.samples,end.values,time)
-  names(mcmc.info) <- c('n.chains','n.adapt','sufficient.adapt','n.iter','n.burnin','n.thin','n.samples','end.values','elapsed.mins')
-  if(parallel){mcmc.info$n.cores <- n.cores}
-  
+  #Add mcmc info into list
+  mcmc.info$elapsed.mins <- round(as.numeric(Sys.time()-start.time,units="mins"),digits=3)
+  mcmc.info$n.samples <- coda::niter(samples) * n.chains
+  mcmc.info$end.values <- samples[coda::niter(samples),]
+  mcmc.info$n.adapt <- total.adapt
+  mcmc.info$sufficient.adapt <- sufficient.adapt
+
   #Reorganize JAGS output to match input parameter order
   samples <- order_samples(samples, parameters.to.save)
   
@@ -85,8 +87,7 @@ jagsUI <- jags <- function(data,inits=NULL,parameters.to.save,model.file,n.chain
   output$model <- m
   output$parameters <- parameters.to.save
   output$mcmc.info <- mcmc.info
-  output$run.date <- date
-  output$random.seed <- seed
+  output$run.date <- start.time
   output$parallel <- parallel
   output$bugs.format <- bugs.format
   output$calc.DIC <- DIC
