@@ -123,6 +123,24 @@ out <- jags(data = dataList, parameters.to.save = c("v", "lambda"),
 expect_equal(rownames(out$summary), c("v", "lambda","deviance"))
 
 
+# No non-codaOnly parameters---------------------------------------------------
+
+out <- jags(data = data, inits = inits, parameters.to.save = params,
+            model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
+            n.burnin = 50, n.thin = 1, verbose=FALSE, DIC=FALSE, 
+            codaOnly = params)
+expect_equal(nrow(out$summary), 0)
+
+# Check recovery after process_output errors-----------------------------------
+# Setting DIC to -999 forces process_output to error for testing
+expect_message(out <- jags(data = data, inits = inits, 
+                parameters.to.save = c("alpha","beta"),
+                model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
+                n.burnin = 50, n.thin = 1, verbose=FALSE, DIC=-999))
+expect_inherits(out, "jagsUIbasic")
+expect_equal(coda::varnames(out$samples), c("alpha","beta", "deviance"))
+expect_equal(names(out), c("samples", "model"))
+
 # Single chain and single iteration--------------------------------------------
 out <- jags(data = data, inits = inits, parameters.to.save = params,
             model.file = modfile, n.chains = 1, n.adapt = 100, n.iter = 100,

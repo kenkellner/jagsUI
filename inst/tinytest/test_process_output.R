@@ -49,6 +49,11 @@ expect_identical(names(out3$mean), names(out$mean))
 expect_false(any(is.na(unlist(out3$mean))))
 expect_identical(rownames(out3$summary), c("beta", "sigma", "deviance"))
 
+# Check progress messages
+co <- capture.output(out <- process_output(samples, DIC=TRUE, quiet=FALSE))
+expect_identical(co, c("Calculating statistics....... ", "", "Done. "))
+                
+
 # Unexpected error happens during process_output-------------------------------
 
 # Here one of the arguments is missing
@@ -174,6 +179,16 @@ test[1,1] <- NA
 expect_equal(round(calc_f(test, mean(test,na.rm=T)),4), 0.3103)
 
 
+# Test that calculation of Rhat is correct-------------------------------------
+samples <- readRDS('coda_samples.Rds')
+alpha <- samples[,"alpha"]
+expect_equal(calc_Rhat(alpha), 1.003831, tol=1e-4)
+expect_error(calc_Rhat(samples))
+expect_equal(calc_Rhat(alpha[1]), NA)
+alpha[[1]][1] <- Inf
+expect_equal(calc_Rhat(alpha), NA)
+
+
 # test that all stats for one parameter calculated correctly-------------------
 samples <- readRDS('coda_samples.Rds')
 ps <- calc_param_stats(samples[,'alpha'], FALSE)
@@ -208,9 +223,7 @@ expect_equivalent(calc_param_stats(alpha_one, FALSE),
              c(51.870939,0.8998954,51.15826,51.36934,51.6038732,52.239005,
                52.8106251, 0, 1, NA, NA), tol=1e-4)
 #Test if error
-alpha_er <- samples[,"alpha"]
-alpha_er[[1]][1] <- 'a'
-expect_warning(out <- calc_param_stats(alpha_er, TRUE))
+expect_message(out <- calc_param_stats(alpha_one))
 expect_true(all(is.na(out)))
 expect_true(length(out) == 11)
 

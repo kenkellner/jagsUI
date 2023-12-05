@@ -59,3 +59,11 @@ expect_false(out2$calc.DIC)
 
 out2$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
 expect_identical(out2[-c(15,17,19)], ref[-c(15,17,19)])
+
+# Check recovery after process_output errors-----------------------------------
+# Setting DIC to -999 forces process_output to error for testing
+expect_message(out2 <- update(out, n.iter=100, n.thin=2, verbose=FALSE, 
+               parameters.to.save=c('alpha'), DIC=-999))
+expect_inherits(out2, "jagsUIbasic")
+expect_equal(coda::varnames(out2$samples), c("alpha","deviance"))
+expect_equal(names(out2), c("samples", "model"))

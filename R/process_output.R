@@ -1,11 +1,11 @@
 #------------------------------------------------------------------------------
 #Process output master function
 #To generate backwards-compatible jagsUI output
-#WIP
 process_output <- function(mcmc_list, coda_only=NULL, DIC, quiet=FALSE){
   if(!quiet){cat('Calculating statistics.......','\n')} 
 
   tryCatch({
+    if(DIC == -999) stop("Throwing error for testing purposes", call.=FALSE)
     # Get the sims.list
     sims <- list(sims.list = sims_list(mcmc_list))
     # Calculate all stats
