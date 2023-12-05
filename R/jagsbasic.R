@@ -2,13 +2,20 @@
 jags.basic <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.adapt=NULL,n.iter,n.burnin=0,n.thin=1,
                            modules=c('glm'),factories=NULL,parallel=FALSE,n.cores=NULL,DIC=TRUE,seed=NULL,save.model=FALSE,verbose=TRUE){
   
-  #Pass input data and parameter list through error check / processing
-  data.check <- process.input(data,parameters.to.save,inits,n.chains,n.iter,n.burnin,n.thin,n.cores,DIC=DIC,
-                              verbose=verbose,parallel=parallel,seed=seed)
-  data <- data.check$data
-  parameters.to.save <- data.check$params
-  inits <- data.check$inits
-  if(parallel){n.cores <- data.check$n.cores}
+  if(!is.null(seed)){
+    stop("The seed argument is no longer supported, use set.seed() instead", call.=FALSE)
+  }
+
+  # Check input data
+  inps_check <- process_input(data=data, params=parameters.to.save, inits=inits,
+                              n_chains=n.chains, n_adapt=n.adapt, n_iter=n.iter, 
+                              n_burnin=n.burnin, n_thin=n.thin, n_cores=n.cores,
+                              DIC=DIC, quiet=!verbose, parallel=parallel)
+  data <- inps_check$data
+  parameters.to.save <- inps_check$params
+  inits <- inps_check$inits
+  mcmc.info <- inps_check$mcmc.info
+  if(parallel) n.cores <- inps_check$mcmc.info$n.cores
   
   #Save start time
   start.time <- Sys.time()
@@ -48,8 +55,7 @@ jags.basic <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.
   }
   
   #Get more info about MCMC run
-  end.time <- Sys.time() 
-  time <- round(as.numeric(end.time-start.time,units="mins"),digits=3)
+  time <- round(as.numeric(Sys.time()-start.time,units="mins"),digits=3)
   if(verbose){cat('MCMC took',time,'minutes.\n')}
   
   if(save.model){
