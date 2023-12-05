@@ -1,6 +1,6 @@
 Package: jagsUI
-Version: 1.5.3.9000
-Date: 2023-12-03
+Version: 1.5.3.9001
+Date: 2023-12-05
 Title: A Wrapper Around 'rjags' to Streamline 'JAGS' Analyses
 Authors@R: c(
     person("Ken", "Kellner", email="contact@kenkellner.com", role=c("cre","aut")),
