@@ -11,8 +11,8 @@ pp.check <- function(x, observed, simulated,
     stop("Simulated parameter not found in output")
   }
 
-  obs <- c(mcmc_to_mat(x$samples, observed))
-  sim <- c(mcmc_to_mat(x$samples, simulated))
+  obs <- c(mcmc_to_mat(x$samples[,observed]))
+  sim <- c(mcmc_to_mat(x$samples[,simulated]))
 
   bpval <- mean(sim > obs)
   plotrange <- range(obs, sim)

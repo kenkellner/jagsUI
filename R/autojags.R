@@ -128,13 +128,12 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   date <- start.time
   
   #Reorganize JAGS output to match input parameter order
-  samples <- order.params(samples,parameters.to.save,DIC,verbose=verbose)
+  samples <- order_samples(samples, parameters.to.save)
   
   #Convert rjags output to jagsUI form 
-  output <- process.output(samples,DIC=DIC,codaOnly,verbose=verbose) 
+  output <- process_output(samples, coda_only = codaOnly, DIC, quiet = !verbose)
   if(is.null(output)){
     output <- list()
-    samples <- order.params(samples,parameters.to.save,DIC,verbose=verbose)
     output$samples <- samples
     output$model <- mod
     output$n.cores <- n.cores
@@ -143,10 +142,6 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
   }
 
   #Add additional information to output list
-  
-  #Summary
-  output$summary <- summary.matrix(output,samples,n.chains,codaOnly)
-  
   output$samples <- samples
   output$modfile <- model.file
   #If user wants to save input data/inits

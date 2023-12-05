@@ -49,10 +49,10 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.iter,
   date <- start.time
   
   #Reorganize JAGS output to match input parameter order
-  samples <- order.params(samples,parameters,DIC,verbose=verbose)
+  samples <- order_samples(samples, parameters)
     
   #Run process output
-  output <- process.output(samples,DIC=DIC,codaOnly,verbose=verbose)
+  output <- process_output(samples, coda_only = codaOnly, DIC, quiet = !verbose)
   if(is.null(output)){
     output <- list()
     output$samples <- samples
@@ -62,9 +62,6 @@ update.jagsUI <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.iter,
     return(output)
   }
  
-  #Summary
-  output$summary <- summary.matrix(output,samples,object$mcmc.info$n.chains,codaOnly)
-  
   #Save other information to output object
   output$samples <- samples
   

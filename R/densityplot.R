@@ -23,7 +23,7 @@ densityplot <- function(x, parameters=NULL, layout=NULL, ask=NULL){
 param_density <- function(x, parameter, m_labels=FALSE){
   
   #Get samples
-  vals <- mcmc_to_mat(x$samples, parameter)
+  vals <- mcmc_to_mat(x$samples[,parameter])
   
   # Get bandwidth, one value for all chains
   bw <- mean(apply(vals, 2, stats::bw.nrd0))
