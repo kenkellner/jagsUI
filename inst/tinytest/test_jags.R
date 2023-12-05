@@ -55,6 +55,9 @@ pp <- pp.check(out, "alpha", "beta")
 dev.off()
 expect_equal(pp, 0)
 
+# Other methods
+expect_identical(out$summary, summary(out))
+
 # codaOnly---------------------------------------------------------------------
 out <- jags(data = data, inits = inits, parameters.to.save = params,
             model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
