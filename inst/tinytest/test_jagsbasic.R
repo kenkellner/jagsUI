@@ -29,7 +29,7 @@ ref <- readRDS("jagsbasic_reference_fit.Rds")
 
 expect_identical(out, ref)
 
-# Saved model and reordered parameter names
+# Saved model and reordered parameter names------------------------------------
 params <- c('beta', 'alpha', 'sigma', 'mu')     
 out <- jags.basic(data = data, inits = inits, parameters.to.save = params,
             model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
@@ -40,7 +40,7 @@ expect_identical(names(out), names(ref))
 out$model <- ref$model
 expect_identical(out, ref)
 
-# Update
+# Update-----------------------------------------------------------------------
 out2 <- update(out, n.iter=100, n.thin = 2, verbose=FALSE)
 expect_equal(nrow(out2$samples[[1]]), 50)
 
@@ -49,7 +49,26 @@ expect_identical(names(out2), names(ref))
 out2$model <- ref$model
 expect_equal(out2, ref)
 
-# Error if seed is set
+# Error if seed is set---------------------------------------------------------
 expect_error(jags.basic(data = data, inits = inits, parameters.to.save = params,
             model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
             n.burnin = 50, n.thin = 2, verbose=FALSE, save.model=TRUE, seed=123))
+
+# Parallel---------------------------------------------------------------------
+if(parallel::detectCores() > 1){
+  set.seed(123)
+  out <- jags.basic(data = data, inits = inits, parameters.to.save = params,
+              model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
+              n.burnin = 50, n.thin = 2, verbose=FALSE, parallel=TRUE)
+
+  ref <- readRDS("jagsbasic_reference_fit.Rds")
+  expect_identical(out[-c(17,18,20:22)], ref[-c(17,18,20:22)])
+}
+
+# Verbose---------------------------------------------------------------------
+co <- capture.output(jags.basic(data = data, inits = inits, parameters.to.save = params,
+            model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
+            n.burnin = 50, n.thin = 2, verbose=TRUE, save.model=TRUE)
+)
+test <- any(sapply(co, function(x) grepl("MCMC took", x)))
+expect_true(test)

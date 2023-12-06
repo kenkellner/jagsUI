@@ -58,6 +58,16 @@ expect_equal(pp, 0)
 # Other methods
 expect_identical(out$summary, summary(out))
 
+# Double check stats calculations
+expect_equal(out$mean$alpha, mean(as.matrix(out$samples[,"alpha"])))
+expect_equal(out$sd$alpha, sd(as.matrix(out$samples[,"alpha"])))
+expect_equal(out$Rhat$alpha, coda::gelman.diag(out$samples[,"alpha"])$psrf[1])
+
+coda_sum <- summary(out$samples)
+expect_equal(out$summary[,"mean"], coda_sum$statistics[,"Mean"])
+expect_equal(out$summary[,"sd"], coda_sum$statistics[,"SD"])
+expect_equal(out$summary[,"50%"], coda_sum$quantiles[,"50%"])
+
 # codaOnly---------------------------------------------------------------------
 out <- jags(data = data, inits = inits, parameters.to.save = params,
             model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
@@ -96,6 +106,23 @@ ref <- readRDS("reference_parsorder_noDIC.Rds")
 
 out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
 expect_identical(out[-c(15,16,19)], ref[-c(15,16,19)])
+
+# Run in parallel--------------------------------------------------------------
+if(parallel::detectCores() > 1){
+  set.seed(123)
+  params <- c('alpha','beta','sigma', 'mu')     
+  out <- jags(data = data, inits = inits, parameters.to.save = params,
+            model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 1000,
+            n.burnin = 500, n.thin = 2, verbose=FALSE, parallel=TRUE)
+  ref <- readRDS("longley_reference_fit.Rds")
+  expect_identical(out[-c(17,18,20:22)], ref[-c(17,18,20:22)])
+
+  # With n.adapt = NULL
+  out <- jags(data = data, inits = inits, parameters.to.save = params,
+            model.file = modfile, n.chains = 3, n.adapt = NULL, n.iter = 100,
+            n.burnin = 50, n.thin = 2, verbose=FALSE, parallel=TRUE)
+  expect_equal(out$mcmc.info$n.adapt, rep(100,3))
+}
 
 # Single parameter saved-------------------------------------------------------
 pars_new <- c("alpha")

@@ -53,10 +53,11 @@ out <- samples <- model <- list()
 total.adapt <- sufficient.adapt <- vector(length=n.chains)
 
 #Save samples and model objects from each cluster
+total.adapt <- sapply(par, function(x) x[[3]])
+mc_start <- max(total.adapt) + n.burnin + n.thin
 for (i in 1:n.chains){
-  samples[[i]] <- coda::mcmc(par[[i]][[1]],start=n.burnin+n.thin,thin=n.thin)
+  samples[[i]] <- coda::mcmc(par[[i]][[1]],start=mc_start,thin=n.thin)
   model[[i]] <- par[[i]][[2]]
-  total.adapt[i] <- par[[i]][[3]]
   sufficient.adapt[i] <- par[[i]][[4]]
 }
 out$samples <- as.mcmc.list(samples)
