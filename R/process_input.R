@@ -1,8 +1,13 @@
 # Process input----------------------------------------------------------------
 process_input <- function(data, params, inits, n_chains, n_adapt, n_iter, n_burnin,
-                          n_thin, n_cores, DIC, quiet, parallel){
+                          n_thin, n_cores, DIC, quiet, parallel, seed=NULL){
   
   if(!quiet){cat('\nProcessing function input.......','\n')}
+
+  if(!is.null(seed)){
+    stop("The seed argument is no longer supported, use set.seed() instead", call.=FALSE)
+  }
+
   out <- list(data = check_data(data, quiet),
               params = check_params(params, DIC),
               inits = check_inits(inits, n_chains),
