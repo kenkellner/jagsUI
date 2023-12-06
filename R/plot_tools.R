@@ -1,5 +1,9 @@
+#Check that an object is the right class---------------------------------------
+check_class <- function(output){
+  if(!inherits(output, "jagsUI")) stop("Requires jagsUI object")
+}
 
-#General function for setting up plots
+#General function for setting up plots-----------------------------------------
 # Called by densityplot, traceplot, and plot.jagsUI
 # plot.jagsUI only uses the 'params' component in the output, ignores the rest
 get_plot_info <- function(x, parameters, layout, ask, Rhat_min=NULL){
@@ -50,9 +54,9 @@ get_plot_info <- function(x, parameters, layout, ask, Rhat_min=NULL){
   list(params=parameters, new_par=new_par, per_plot=per_plot)
 }
 
-
-has_brackets <- function(x){
-  grepl("\\[.*\\]", x)
+# Parameter name tools---------------------------------------------------------
+expand_params <- function(params){
+  unlist(lapply(params, expand_brackets))
 }
 
 expand_brackets <- function(x){
@@ -64,6 +68,6 @@ expand_brackets <- function(x){
   paste0(pname, "[",rng,"]")
 }
 
-expand_params <- function(params){
-  unlist(lapply(params, expand_brackets))
+has_brackets <- function(x){
+  grepl("\\[.*\\]", x)
 }
