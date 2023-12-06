@@ -55,7 +55,8 @@ expect_error(jags.basic(data = data, inits = inits, parameters.to.save = params,
             n.burnin = 50, n.thin = 2, verbose=FALSE, save.model=TRUE, seed=123))
 
 # Parallel---------------------------------------------------------------------
-if(parallel::detectCores() > 1){
+at_home <- identical( Sys.getenv("AT_HOME"), "TRUE" )
+if(parallel::detectCores() > 1 & at_home){
   set.seed(123)
   out <- jags.basic(data = data, inits = inits, parameters.to.save = params,
               model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,

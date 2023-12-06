@@ -13,7 +13,7 @@ check:
 
 test:
 	make install
-	Rscript -e "tinytest::test_package('jagsUI')"
+	Rscript -e "Sys.setenv("AT_HOME" = "TRUE"); tinytest::test_package('jagsUI')"
 
 coverage:
 	make install

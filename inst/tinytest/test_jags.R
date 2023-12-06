@@ -108,7 +108,8 @@ out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
 expect_identical(out[-c(15,16,19)], ref[-c(15,16,19)])
 
 # Run in parallel--------------------------------------------------------------
-if(parallel::detectCores() > 1){
+at_home <- identical( Sys.getenv("AT_HOME"), "TRUE" )
+if(parallel::detectCores() > 1 & at_home){
   set.seed(123)
   params <- c('alpha','beta','sigma', 'mu')     
   out <- jags(data = data, inits = inits, parameters.to.save = params,
