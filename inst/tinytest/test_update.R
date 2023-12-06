@@ -67,3 +67,21 @@ expect_message(out2 <- update(out, n.iter=100, n.thin=2, verbose=FALSE,
 expect_inherits(out2, "jagsUIbasic")
 expect_equal(coda::varnames(out2$samples), c("alpha","deviance"))
 expect_equal(names(out2), c("samples", "model"))
+
+# Parallel---------------------------------------------------------------------
+at_home <- identical( Sys.getenv("AT_HOME"), "TRUE" )
+if(parallel::detectCores() > 1 & at_home){
+  set.seed(123)
+  out <- jags(data = data, inits = inits, parameters.to.save = params,
+            model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
+            n.burnin = 50, n.thin = 2, verbose=FALSE, parallel=TRUE)
+
+  out2 <- update(out, n.iter=100, n.thin=2, verbose=FALSE)
+  ref <- readRDS("update_ref.Rds")
+  ref$parallel <- TRUE
+  out2$mcmc.info$n.cores <- NULL
+  ref$mcmc.info$sufficient.adapt <- out2$mcmc.info$sufficient.adapt
+  ref$mcmc.info$n.adapt <- out2$mcmc.info$n.adapt
+  out2$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
+  expect_identical(out2[-c(17,19,21)], ref[-c(17,19,21)])
+}

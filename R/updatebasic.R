@@ -1,61 +1,47 @@
 
-update.jagsUIbasic <- function(object, parameters.to.save=NULL, n.adapt=NULL, n.iter, n.thin=NULL, 
-                               modules=c('glm'), factories=NULL, DIC=NULL, verbose=TRUE, ...){
+update.jagsUIbasic <- function(object, parameters.to.save=NULL, 
+                               n.adapt=NULL, n.iter, n.thin=NULL, 
+                               modules=c('glm'), factories=NULL, 
+                               DIC=NULL, verbose=TRUE, ...){
   
-  mod <- object$model
-  n.chains <- length(object$samples)
-  n.cores <- object$n.cores
- 
+  # Set up parameters
   if(is.null(parameters.to.save)){
-    params.temp <- colnames(object$samples[[1]])
-    parameters <- unique(sapply(strsplit(params.temp, "\\["), "[", 1))
-  } else {parameters <- parameters.to.save}
+    params_long <- colnames(object$samples[[1]])
+    parameters.to.save <- unique(sapply(strsplit(params_long, "\\["), "[", 1))
+  }
   
   #Set up DIC monitoring
   if(is.null(DIC)){
-    if('deviance'%in%parameters){
-      DIC=TRUE
-    } else {DIC=FALSE}
-  } else{
-    if(DIC&!'deviance'%in%parameters){parameters <- c(parameters,'deviance')
-    } else if(!DIC&'deviance'%in%parameters){parameters <- parameters[parameters!='deviance']}
+    DIC <- 'deviance' %in% parameters.to.save
+  } else {
+    if(DIC & (!'deviance' %in% parameters.to.save)){
+      parameters.to.save <- c(parameters.to.save, 'deviance')
+    } else if(!DIC & 'deviance' %in% parameters.to.save){
+      parameters.to.save <- parameters.to.save[parameters.to.save != 'deviance']
+    }
   }
+
+  # Set up MCMC info
+  mcmc.info <- list(n.chains = length(object$samples), n.adapt = n.adapt, 
+                    n.iter = n.iter, n.burnin = 0,
+                    n.thin = ifelse(is.null(n.thin), thin(object$samples), n.thin),
+                    n.cores = object$n.cores)
+
+  parallel <- names(object$model[1]) == "cluster1"
+
+  # Run JAGS via rjags
+  rjags_out <- run_rjags(data=NULL, inits=NULL, parameters.to.save, modfile=NULL,
+                         mcmc.info, modules, factories, DIC, parallel, !verbose,
+                         model.object = object$model, update=TRUE)
+
+  # Report time
+  if(verbose) cat('MCMC took', rjags_out$elapsed.min, 'minutes.\n')
   
-  if(is.null(n.thin)){n.thin <- thin(object$samples)}
-  
-  start.time <- Sys.time()
-  
-  if(names(object$model[1])=='cluster1'){
-    
-    par <- run.parallel(data=NULL,inits=NULL,parameters.to.save=parameters,model.file=NULL,n.chains=n.chains
-                        ,n.adapt=n.adapt,n.iter=n.iter,n.burnin=0,n.thin=n.thin,modules=modules,factories=factories,
-                        DIC=DIC,model.object=mod,update=TRUE,verbose=verbose,n.cores=n.cores) 
-    samples <- par$samples
-    m <- par$model
-       
-    } else {
-    
-    #Set modules
-    set.modules(modules,DIC)
-    set.factories(factories)
-    
-    rjags.output <- run.model(model.file=NULL,data=NULL,inits=NULL,parameters.to.save=parameters,
-                              n.chains=object$mcmc.info$n.chains,n.iter,n.burnin=0,n.thin,n.adapt,
-                              model.object=mod,update=TRUE,verbose=verbose)
-    samples <- rjags.output$samples
-    m <- rjags.output$m    
-  }
-  
-  samples <- order_samples(samples, parameters)
-  
-  end.time <- Sys.time() 
-  time <- round(as.numeric(end.time-start.time,units="mins"),digits=3)
-  if(verbose){cat('MCMC took',time,'minutes.\n')}
-  
-  output <- list(samples=samples,model=m,n.cores=n.cores)
-  
+  # Create output object
+  output <- list(samples = order_samples(rjags_out$samples, parameters.to.save),
+                 model = rjags_out$m, 
+                 n.cores = object$n.cores)
   class(output) <- 'jagsUIbasic'
   
-  return(output)
-  
+  return(output) 
 }
