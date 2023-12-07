@@ -86,7 +86,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
     if(verbose){cat('Update ',index,' (',mcmc.info$n.iter + iter.increment,')',sep="")}
     
     if(save.all.iter){
-      if(index==2){start.iter <- start(samples)}
+      if(index==2){start.iter <- stats::start(samples)}
       if (index > 1) {
         old.samples <- samples
       }
@@ -192,7 +192,7 @@ test.Rhat <- function(samples,cutoff,params.omit,verbose=TRUE){
   expand <- sapply(strsplit(params, "\\["), "[", 1)
   
   gd <- function(hold){
-    r <- try(gelman.diag(hold, autoburnin=FALSE)$psrf[1], silent=TRUE)
+    r <- try(coda::gelman.diag(hold, autoburnin=FALSE)$psrf[1], silent=TRUE)
     if(inherits(r, "try-error") || !is.finite(r)) {
       r <- NA
     }

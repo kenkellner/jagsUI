@@ -169,14 +169,14 @@ calc_neff <- function(mcmc_list){
   mcmc_mat <- mcmc_to_mat(mcmc_list)
   
   xdot <- apply(mcmc_mat, 2, mean, na.rm=TRUE)
-  s2 <- apply(mcmc_mat, 2, var, na.rm=TRUE)
+  s2 <- apply(mcmc_mat, 2, stats::var, na.rm=TRUE)
   W <- mean(s2)
 
   #Non-degenerate case
   if(is.na(W)){
 	  n_eff <- NA
   } else if ((W > 1.e-8) && (nchain > 1)) {
-    B <- niter * var(xdot)
+    B <- niter * stats::var(xdot)
     sig2hat <- ((niter-1)*W + B)/ niter
     n_eff <- round(nchain * niter * min(sig2hat/B,1),0)
   } else {

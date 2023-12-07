@@ -1,22 +1,15 @@
-# import(lattice) # no longer needed?
+export(autojags)
+export(densityplot)
+export(jags)
+export(jagsUI)
+export(jags.basic)
+export(jags.View)
+export(pp.check)
+export(traceplot)
+export(whiskerplot)
 
-importFrom(rjags, "jags.model", "adapt", "coda.samples", "list.modules",
-           "load.module","unload.module","list.factories","set.factory")
-importFrom(coda, "gelman.diag", "as.mcmc.list", "thin", "mcmc", "as.mcmc")
-importFrom(parallel, "detectCores", "makeCluster", "clusterExport",
-           "clusterSetRNGStream", "clusterApply", "stopCluster", "clusterEvalQ")
-importFrom(stats, "runif", "time", "start", "end", "quantile", "var", "sd")
-importFrom(grDevices, "devAskNewPage", "rainbow")
-importFrom(graphics, "plot", "abline", "axis", "box", "segments", "lines", "par", "legend")
-importFrom(utils, "capture.output")
-
-export("jags", "jagsUI","jags.basic","autojags","pp.check", "traceplot",
-       "densityplot", "whiskerplot", "jags.View")
-
-S3method("plot", "jagsUI")
-# S3method("xyplot", "jagsUI")
-S3method("print","jagsUI")
-S3method("update","jagsUI")
-S3method("update","jagsUIbasic")
-S3method("summary","jagsUI")
-
+S3method(plot, "jagsUI")
+S3method(print,"jagsUI")
+S3method(summary,"jagsUI")
+S3method(update,"jagsUI")
+S3method(update,"jagsUIbasic")

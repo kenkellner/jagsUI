@@ -26,7 +26,7 @@ param_density <- function(x, parameter, m_labels=FALSE){
   vals <- mcmc_to_mat(x$samples[,parameter])
  
   if(any(is.na(vals))){
-    plot(1:nrow(vals), rep(0, nrow(vals)), type='n',
+    graphics::plot(1:nrow(vals), rep(0, nrow(vals)), type='n',
          xlab='Value', ylab='Density', main=paste('Density of',parameter))
   } else {
     # Get bandwidth, one value for all chains

@@ -32,7 +32,7 @@ param_trace <- function(x, parameter, m_labels=FALSE){
   cols <- grDevices::rainbow(ncol(vals))
 
   if(all(is.na(vals))){
-    plot(1:nrow(vals), rep(0, nrow(vals)), type='n',
+    graphics::plot(1:nrow(vals), rep(0, nrow(vals)), type='n',
               xlab="Iterations", ylab="Value",
               main=bquote(.(parameter)*","~hat(R) == .(Rhat)))
   } else {

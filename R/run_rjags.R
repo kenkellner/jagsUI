@@ -53,16 +53,18 @@ run.model <- function(model.file=NULL, data=NULL, inits=NULL, parameters.to.save
     if(verbose | parallel==TRUE){
       m$recompile()
     } else {
-      null <- capture.output(m$recompile())
+      null <- utils::capture.output(m$recompile())
     }
 
   } else {
     #Compile model
     if(verbose | parallel==TRUE){
-      m <- jags.model(file=model.file,data=data,inits=inits,n.chains=n.chains,n.adapt=0)
+      m <- rjags::jags.model(file=model.file,data=data,
+                             inits=inits,n.chains=n.chains,n.adapt=0)
     } else {
-      null <- capture.output(
-      m <- jags.model(file=model.file,data=data,inits=inits,n.chains=n.chains,n.adapt=0,quiet=TRUE)
+      null <- utils::capture.output(
+      m <- rjags::jags.model(file=model.file,data=data,inits=inits,
+                             n.chains=n.chains,n.adapt=0,quiet=TRUE)
       )
     }
   }
@@ -75,11 +77,14 @@ run.model <- function(model.file=NULL, data=NULL, inits=NULL, parameters.to.save
       if(verbose){
         cat('Adaptive phase,',n.adapt,'iterations x',n.chains,'chains','\n')
         cat('If no progress bar appears JAGS has decided not to adapt','\n','\n')
-        sufficient.adapt <- adapt(object=m, n.iter=n.adapt, progress.bar=pb, end.adaptation=TRUE)
+        sufficient.adapt <- rjags::adapt(object=m, n.iter=n.adapt, 
+                                         progress.bar=pb, end.adaptation=TRUE)
       } else {
-        null <- capture.output(
-        sufficient.adapt <- adapt(object=m, n.iter=n.adapt, progress.bar=pb, end.adaptation=TRUE)
-        )}
+        null <- utils::capture.output(
+        sufficient.adapt <- rjags::adapt(object=m, n.iter=n.adapt, 
+                                         progress.bar=pb, end.adaptation=TRUE)
+        )
+      }
       total.adapt <- total.adapt + n.adapt
     } else{
       if(verbose){cat('No adaptive period specified','\n','\n')}
@@ -87,10 +92,10 @@ run.model <- function(model.file=NULL, data=NULL, inits=NULL, parameters.to.save
       #Force JAGS to not adapt (you have to allow it to adapt at least 1 iteration)
       if(!update){
         if(verbose){
-          sufficient.adapt <- adapt(object=m, n.iter=1, end.adaptation=TRUE)
+          sufficient.adapt <- rjags::adapt(object=m, n.iter=1, end.adaptation=TRUE)
         } else {
-          null <- capture.output(
-            sufficient.adapt <- adapt(object=m, n.iter=1, end.adaptation=TRUE)
+          null <- utils::capture.output(
+            sufficient.adapt <- rjags::adapt(object=m, n.iter=1, end.adaptation=TRUE)
           )}
       }
       total.adapt <- 0
@@ -102,17 +107,17 @@ run.model <- function(model.file=NULL, data=NULL, inits=NULL, parameters.to.save
 
     for (i in 1:maxloops){
       if(verbose) cat('Adaptive phase.....','\n')
-      sufficient.adapt <- adapt(object=m, n.iter=n.adapt.iter, progress.bar='none')
+      sufficient.adapt <- rjags::adapt(object=m, n.iter=n.adapt.iter, progress.bar='none')
       total.adapt <- total.adapt + n.adapt.iter
       if(i==maxloops){
         if(verbose){
           warning(paste("Reached max of",maxloops*n.adapt.iter,"adaption iterations; set n.adapt to > 10000"))
         }
-        null <- adapt(object=m,n.iter=1,end.adaptation = TRUE)
+        null <- rjags::adapt(object=m,n.iter=1,end.adaptation = TRUE)
         break
       }
       if(sufficient.adapt){
-        null <- adapt(object=m,n.iter=1,end.adaptation = TRUE)
+        null <- rjags::adapt(object=m,n.iter=1,end.adaptation = TRUE)
         if(verbose) cat('Adaptive phase complete','\n','\n')
         break
       }
@@ -130,7 +135,7 @@ run.model <- function(model.file=NULL, data=NULL, inits=NULL, parameters.to.save
       update(object=m,n.iter=n.burnin,progress.bar=pb)
       cat('\n')
     } else {
-      null <- capture.output(
+      null <- utils::capture.output(
       update(object=m,n.iter=n.burnin,progress.bar=pb)
     )}
   } else if(verbose){
@@ -141,15 +146,15 @@ run.model <- function(model.file=NULL, data=NULL, inits=NULL, parameters.to.save
   if(verbose){
     cat('Sampling from joint posterior,',(n.iter-n.burnin),
         'iterations x',n.chains,'chains','\n','\n')
-    samples <- coda.samples(model=m, variable.names=parameters.to.save,
-                            n.iter=(n.iter-n.burnin), thin=n.thin,
-                            na.rm=na.rm, progress.bar=pb)
+    samples <- rjags::coda.samples(model=m, variable.names=parameters.to.save,
+                                   n.iter=(n.iter-n.burnin), thin=n.thin,
+                                   na.rm=na.rm, progress.bar=pb)
     cat('\n')
   } else {
-    null <- capture.output(
-    samples <- coda.samples(model=m, variable.names=parameters.to.save,
-                            n.iter=(n.iter-n.burnin), thin=n.thin,
-                            na.rm=na.rm, progress.bar=pb)
+    null <- utils::capture.output(
+    samples <- rjags::coda.samples(model=m, variable.names=parameters.to.save,
+                                   n.iter=(n.iter-n.burnin), thin=n.thin,
+                                   na.rm=na.rm, progress.bar=pb)
     )
   }
 
@@ -169,10 +174,10 @@ run.parallel <- function(data=NULL, inits=NULL, parameters.to.save, model.file=N
   current.libpaths <- .libPaths()
 
   #Set up clusters
-  cl <- makeCluster(n.cores)
-  on.exit(stopCluster(cl))
-  clusterExport(cl = cl, ls(), envir = environment())
-  clusterEvalQ(cl,.libPaths(current.libpaths))
+  cl <- parallel::makeCluster(n.cores)
+  on.exit(parallel::stopCluster(cl))
+  parallel::clusterExport(cl = cl, ls(), envir = environment())
+  parallel::clusterEvalQ(cl,.libPaths(current.libpaths))
 
   if(verbose){
     cat('Beginning parallel processing using',n.cores,
@@ -210,7 +215,7 @@ run.parallel <- function(data=NULL, inits=NULL, parameters.to.save, model.file=N
     }
 
   #Do parallel analysis
-  par <- clusterApply(cl=cl, x=1:n.chains, fun=jags.clust)
+  par <- parallel::clusterApply(cl=cl, x=1:n.chains, fun=jags.clust)
 
   #Create empty lists
   out <- samples <- model <- list()
@@ -229,7 +234,7 @@ run.parallel <- function(data=NULL, inits=NULL, parameters.to.save, model.file=N
     model[[i]] <- par[[i]]$m
     sufficient.adapt[i] <- par[[i]]$sufficient.adapt
   }
-  out$samples <- as.mcmc.list(samples)
+  out$samples <- coda::as.mcmc.list(samples)
   
   # Remove columns with all NA
   try({
@@ -260,10 +265,10 @@ set.factories <- function(factories){
       split <- strsplit(factories[i],'\\s')[[1]]
     
       #Check if requested factory is available
-      faclist <- as.character(list.factories(split[2])[,1])
+      faclist <- as.character(rjags::list.factories(split[2])[,1])
       if(split[1]%in%faclist){
         
-        null <- set.factory(split[1],split[2],split[3])
+        null <- rjags::set.factory(split[1],split[2],split[3])
       
       } else{stop(paste('Requested factory',split[1],'is not available. Check that appropriate modules are loaded.'))}
     
@@ -277,22 +282,22 @@ set.modules <- function(modules,DIC){
 
   #Load/unload appropriate modules (besides dic)
   called.set <- c('basemod','bugs',modules)
-  current.set <- list.modules()
+  current.set <- rjags::list.modules()
 
   load.set <- called.set[!called.set%in%current.set]
   unload.set <- current.set[!current.set%in%called.set]
 
   if(length(load.set)>0){
     for (i in 1:length(load.set)){
-      load.module(load.set[i],quiet=TRUE)
+      rjags::load.module(load.set[i],quiet=TRUE)
     }
   }
   if(length(unload.set)>0){
     for (i in 1:length(unload.set)){
-      unload.module(unload.set[i],quiet=TRUE)
+      rjags::unload.module(unload.set[i],quiet=TRUE)
     }
   }
   if(DIC){
-    load.module("dic",quiet=TRUE)
+    rjags::load.module("dic",quiet=TRUE)
   }
 }

@@ -150,7 +150,7 @@ check_inits <- function(inits, n_chains){
   # If not add them
   if(!has_RNG){
     # Generate random seeds for each chain
-    chain_seeds <- floor(runif(n_chains, 1, 100000))
+    chain_seeds <- floor(stats::runif(n_chains, 1, 100000))
     for (i in 1:n_chains){
       inits[[i]]$.RNG.name="base::Mersenne-Twister"
       inits[[i]]$.RNG.seed=chain_seeds[i]

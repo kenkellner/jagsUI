@@ -99,7 +99,7 @@ update.jagsUIbasic <- function(object, parameters.to.save=NULL,
   # Set up MCMC info
   mcmc.info <- list(n.chains = length(object$samples), n.adapt = n.adapt, 
                     n.iter = n.iter, n.burnin = 0,
-                    n.thin = ifelse(is.null(n.thin), thin(object$samples), n.thin),
+                    n.thin = ifelse(is.null(n.thin), coda::thin(object$samples), n.thin),
                     n.cores = object$n.cores)
 
   parallel <- names(object$model[1]) == "cluster1"
