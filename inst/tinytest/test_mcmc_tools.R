@@ -89,3 +89,21 @@ expect_equal(get_inds('kappa',params_raw),
 params_raw <- 'alpha'
 expect_warning(test <- get_inds('alpha',params_raw)[1,1])
 expect_true(is.na(test))
+
+# test that bind.mcmc works correctly------------------------------------------
+cs1 <- readRDS('coda_samples.Rds')
+cs2 <- readRDS('coda_samples.Rds')
+
+iter_increment <- coda::niter(cs1) * coda::thin(cs1)
+test <- jagsUI:::bind.mcmc(cs1, cs2, stats::start(cs1), iter_increment)
+expect_equal(coda::niter(test), 60)
+expect_equal(coda::varnames(test), coda::varnames(cs1))
+expect_equal(stats::start(cs1), stats::start(test))
+expect_equal(stats::end(test), stats::end(cs1) + iter_increment)
+
+comb <- rbind(
+  rbind(as.matrix(cs1[[1]]), as.matrix(cs2[[1]])),
+  rbind(as.matrix(cs1[[2]]), as.matrix(cs2[[2]])),
+  rbind(as.matrix(cs1[[3]]), as.matrix(cs2[[3]]))
+)
+expect_identical(comb, as.matrix(test))

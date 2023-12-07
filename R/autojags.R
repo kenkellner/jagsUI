@@ -7,7 +7,7 @@ autojags <- function(data,inits=NULL,parameters.to.save,model.file,n.chains,n.ad
     stop("The seed argument is no longer supported, use set.seed() instead", call.=FALSE)
   }
   if(n.chains<2) stop('Number of chains must be >1 to calculate Rhat.')
-  if((max.iter < n.burnin) & verbose){
+  if(max.iter < n.burnin){
     old_warn <- options()$warn
     options(warn=1)
     warning('Maximum iterations includes burn-in and should be larger than burn-in.')
