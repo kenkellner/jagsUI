@@ -30,9 +30,16 @@ param_trace <- function(x, parameter, m_labels=FALSE){
 
   #Draw plot
   cols <- grDevices::rainbow(ncol(vals))
-  graphics::matplot(1:nrow(vals), vals, type='l', lty=1, col=cols,
+
+  if(all(is.na(vals))){
+    plot(1:nrow(vals), rep(0, nrow(vals)), type='n',
+              xlab="Iterations", ylab="Value",
+              main=bquote(.(parameter)*","~hat(R) == .(Rhat)))
+  } else {
+    graphics::matplot(1:nrow(vals), vals, type='l', lty=1, col=cols,
                  xlab='Iterations', ylab='Value',
                  main=bquote(.(parameter)*","~hat(R) == .(Rhat)))
+  }
 
   #Add margin labels if necessary
   if(m_labels){
@@ -40,6 +47,3 @@ param_trace <- function(x, parameter, m_labels=FALSE){
     graphics::mtext("Value", side=2, line=1.5, outer=TRUE)
   }
 }
-
-#General function for setting up plots
-# get_plot_info now has its own file

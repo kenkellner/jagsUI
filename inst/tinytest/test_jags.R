@@ -193,6 +193,18 @@ expect_true(all(is.na(out$summary[,"Rhat"])))
 expect_true(all(is.na(out$summary[,"n.eff"])))
 expect_true(all(out$summary["alpha",3:7] == out$summary["alpha",3]))
 
+# test jags.View---------------------------------------------------------------
+at_home <- identical( Sys.getenv("AT_HOME"), "TRUE" )
+if(at_home){
+  ref <- readRDS("longley_reference_fit.Rds")
+  test <- jags.View(ref)
+  expect_equal(ncol(test), 10)
+  expect_equal(colnames(test)[7:10], c("overlap0", "f", "Rhat", "n.eff"))
+  test2 <- jags.View(out)
+  expect_equal(ncol(test2), 8)
+  expect_equal(colnames(test)[7:8], c("overlap0", "f"))
+}
+
 # Error when user tries to set seed--------------------------------------------
 expect_error(jags(data = data, inits = inits, parameters.to.save = params,
             model.file = modfile, n.chains = 1, n.adapt = 100, n.iter = 100,
@@ -244,8 +256,6 @@ expect_equal(nrow(out$summary), 21)
 expect_equal(rownames(out$summary)[20], "mu[1,2]")
 
 # When no stochastic nodes (and deviance is not calculated)--------------------
-library(jagsUI)
-
 data <- list(a = 1, b = Inf)
 
 modfile <- tempfile()

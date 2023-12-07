@@ -27,11 +27,15 @@ whiskerplot <- function(x,parameters,quantiles=c(0.025,0.975),
 
   #Plot parameter means
   n <- length(parameters)
-  graphics::plot(1:n, post_stats[1,], xaxt="n", 
-                 ylim=range(post_stats), xlim=c(0,n+1),
+  graphics::plot(1:n, post_stats[1,], xaxt="n", type='n',
+                 ylim=range(post_stats, na.rm=TRUE), xlim=c(0,n+1),
                  xlab="Parameters", 
                  ylab=paste0('Parameter mean and quantiles (',quantiles[1],
-                            ' - ',quantiles[2],')'), pch=19, cex=1.5, ...)
+                            ' - ',quantiles[2],')'), ...)
+  for (i in 1:n){
+    if(any(is.na(post_stats[,i]))) next
+    graphics::points(i, post_stats[1,i], cex=1.5, pch=19)
+  }
   graphics::axis(side=1, at=1:n, labels=parameters)
   graphics::box()
   
