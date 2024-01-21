@@ -1,9 +1,10 @@
 jagsUI
 ==========
 
-
+<!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/jagsUI)](https://cran.r-project.org/web/packages/jagsUI/index.html)
 [![R build status](https://github.com/kenkellner/jagsUI/workflows/R-CMD-check/badge.svg)](https://github.com/kenkellner/jagsUI/actions)
+<!-- badges: end -->
 
 This package runs `JAGS` (Just Another Gibbs Sampler) analyses from within `R`. It acts as a wrapper and alternative interface for the functions in the `rjags` package and adds some custom output and graphical options. It also makes running chains in parallel quick and easy.
 

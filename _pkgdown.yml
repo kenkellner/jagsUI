@@ -1,0 +1,19 @@
+authors:
+  Ken Kellner:
+    href: https://kenkellner.com
+
+reference:
+  - title: Run JAGS
+    contents:
+      - autojags
+      - jags
+      - jags.basic
+      - update
+
+  - title: View output
+    contents:
+      - densityplot
+      - jags.View
+      - pp.check
+      - traceplot
+      - whiskerplot
