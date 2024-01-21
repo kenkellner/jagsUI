@@ -164,7 +164,7 @@ We should see information and progress bars in the console.
 
 If we have a long-running model and a powerful computer, we can tell `jagsUI` to run each chain on a separate core in parallel by setting argument `parallel = TRUE`:
 
-```{r}
+```{r, eval=FALSE}
 out <- jags(data = jags_data,
             inits = inits,
             parameters.to.save = params,
