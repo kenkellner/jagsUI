@@ -6,3 +6,4 @@ example.R
 *.txt
 example2.R
 env.R
+docs/*

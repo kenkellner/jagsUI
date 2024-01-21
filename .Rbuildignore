@@ -13,3 +13,4 @@ env.R
 .travis.yml
 ^\.github$
 Makefile
+docs/*

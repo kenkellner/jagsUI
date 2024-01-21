@@ -1,0 +1,260 @@
+---
+title: "Introduction to jagsUI"
+date: "`r Sys.Date()`"
+output:
+  markdown::html_format
+vignette: >
+  %\VignetteIndexEntry{Introduction to jagsUI}
+  %\VignetteEngine{knitr::knitr}
+  \usepackage[utf8]{inputenc}
+---
+
+
+```{r, echo = FALSE, message = FALSE}
+require(jagsUI)
+knitr::opts_chunk$set(
+  comment = "#",
+    error = FALSE,
+     tidy = FALSE,
+    cache = FALSE,
+ collapse = TRUE
+)
+```
+
+# Installing JAGS
+
+In addition to installing the `jagsUI` package, we also need to separately install the free JAGS software, which you can download [here](https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/).
+
+Once that's installed, load the `jagsUI` library:
+
+```{r}
+library(jagsUI)
+```
+
+# Typical `jagsUI` Workflow
+
+1. Organize data into a named `list`
+2. Write model file in the BUGS language
+3. Specify initial MCMC values (optional)
+4. Specify which parameters to save posteriors for
+5. Specify MCMC settings
+6. Run JAGS
+7. Examine output
+
+# 1. Organize data
+
+We'll use the `longley` dataset to conduct a simple linear regression.
+The dataset is built into R.
+
+```{r}
+data(longley)
+head(longley)
+```
+
+We will model the number of people employed (`Employed`) as a function of Gross National Product (`GNP`).
+Each column of data is saved into a separate element of our data list.
+Finally, we add a list element for the number of data points `n`.
+In general, elements in the data list must be numeric, and structured as arrays, matrices, or scalars.
+
+```{r}
+jags_data <- list(
+  gnp = longley$GNP,
+  employed = longley$Employed,
+  n = nrow(longley)
+)
+```
+
+# 2. Write BUGS model file
+
+Next we'll describe our model in the BUGS language.
+See the [JAGS manual](https://sourceforge.net/projects/mcmc-jags/files/Manuals/4.x/) for detailed information on writing models for JAGS.
+Note that data you reference in the BUGS model must exactly match the names of the list we just created.
+There are various ways to save the model file, we'll save it as a temporary file.
+
+```{r}
+# Create a temporary file
+modfile <- tempfile()
+
+#Write model to file
+writeLines("
+model{
+
+  # Likelihood
+  for (i in 1:n){ 
+    # Model data
+    employed[i] ~ dnorm(mu[i], tau)
+    # Calculate linear predictor
+    mu[i] <- alpha + beta*gnp[i]
+  }
+    
+  # Priors
+  alpha ~ dnorm(0, 0.00001)
+  beta ~ dnorm(0, 0.00001)
+  sigma ~ dunif(0,1000)
+  tau <- pow(sigma,-2)
+
+}
+", con=modfile)
+```
+
+# 3. Initial values
+
+Initial values can be specified as a list of lists, with one list element per MCMC chain.
+Each list element should itself be a named list corresponding to the values we want each parameter initialized at.
+We don't necessarily need to explicitly initialize every parameter. 
+We can also just set `inits = NULL` to allow JAGS to do the initialization automatically, but this will not work for some complex models.
+We can also provide a function which generates a list of initial values, which `jagsUI` will execute for each MCMC chain.
+This is what we'll do below.
+
+```{r}
+inits <- function(){  
+  list(alpha=rnorm(1,0,1),
+       beta=rnorm(1,0,1),
+       sigma=runif(1,0,3)
+  )  
+}
+```
+
+# 4. Parameters to monitor
+
+Next, we choose which parameters from the model file we want to save posterior distributions for.
+We'll save the parameters for the intercept (`alpha`), slope (`beta`), and residual standard deviation (`sigma`).
+
+```{r}
+params <- c('alpha','beta','sigma')
+```
+
+# 5. MCMC settings
+
+We'll run 3 MCMC chains (`n.chains = 3`).
+
+JAGS will start each chain by running adaptive iterations, which are used to tune and optimize MCMC performance.
+We will manually specify the number of adaptive iterations (`n.adapt = 100`).
+You can also try `n.adapt = NULL`, which will keep running adaptation iterations until JAGS reports adaptation is sufficient.
+In general you do not want to skip adaptation.
+
+Next we need to specify how many regular iterations to run in each chain in total.
+We'll set this to 1000 (`n.iter = 1000`).
+We'll specify the number of burn-in iterations at 500 (`n.burnin = 500`).
+Burn-in iterations are discarded, so here we'll end up with 500 iterations per chain (1000 total - 500 burn-in).
+We can also set the thinning rate: with `n.thin = 2` we'll keep only every 2nd iteration.
+Thus in total we will have 250 iterations saved per chain ((1000 - 500) / 2).
+
+The optimal MCMC settings will depend on your specific dataset and model.
+
+# 6. Run JAGS
+
+We're finally ready to run JAGS, via the `jags` function.
+We provide our data to the `data` argument, initial values function to `inits`, our vector of saved parameters to `parameters.to.save`, and our model file path to `model.file`.
+After that we specify the MCMC settings described above.
+
+```{r}
+out <- jags(data = jags_data,
+            inits = inits,
+            parameters.to.save = params,
+            model.file = modfile,
+            n.chains = 3,
+            n.adapt = 100,
+            n.iter = 1000,
+            n.burnin = 500,
+            n.thin = 2)
+```
+
+We should see information and progress bars in the console.
+
+If we have a long-running model and a powerful computer, we can tell `jagsUI` to run each chain on a separate core in parallel by setting argument `parallel = TRUE`:
+
+```{r}
+out <- jags(data = jags_data,
+            inits = inits,
+            parameters.to.save = params,
+            model.file = modfile,
+            n.chains = 3,
+            n.adapt = 100,
+            n.iter = 1000,
+            n.burnin = 500,
+            n.thin = 2,
+            parallel = TRUE)
+```
+
+While this is usually faster, we won't be able to see progress bars when JAGS runs in parallel.
+
+# 7. Examine output
+
+Our first step is to look at the output object `out`:
+
+```{r}
+out
+```
+
+We first get some information about the MCMC run.
+Next we see a table of summary statistics for each saved parameter, including the mean, median, and 95% credible intervals.
+The `overlap0` column indicates if the 95% credible interval overlaps 0, and the `f` column is the proportion of posterior samples with the same sign as the mean.
+
+The `out` object is a `list` with many components:
+
+```{r}
+names(out)
+```
+
+We'll describe some of these below.
+
+## Diagnostics
+
+We should pay special attention to the `Rhat` and `n.eff` columns in the output summary, which are MCMC diagnostics.
+The `Rhat` (Gelman-Rubin diagnostic) values for each parameter should be close to 1 (typically, < 1.1) if the chains have converged for that parameter.
+The `n.eff` value is the effective MCMC sample size and should ideally be close to the number of saved iterations across all chains (here 750, 3 chains * 250 samples per chain).
+In this case, both diagnostics look good.
+
+We can also visually assess convergence using the `traceplot` function:
+
+```{r}
+traceplot(out)
+```
+
+We should see the lines for each chain overlapping and not trending up or down.
+
+## Posteriors
+
+We can quickly visualize the posterior distributions of each parameter using the `densityplot` function:
+
+```{r}
+densityplot(out)
+```
+
+The traceplots and posteriors can be plotted together using `plot`:
+
+```{r}
+plot(out)
+```
+
+We can also generate a posterior plot manually.
+To do this we'll need to extract the actual posterior samples for a parameter.
+These are contained in the `sims.list` element of `out`.
+
+```{r}
+post_alpha <- out$sims.list$alpha
+hist(post_alpha, xlab="Value", main = "alpha posterior")
+```
+
+## Update
+
+If we need more iterations or want to save different parameters, we can use `update`:
+
+```{r}
+# Now save mu also
+params <- c(params, "mu")
+out2 <- update(out, n.iter=300, parameters.to.save = params)
+```
+
+The `mu` parameter is now in the output:
+
+```{r}
+out2
+```
+
+This is a good opportunity to show the `whiskerplot` function, which plots the mean and 95% CI of parameters in the `jagsUI` output:
+
+```{r}
+whiskerplot(out2, 'mu')
+```
