@@ -9,6 +9,8 @@ modeltest.txt
 model.txt
 example2.R
 README.md
+README.Rmd
+README_figs*
 env.R
 .travis.yml
 ^\.github$

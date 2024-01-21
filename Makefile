@@ -23,3 +23,14 @@ coverage:
 	make install
 	Rscript -e 'Sys.setenv("AT_HOME" = "TRUE"); covr::report(file="/tmp/jagsUI-report.html")'
 	firefox /tmp/jagsUI-report.html
+
+site:
+	Rscript -e "pkgdown::build_site()"
+	firefox docs/index.html
+
+README:
+	Rscript -e "knitr::knit('README.Rmd')"
+	pandoc README.md -o README.html
+	firefox README.html
+	sleep 3
+	rm README.html
