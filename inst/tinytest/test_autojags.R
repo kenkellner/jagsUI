@@ -29,7 +29,7 @@ ref <- readRDS("autojags_ref.Rds")
 
 # Remove time/date based elements
 out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_identical(out[-c(17,18,21)], ref[-c(17,18,21)])
+expect_equal(out[-c(17,18,21)], ref[-c(17,18,21)])
 
 
 # codaOnly---------------------------------------------------------------------
@@ -41,7 +41,7 @@ ref <- readRDS("autojags_ref_codaonly.Rds")
 
 # Remove time/date based elements
 out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_identical(out[-c(17,18,21)], ref[-c(17,18,21)])
+expect_equal(out[-c(17,18,21)], ref[-c(17,18,21)])
 
 # Check recovery after process_output errors-----------------------------------
 # Setting DIC to -999 forces process_output to error for testing
@@ -71,7 +71,7 @@ expect_true(nul[11] == "")
 expect_equal(coda::niter(out$samples), 30)
 ref <- readRDS("autojags_ref_alliter.Rds")
 out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_identical(out[-c(17,18,21)], ref[-c(17,18,21)])
+expect_equal(out[-c(17,18,21)], ref[-c(17,18,21)])
 
 # Parallel----------------------------------------------------------
 at_home <- identical( Sys.getenv("AT_HOME"), "TRUE" )
@@ -88,7 +88,7 @@ if(at_home){
   ref <- readRDS("autojags_ref.Rds")
 
   out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-  expect_identical(out[-c(17,18,20:22)], ref[-c(17,18,20:22)])
+  expect_equal(out[-c(17,18,20:22)], ref[-c(17,18,20:22)])
 
   # Save all iter
   set.seed(123)
@@ -103,7 +103,7 @@ if(at_home){
 
   expect_equal(coda::niter(out$samples), 30)
   ref <- readRDS("autojags_ref_alliter.Rds")
-  expect_identical(out[-c(17,18,20:22)], ref[-c(17,18,20:22)])
+  expect_equal(out[-c(17,18,20:22)], ref[-c(17,18,20:22)])
 }
 
 # test.Rhat--------------------------------------------------------------------

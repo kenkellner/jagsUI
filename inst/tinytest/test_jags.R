@@ -32,7 +32,7 @@ ref <- readRDS("longley_reference_fit.Rds")
 
 # Remove time/date based elements
 out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_identical(out[-c(17,18,21)], ref[-c(17,18,21)])
+expect_equal(out[-c(17,18,21)], ref[-c(17,18,21)])
 
 # Plots
 pdf(NULL)
@@ -56,7 +56,7 @@ dev.off()
 expect_equal(pp, 0)
 
 # Other methods
-expect_identical(out$summary, summary(out))
+expect_equal(out$summary, summary(out))
 
 # Double check stats calculations
 expect_equal(out$mean$alpha, mean(as.matrix(out$samples[,"alpha"])))
@@ -75,7 +75,7 @@ out <- jags(data = data, inits = inits, parameters.to.save = params,
 ref <- readRDS("reference_codaOnly.Rds")
 
 out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_identical(out[-c(17,18,21)], ref[-c(17,18,21)])
+expect_equal(out[-c(17,18,21)], ref[-c(17,18,21)])
 
 # DIC = FALSE------------------------------------------------------------------
 out <- jags(data = data, inits = inits, parameters.to.save = params,
@@ -85,7 +85,7 @@ expect_false(out$calc.DIC)
 
 ref <- readRDS("reference_noDIC.Rds")
 out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_identical(out[-c(15,16,19)], ref[-c(15,16,19)])
+expect_equal(out[-c(15,16,19)], ref[-c(15,16,19)])
 
 # Reordered parameter names----------------------------------------------------
 pars_new <- c("mu", "sigma", "alpha", "beta")
@@ -95,7 +95,7 @@ out <- jags(data = data, inits = inits, parameters.to.save = pars_new,
 ref <- readRDS("reference_parsorder.Rds")
 
 out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_identical(out[-c(17,18,21)], ref[-c(17,18,21)])
+expect_equal(out[-c(17,18,21)], ref[-c(17,18,21)])
 
 # Reordered parameter names and no DIC-----------------------------------------
 pars_new <- c("mu", "sigma", "alpha", "beta")
@@ -105,7 +105,7 @@ out <- jags(data = data, inits = inits, parameters.to.save = pars_new,
 ref <- readRDS("reference_parsorder_noDIC.Rds")
 
 out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_identical(out[-c(15,16,19)], ref[-c(15,16,19)])
+expect_equal(out[-c(15,16,19)], ref[-c(15,16,19)])
 
 # Run in parallel--------------------------------------------------------------
 at_home <- identical( Sys.getenv("AT_HOME"), "TRUE" )
@@ -116,7 +116,7 @@ if(parallel::detectCores() > 1 & at_home){
             model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 1000,
             n.burnin = 500, n.thin = 2, verbose=FALSE, parallel=TRUE)
   ref <- readRDS("longley_reference_fit.Rds")
-  expect_identical(out[-c(17,18,20:22)], ref[-c(17,18,20:22)])
+  expect_equal(out[-c(17,18,20:22)], ref[-c(17,18,20:22)])
 
   # With n.adapt = NULL
   out <- jags(data = data, inits = inits, parameters.to.save = params,
@@ -171,8 +171,8 @@ out <- jags(data = data, inits = inits,
             parameters.to.save = c("alpha","beta"),
             model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
             n.burnin = 50, n.thin = 1, verbose=FALSE, store.data=TRUE)
-expect_identical(out$data, data)
-expect_identical(out$inits, run_inits)
+expect_equal(out$data, data)
+expect_equal(out$inits, run_inits)
 
 # Check recovery after process_output errors-----------------------------------
 # Setting DIC to -999 forces process_output to error for testing

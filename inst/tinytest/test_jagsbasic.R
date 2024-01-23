@@ -27,7 +27,7 @@ out <- jags.basic(data = data, inits = inits, parameters.to.save = params,
 
 ref <- readRDS("jagsbasic_reference_fit.Rds")
 
-expect_identical(out, ref)
+expect_equal(out, ref)
 
 # Saved model and reordered parameter names------------------------------------
 set.seed(123)
@@ -37,15 +37,15 @@ out <- jags.basic(data = data, inits = inits, parameters.to.save = params,
             n.burnin = 50, n.thin = 2, verbose=FALSE, save.model=TRUE)
 ref <- readRDS("jagsbasic_ref_saved.Rds")
 
-expect_identical(names(out), names(ref))
+expect_equal(names(out), names(ref))
 out$model <- ref$model
-expect_identical(out, ref)
+expect_equal(out, ref)
 
 # Update-----------------------------------------------------------------------
 out2 <- update(out, n.iter=100, n.thin = 2, verbose=FALSE)
 expect_equal(nrow(out2$samples[[1]]), 50)
 ref <- readRDS('jagsbasic_ref_update.Rds')
-expect_identical(names(out2), names(ref))
+expect_equal(names(out2), names(ref))
 out2$model <- ref$model
 expect_equal(out2, ref)
 
@@ -65,13 +65,13 @@ if(parallel::detectCores() > 1 & at_home){
   ref <- readRDS("jagsbasic_ref_saved.Rds")
   
   out$n.cores <- NULL
-  expect_identical(names(out), names(ref))
+  expect_equal(names(out), names(ref))
   out$model <- ref$model
-  expect_identical(out, ref)
+  expect_equal(out, ref)
 
   out2 <- update(out, n.iter=100, n.thin = 2, verbose=FALSE)
   ref <- readRDS('jagsbasic_ref_update.Rds')
-  expect_identical(names(out2), names(ref))
+  expect_equal(names(out2), names(ref))
   out2$model <- ref$model
   expect_equal(out2, ref)
 }

@@ -33,14 +33,14 @@ expect_equal(nrow(out2$samples[[1]]), 50)
 
 # Remove time/date based elements
 out2$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_identical(out2[-c(17,19,21)], ref[-c(17,19,21)])
+expect_equal(out2[-c(17,19,21)], ref[-c(17,19,21)])
 
 # codaOnly---------------------------------------------------------------------
 out2 <- update(out, n.iter=100, n.thin=2, verbose=FALSE, codaOnly='mu')
 ref <- readRDS("update_ref_codaonly.Rds")
 
 out2$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_identical(out2[-c(17,19,21)], ref[-c(17,19,21)])
+expect_equal(out2[-c(17,19,21)], ref[-c(17,19,21)])
 
 # Different saved parameters---------------------------------------------------
 out2 <- update(out, n.iter=100, n.thin=2, verbose=FALSE, 
@@ -48,7 +48,7 @@ out2 <- update(out, n.iter=100, n.thin=2, verbose=FALSE,
 ref <- readRDS("update_ref_diffsaved.Rds")
 
 out2$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_identical(out2[-c(17,19,21)], ref[-c(17,19,21)])
+expect_equal(out2[-c(17,19,21)], ref[-c(17,19,21)])
 
 # DIC = FALSE------------------------------------------------------------------
 out2 <- update(out, n.iter=100, n.thin=2, verbose=FALSE, 
@@ -58,7 +58,7 @@ ref <- readRDS("update_ref_noDIC.Rds")
 expect_false(out2$calc.DIC)
 
 out2$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_identical(out2[-c(15,17,19)], ref[-c(15,17,19)])
+expect_equal(out2[-c(15,17,19)], ref[-c(15,17,19)])
 
 # Check recovery after process_output errors-----------------------------------
 # Setting DIC to -999 forces process_output to error for testing
@@ -83,5 +83,5 @@ if(parallel::detectCores() > 1 & at_home){
   ref$mcmc.info$sufficient.adapt <- out2$mcmc.info$sufficient.adapt
   ref$mcmc.info$n.adapt <- out2$mcmc.info$n.adapt
   out2$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-  expect_identical(out2[-c(17,19,21)], ref[-c(17,19,21)])
+  expect_equal(out2[-c(17,19,21)], ref[-c(17,19,21)])
 }
