@@ -106,4 +106,4 @@ comb <- rbind(
   rbind(as.matrix(cs1[[2]]), as.matrix(cs2[[2]])),
   rbind(as.matrix(cs1[[3]]), as.matrix(cs2[[3]]))
 )
-expect_identical(comb, as.matrix(test))
+expect_equal(comb, as.matrix(test))

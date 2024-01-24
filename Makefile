@@ -17,7 +17,7 @@ cran-check:
 
 test:
 	make install
-	Rscript -e "Sys.setenv("AT_HOME" = "TRUE"); tinytest::test_package('jagsUI')"
+	Rscript -e "Sys.setenv("AT_HOME" = "TRUE"); tinytest::test_package('jagsUI', color=FALSE, verbose=0)"
 
 coverage:
 	make install

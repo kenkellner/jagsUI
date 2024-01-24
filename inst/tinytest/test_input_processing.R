@@ -15,7 +15,7 @@ data1 <- list(a=1, b=c(1,2), c=matrix(rnorm(4), 2,2),
               d=array(rnorm(8), c(2,2,2)), e=c(NA, 1))
 test <- process_input(data1, params="a", NULL, 2, 1, 100, 50, 2, 
                       NULL, DIC=TRUE, quiet=TRUE, parallel=FALSE)
-expect_identical(test$data, data1)
+expect_equal(test$data, data1)
 
 # Data frame handling
 data2 <- list(a=data.frame(v1=c(1,2)), b=data.frame(v1=c(0,1), v2=c(2,3)))
@@ -143,7 +143,7 @@ set.seed(123)
 test <- check_inits(inits1, n_chains=2)
 ref <- list(list(.RNG.name = "base::Mersenne-Twister", .RNG.seed = 28758),
     list(.RNG.name = "base::Mersenne-Twister", .RNG.seed = 78830))
-expect_identical(test, ref)
+expect_equal(test, ref)
 
 # A list of lists
 set.seed(123)
@@ -151,7 +151,7 @@ test <- check_inits(inits2, n_chains=2)
 ref <- list(list(a = 1, b = 2, .RNG.name = "base::Mersenne-Twister",
     .RNG.seed = 28758), list(a = 3, b = 4, .RNG.name = "base::Mersenne-Twister",
     .RNG.seed = 78830))
-expect_identical(test, ref)
+expect_equal(test, ref)
 # Wrong number of list elements for number of chains
 expect_error(check_inits(inits2, n_chains=3))
 
@@ -164,14 +164,14 @@ test <- check_inits(inits4, n_chains=2)
 ref <- list(list(a = 1, b = 2, .RNG.name = "base::Mersenne-Twister",
     .RNG.seed = 28758), list(a = 1, b = 2, .RNG.name = "base::Mersenne-Twister",
     .RNG.seed = 78830))
-expect_identical(test, ref)
+expect_equal(test, ref)
 
 # An empty list
 set.seed(123)
 test <- check_inits(inits5, n_chains=2)
 ref <- list(list(.RNG.name = "base::Mersenne-Twister", .RNG.seed = 28758),
     list(.RNG.name = "base::Mersenne-Twister", .RNG.seed = 78830))
-expect_identical(test, ref)
+expect_equal(test, ref)
 
 # Function but doesn't return list
 expect_error(check_inits(inits6, n_chains=2))

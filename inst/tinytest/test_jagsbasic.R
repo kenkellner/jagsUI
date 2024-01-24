@@ -1,3 +1,4 @@
+at_home <- identical( Sys.getenv("AT_HOME"), "TRUE" )
 set.seed(123)
 
 data(longley)
@@ -25,9 +26,10 @@ out <- jags.basic(data = data, inits = inits, parameters.to.save = params,
             model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
             n.burnin = 50, n.thin = 2, verbose=FALSE)
 
-ref <- readRDS("jagsbasic_reference_fit.Rds")
-
-expect_equal(out, ref)
+if(at_home){
+  ref <- readRDS("jagsbasic_reference_fit.Rds")
+  expect_equal(out, ref)
+}
 
 # Saved model and reordered parameter names------------------------------------
 set.seed(123)
@@ -39,7 +41,10 @@ ref <- readRDS("jagsbasic_ref_saved.Rds")
 
 expect_equal(names(out), names(ref))
 out$model <- ref$model
-expect_equal(out, ref)
+
+if(at_home){
+  expect_equal(out, ref)
+}
 
 # Update-----------------------------------------------------------------------
 out2 <- update(out, n.iter=100, n.thin = 2, verbose=FALSE)
@@ -47,7 +52,10 @@ expect_equal(nrow(out2$samples[[1]]), 50)
 ref <- readRDS('jagsbasic_ref_update.Rds')
 expect_equal(names(out2), names(ref))
 out2$model <- ref$model
-expect_equal(out2, ref)
+
+if(at_home){
+  expect_equal(out2, ref)
+}
 
 # Error if seed is set---------------------------------------------------------
 expect_error(jags.basic(data = data, inits = inits, parameters.to.save = params,
@@ -55,7 +63,6 @@ expect_error(jags.basic(data = data, inits = inits, parameters.to.save = params,
             n.burnin = 50, n.thin = 2, verbose=FALSE, save.model=TRUE, seed=123))
 
 # Parallel---------------------------------------------------------------------
-at_home <- identical( Sys.getenv("AT_HOME"), "TRUE" )
 if(parallel::detectCores() > 1 & at_home){
   set.seed(123)
   params <- c('beta', 'alpha', 'sigma', 'mu')     

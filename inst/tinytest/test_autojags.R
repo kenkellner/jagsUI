@@ -1,3 +1,4 @@
+at_home <- identical( Sys.getenv("AT_HOME"), "TRUE" )
 set.seed(123)
 
 data(longley)
@@ -25,11 +26,14 @@ nul <- capture.output(
             out <- autojags(data = data, inits = inits, parameters.to.save = params,
             model.file = modfile, n.chains = 3, n.adapt = 100, n.burnin=50, 
             iter.increment=10, n.thin = 2, verbose=FALSE))
-ref <- readRDS("autojags_ref.Rds")
+
 
 # Remove time/date based elements
-out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_equal(out[-c(17,18,21)], ref[-c(17,18,21)])
+if(at_home){
+  ref <- readRDS("autojags_ref.Rds")
+  out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
+  expect_equal(out[-c(17,18,21)], ref[-c(17,18,21)])
+}
 
 
 # codaOnly---------------------------------------------------------------------
@@ -37,11 +41,13 @@ nul<- capture.output(
             out <- autojags(data = data, inits = inits, parameters.to.save = params,
             model.file = modfile, n.chains = 3, n.adapt = 100, n.burnin=50, 
             iter.increment=10, n.thin = 2, verbose=FALSE, codaOnly=c("mu")))
-ref <- readRDS("autojags_ref_codaonly.Rds")
 
 # Remove time/date based elements
-out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_equal(out[-c(17,18,21)], ref[-c(17,18,21)])
+if(at_home){
+  ref <- readRDS("autojags_ref_codaonly.Rds")
+  out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
+  expect_equal(out[-c(17,18,21)], ref[-c(17,18,21)])
+}
 
 # Check recovery after process_output errors-----------------------------------
 # Setting DIC to -999 forces process_output to error for testing
@@ -69,12 +75,14 @@ expect_true(grepl("Update 3", nul[10]))
 expect_true(nul[11] == "")
 # All are combined to yield 30 total iterations in each chain
 expect_equal(coda::niter(out$samples), 30)
-ref <- readRDS("autojags_ref_alliter.Rds")
-out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_equal(out[-c(17,18,21)], ref[-c(17,18,21)])
+
+if(at_home){
+  ref <- readRDS("autojags_ref_alliter.Rds")
+  out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
+  expect_equal(out[-c(17,18,21)], ref[-c(17,18,21)])
+}
 
 # Parallel----------------------------------------------------------
-at_home <- identical( Sys.getenv("AT_HOME"), "TRUE" )
 if(at_home){
   set.seed(123)
   nul <- capture.output(

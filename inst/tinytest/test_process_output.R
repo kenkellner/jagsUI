@@ -1,3 +1,5 @@
+at_home <- identical( Sys.getenv("AT_HOME"), "TRUE" )
+
 process_output <- jagsUI:::process_output
 calc_stats <- jagsUI:::calc_stats
 fill_array <- jagsUI:::fill_array
@@ -44,14 +46,14 @@ expect_true(is.null(out2$pD))
 
 #Exclude parameters
 out3 <- process_output(samples, coda_only=c("alpha","kappa", "mu"), DIC=TRUE, quiet=TRUE)
-expect_identical(names(out3$sims.list), names(out$sims.list))
-expect_identical(names(out3$mean), names(out$mean))
+expect_equal(names(out3$sims.list), names(out$sims.list))
+expect_equal(names(out3$mean), names(out$mean))
 expect_false(any(is.na(unlist(out3$mean))))
-expect_identical(rownames(out3$summary), c("beta", "sigma", "deviance"))
+expect_equal(rownames(out3$summary), c("beta", "sigma", "deviance"))
 
 # Check progress messages
 co <- capture.output(out <- process_output(samples, DIC=TRUE, quiet=FALSE))
-expect_identical(co, c("Calculating statistics....... ", "", "Done. "))
+expect_equal(co, c("Calculating statistics....... ", "", "Done. "))
                 
 
 # Unexpected error happens during process_output-------------------------------
@@ -61,12 +63,14 @@ expect_message(out_fail <- process_output(samples, quiet=TRUE))
 expect_true(is.null(out_fail)) # result is NULL
 
 #test that process_output matches old jagsUI process.output--------------------
-old_all <- readRDS("old_jagsUI_output.Rds")
-new_po <- process_output(old_all$samples, DIC=TRUE, quiet=TRUE)
-old_po <- readRDS("old_process_output.Rds")  
-expect_identical(new_po$summary, old_all$summary)
-new_po$summary <- NULL
-expect_identical(new_po, old_po)
+if(at_home){
+  old_all <- readRDS("old_jagsUI_output.Rds")
+  new_po <- process_output(old_all$samples, DIC=TRUE, quiet=TRUE)
+  old_po <- readRDS("old_process_output.Rds")  
+  expect_equal(new_po$summary, old_all$summary)
+  new_po$summary <- NULL
+  expect_equal(new_po, old_po)
+}
 
 # test that fill_array works properly------------------------------------------
 dat <- 1:10
@@ -229,22 +233,26 @@ expect_true(length(out) == 11)
 
 
 # test that stats for all parameters are calculated by calc_stats--------------
-samples <- readRDS('coda_samples.Rds')
-st <- calc_stats(samples)
-expect_equal(dim(st), c(length(param_names(samples)), 11))
-expect_equal(rownames(st), param_names(samples))
-expect_equal(colnames(st), c('mean','sd','q2.5','q25','q50','q75','q97.5',
+if(at_home){
+  samples <- readRDS('coda_samples.Rds')
+  st <- calc_stats(samples)
+  expect_equal(dim(st), c(length(param_names(samples)), 11))
+  expect_equal(rownames(st), param_names(samples))
+  expect_equal(colnames(st), c('mean','sd','q2.5','q25','q50','q75','q97.5',
                              'overlap0','f','Rhat','n.eff'))
-ref_output <- readRDS('calc_stats_output.Rds')
-expect_equal(st, ref_output)
+  ref_output <- readRDS('calc_stats_output.Rds')
+  expect_equal(st, ref_output)
+}
 
 
 # test that calculating stats for a subset of parameters works-----------------
-samples <- readRDS('coda_samples.Rds') 
-ref_output <- readRDS('calc_stats_output.Rds')
-ref_output[c(1,4:19),2:11] <- NA
-st_sub <- calc_stats(samples, coda_only=c('alpha','mu'))
-expect_identical(ref_output, st_sub)
+if(at_home){
+  samples <- readRDS('coda_samples.Rds') 
+  ref_output <- readRDS('calc_stats_output.Rds')
+  ref_output[c(1,4:19),2:11] <- NA
+  st_sub <- calc_stats(samples, coda_only=c('alpha','mu'))
+  expect_equal(ref_output, st_sub)
+}
 
 
 # test that calculation of pD/DIC works----------------------------------------

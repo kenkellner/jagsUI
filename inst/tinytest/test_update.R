@@ -1,3 +1,4 @@
+at_home <- identical( Sys.getenv("AT_HOME"), "TRUE" )
 set.seed(123)
 
 data(longley)
@@ -32,33 +33,40 @@ expect_equal(out2$mcmc.info$n.samples, 150)
 expect_equal(nrow(out2$samples[[1]]), 50)
 
 # Remove time/date based elements
-out2$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_equal(out2[-c(17,19,21)], ref[-c(17,19,21)])
+if(at_home){
+  out2$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
+  expect_equal(out2[-c(17,19,21)], ref[-c(17,19,21)])
+}
 
 # codaOnly---------------------------------------------------------------------
 out2 <- update(out, n.iter=100, n.thin=2, verbose=FALSE, codaOnly='mu')
-ref <- readRDS("update_ref_codaonly.Rds")
 
-out2$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_equal(out2[-c(17,19,21)], ref[-c(17,19,21)])
+if(at_home){
+  ref <- readRDS("update_ref_codaonly.Rds")
+  out2$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
+  expect_equal(out2[-c(17,19,21)], ref[-c(17,19,21)])
+}
 
 # Different saved parameters---------------------------------------------------
 out2 <- update(out, n.iter=100, n.thin=2, verbose=FALSE, 
                parameters.to.save=c('beta', 'alpha'))
-ref <- readRDS("update_ref_diffsaved.Rds")
 
-out2$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_equal(out2[-c(17,19,21)], ref[-c(17,19,21)])
+if(at_home){
+  ref <- readRDS("update_ref_diffsaved.Rds")
+  out2$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
+  expect_equal(out2[-c(17,19,21)], ref[-c(17,19,21)])
+}
 
 # DIC = FALSE------------------------------------------------------------------
 out2 <- update(out, n.iter=100, n.thin=2, verbose=FALSE, 
                parameters.to.save=c('alpha'), DIC=FALSE)
-ref <- readRDS("update_ref_noDIC.Rds")
-
 expect_false(out2$calc.DIC)
 
-out2$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_equal(out2[-c(15,17,19)], ref[-c(15,17,19)])
+if(at_home){
+  ref <- readRDS("update_ref_noDIC.Rds")
+  out2$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
+  expect_equal(out2[-c(15,17,19)], ref[-c(15,17,19)])
+}
 
 # Check recovery after process_output errors-----------------------------------
 # Setting DIC to -999 forces process_output to error for testing
@@ -69,7 +77,6 @@ expect_equal(coda::varnames(out2$samples), c("alpha","deviance"))
 expect_equal(names(out2), c("samples", "model"))
 
 # Parallel---------------------------------------------------------------------
-at_home <- identical( Sys.getenv("AT_HOME"), "TRUE" )
 if(parallel::detectCores() > 1 & at_home){
   set.seed(123)
   out <- jags(data = data, inits = inits, parameters.to.save = params,

@@ -1,3 +1,4 @@
+at_home <- identical( Sys.getenv("AT_HOME"), "TRUE" )
 set.seed(123)
 
 data(longley)
@@ -32,7 +33,10 @@ ref <- readRDS("longley_reference_fit.Rds")
 
 # Remove time/date based elements
 out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_equal(out[-c(17,18,21)], ref[-c(17,18,21)])
+
+if(at_home){
+  expect_equal(out[-c(17,18,21)], ref[-c(17,18,21)])
+}
 
 # Plots
 pdf(NULL)
@@ -69,13 +73,15 @@ expect_equal(out$summary[,"sd"], coda_sum$statistics[,"SD"])
 expect_equal(out$summary[,"50%"], coda_sum$quantiles[,"50%"])
 
 # codaOnly---------------------------------------------------------------------
-out <- jags(data = data, inits = inits, parameters.to.save = params,
+if(at_home){
+  out <- jags(data = data, inits = inits, parameters.to.save = params,
             model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
             n.burnin = 50, n.thin = 1, codaOnly=c("mu", "sigma"), verbose=FALSE)
-ref <- readRDS("reference_codaOnly.Rds")
+  ref <- readRDS("reference_codaOnly.Rds")
 
-out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_equal(out[-c(17,18,21)], ref[-c(17,18,21)])
+  out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
+  expect_equal(out[-c(17,18,21)], ref[-c(17,18,21)])
+}
 
 # DIC = FALSE------------------------------------------------------------------
 out <- jags(data = data, inits = inits, parameters.to.save = params,
@@ -83,32 +89,41 @@ out <- jags(data = data, inits = inits, parameters.to.save = params,
             n.burnin = 50, n.thin = 1, DIC=FALSE, verbose=FALSE)
 expect_false(out$calc.DIC)
 
-ref <- readRDS("reference_noDIC.Rds")
-out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_equal(out[-c(15,16,19)], ref[-c(15,16,19)])
+if(at_home){
+  ref <- readRDS("reference_noDIC.Rds")
+  out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
+  expect_equal(out[-c(15,16,19)], ref[-c(15,16,19)])
+}
 
 # Reordered parameter names----------------------------------------------------
 pars_new <- c("mu", "sigma", "alpha", "beta")
 out <- jags(data = data, inits = inits, parameters.to.save = pars_new,
             model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
             n.burnin = 50, n.thin = 1, verbose=FALSE)
-ref <- readRDS("reference_parsorder.Rds")
+expect_equal(c(paste0("mu[",1:16,"]"), "sigma","alpha","beta","deviance"), 
+             colnames(out$samples[[1]]))
 
-out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_equal(out[-c(17,18,21)], ref[-c(17,18,21)])
+if(at_home){
+  ref <- readRDS("reference_parsorder.Rds")
+  out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
+  expect_equal(out[-c(17,18,21)], ref[-c(17,18,21)])
+}
 
 # Reordered parameter names and no DIC-----------------------------------------
 pars_new <- c("mu", "sigma", "alpha", "beta")
 out <- jags(data = data, inits = inits, parameters.to.save = pars_new,
             model.file = modfile, n.chains = 3, n.adapt = 100, n.iter = 100,
             n.burnin = 50, n.thin = 1, DIC = FALSE, verbose=FALSE)
-ref <- readRDS("reference_parsorder_noDIC.Rds")
+expect_equal(c(paste0("mu[",1:16,"]"), "sigma","alpha","beta"), 
+             colnames(out$samples[[1]]))
 
-out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
-expect_equal(out[-c(15,16,19)], ref[-c(15,16,19)])
+if(at_home){
+  ref <- readRDS("reference_parsorder_noDIC.Rds")
+  out$mcmc.info$elapsed.mins <- ref$mcmc.inf$elapsed.mins
+  expect_equal(out[-c(15,16,19)], ref[-c(15,16,19)])
+}
 
 # Run in parallel--------------------------------------------------------------
-at_home <- identical( Sys.getenv("AT_HOME"), "TRUE" )
 if(parallel::detectCores() > 1 & at_home){
   set.seed(123)
   params <- c('alpha','beta','sigma', 'mu')     
