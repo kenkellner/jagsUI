@@ -22,6 +22,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
+          - {os: macOS-latest, r: 'release'}
           - {os: ubuntu-20.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           - {os: ubuntu-20.04, r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           - {os: ubuntu-20.04, r: 'oldrel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
@@ -40,6 +41,11 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
+
+      - name: Install JAGS
+        if: runner.os == 'macOS'
+        run: |
+          brew install jags
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
