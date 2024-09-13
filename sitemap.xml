@@ -1,0 +1,19 @@
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/articles/jagsUI.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/news/index.html</loc></url>
+<url><loc>/reference/autojags.html</loc></url>
+<url><loc>/reference/densityplot.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/jags.html</loc></url>
+<url><loc>/reference/jags_View.html</loc></url>
+<url><loc>/reference/jagsbasic.html</loc></url>
+<url><loc>/reference/ppcheck.html</loc></url>
+<url><loc>/reference/traceplot.html</loc></url>
+<url><loc>/reference/update.html</loc></url>
+<url><loc>/reference/whiskerplot.html</loc></url>
+</urlset>
+
