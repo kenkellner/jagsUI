@@ -281,7 +281,13 @@ set.factories <- function(factories){
 set.modules <- function(modules,DIC){
 
   #Load/unload appropriate modules (besides dic)
-  called.set <- c('basemod','bugs',modules)
+
+  default.set <- c('basemod', 'bugs')
+  if (rjags::jags.version() >= as.numeric_version("5")) {
+     #deviance monitor moved to the 'diag' module so load by default
+     default.set <- c(default.set, 'diag')
+  }
+  called.set <-  c(default.set, modules)
   current.set <- rjags::list.modules()
 
   load.set <- called.set[!called.set%in%current.set]
