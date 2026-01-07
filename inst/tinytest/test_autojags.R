@@ -71,10 +71,19 @@ nul <- capture.output(
 
 # Runs three updates of 10 iterations each
 expect_true(grepl("Note: ALL iterations", nul[6]))
-expect_true(grepl("Update 3", nul[10]))
-expect_true(nul[11] == "")
-# All are combined to yield 30 total iterations in each chain
-expect_equal(coda::niter(out$samples), 30)
+if (rjags::jags.version() >= as.numeric_version("5")) {
+  expect_true(grepl("Update 2", nul[9]))
+  expect_true(nul[10] == "")
+  # All are combined to yield 20 total iterations in each chain
+  expect_equal(coda::niter(out$samples), 20)
+
+} else {
+  expect_true(grepl("Update 3", nul[10]))
+  expect_true(nul[11] == "")
+  # All are combined to yield 30 total iterations in each chain
+  expect_equal(coda::niter(out$samples), 30)
+}
+
 
 if(at_home){
   ref <- readRDS("autojags_ref_alliter.Rds")

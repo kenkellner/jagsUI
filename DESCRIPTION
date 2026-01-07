@@ -13,7 +13,7 @@ Imports:
     graphics,
     grDevices,
     parallel,
-    rjags (>= 3-13),
+    rjags (>= 4-17),
     stats,
     utils
 Suggests: knitr, markdown, tinytest
