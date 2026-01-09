@@ -1,3 +1,7 @@
+# jagsUI 1.6.3
+
+* Updates for compatibility with next version of JAGS.
+
 # jagsUI 1.6.2
 
 * Fix broken tests on CRAN
