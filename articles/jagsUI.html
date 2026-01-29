@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">jagsUI</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.6.3</span>
       </span>
     </div>
 
@@ -66,12 +66,12 @@
 
 
 
-      </header><script src="jagsUI_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to jagsUI</h1>
             
-            <h4 data-toc-skip class="date">2024-09-13</h4>
+            <h4 data-toc-skip class="date">2026-01-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/kenkellner/jagsUI/blob/HEAD/vignettes/jagsUI.Rmd" class="external-link"><code>vignettes/jagsUI.Rmd</code></a></small>
       <div class="hidden name"><code>jagsUI.Rmd</code></div>
@@ -83,7 +83,9 @@
 <div class="section level2">
 <h2 id="installing-jags">Installing JAGS<a class="anchor" aria-label="anchor" href="#installing-jags"></a>
 </h2>
-<p>In addition to installing the <code>jagsUI</code> package, we also need to separately install the free JAGS software, which you can download <a href="https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/" class="external-link">here</a>.</p>
+<p>In addition to installing the <code>jagsUI</code> package, we also
+need to separately install the free JAGS software, which you can
+download <a href="https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/" class="external-link">here</a>.</p>
 <p>Once that’s installed, load the <code>jagsUI</code> library:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://kenkellner.com/jagsUI/" class="external-link">jagsUI</a></span><span class="op">)</span></span></code></pre></div>
@@ -105,7 +107,8 @@
 <div class="section level2">
 <h2 id="organize-data">1. Organize data<a class="anchor" aria-label="anchor" href="#organize-data"></a>
 </h2>
-<p>We’ll use the <code>longley</code> dataset to conduct a simple linear regression. The dataset is built into R.</p>
+<p>We’ll use the <code>longley</code> dataset to conduct a simple linear
+regression. The dataset is built into R.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">longley</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">longley</span><span class="op">)</span></span>
@@ -116,7 +119,12 @@
 <span><span class="co"># 1950         89.5 284.599      335.1        165.0    110.929 1950   61.187</span></span>
 <span><span class="co"># 1951         96.2 328.975      209.9        309.9    112.075 1951   63.221</span></span>
 <span><span class="co"># 1952         98.1 346.999      193.2        359.4    113.270 1952   63.639</span></span></code></pre></div>
-<p>We will model the number of people employed (<code>Employed</code>) as a function of Gross National Product (<code>GNP</code>). Each column of data is saved into a separate element of our data list. Finally, we add a list element for the number of data points <code>n</code>. In general, elements in the data list must be numeric, and structured as arrays, matrices, or scalars.</p>
+<p>We will model the number of people employed (<code>Employed</code>)
+as a function of Gross National Product (<code>GNP</code>). Each column
+of data is saved into a separate element of our data list. Finally, we
+add a list element for the number of data points <code>n</code>. In
+general, elements in the data list must be numeric, and structured as
+arrays, matrices, or scalars.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">jags_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  gnp <span class="op">=</span> <span class="va">longley</span><span class="op">$</span><span class="va">GNP</span>,</span>
@@ -127,7 +135,11 @@
 <div class="section level2">
 <h2 id="write-bugs-model-file">2. Write BUGS model file<a class="anchor" aria-label="anchor" href="#write-bugs-model-file"></a>
 </h2>
-<p>Next we’ll describe our model in the BUGS language. See the <a href="https://sourceforge.net/projects/mcmc-jags/files/Manuals/4.x/" class="external-link">JAGS manual</a> for detailed information on writing models for JAGS. Note that data you reference in the BUGS model must exactly match the names of the list we just created. There are various ways to save the model file, we’ll save it as a temporary file.</p>
+<p>Next we’ll describe our model in the BUGS language. See the <a href="https://sourceforge.net/projects/mcmc-jags/files/Manuals/4.x/" class="external-link">JAGS
+manual</a> for detailed information on writing models for JAGS. Note
+that data you reference in the BUGS model must exactly match the names
+of the list we just created. There are various ways to save the model
+file, we’ll save it as a temporary file.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a temporary file</span></span>
 <span><span class="va">modfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -156,7 +168,15 @@
 <div class="section level2">
 <h2 id="initial-values">3. Initial values<a class="anchor" aria-label="anchor" href="#initial-values"></a>
 </h2>
-<p>Initial values can be specified as a list of lists, with one list element per MCMC chain. Each list element should itself be a named list corresponding to the values we want each parameter initialized at. We don’t necessarily need to explicitly initialize every parameter. We can also just set <code>inits = NULL</code> to allow JAGS to do the initialization automatically, but this will not work for some complex models. We can also provide a function which generates a list of initial values, which <code>jagsUI</code> will execute for each MCMC chain. This is what we’ll do below.</p>
+<p>Initial values can be specified as a list of lists, with one list
+element per MCMC chain. Each list element should itself be a named list
+corresponding to the values we want each parameter initialized at. We
+don’t necessarily need to explicitly initialize every parameter. We can
+also just set <code>inits = NULL</code> to allow JAGS to do the
+initialization automatically, but this will not work for some complex
+models. We can also provide a function which generates a list of initial
+values, which <code>jagsUI</code> will execute for each MCMC chain. This
+is what we’ll do below.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">inits</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span><span class="op">{</span>  </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>alpha<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>,</span>
@@ -168,7 +188,10 @@
 <div class="section level2">
 <h2 id="parameters-to-monitor">4. Parameters to monitor<a class="anchor" aria-label="anchor" href="#parameters-to-monitor"></a>
 </h2>
-<p>Next, we choose which parameters from the model file we want to save posterior distributions for. We’ll save the parameters for the intercept (<code>alpha</code>), slope (<code>beta</code>), and residual standard deviation (<code>sigma</code>).</p>
+<p>Next, we choose which parameters from the model file we want to save
+posterior distributions for. We’ll save the parameters for the intercept
+(<code>alpha</code>), slope (<code>beta</code>), and residual standard
+deviation (<code>sigma</code>).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'alpha'</span>,<span class="st">'beta'</span>,<span class="st">'sigma'</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -176,14 +199,32 @@
 <h2 id="mcmc-settings">5. MCMC settings<a class="anchor" aria-label="anchor" href="#mcmc-settings"></a>
 </h2>
 <p>We’ll run 3 MCMC chains (<code>n.chains = 3</code>).</p>
-<p>JAGS will start each chain by running adaptive iterations, which are used to tune and optimize MCMC performance. We will manually specify the number of adaptive iterations (<code>n.adapt = 100</code>). You can also try <code>n.adapt = NULL</code>, which will keep running adaptation iterations until JAGS reports adaptation is sufficient. In general you do not want to skip adaptation.</p>
-<p>Next we need to specify how many regular iterations to run in each chain in total. We’ll set this to 1000 (<code>n.iter = 1000</code>). We’ll specify the number of burn-in iterations at 500 (<code>n.burnin = 500</code>). Burn-in iterations are discarded, so here we’ll end up with 500 iterations per chain (1000 total - 500 burn-in). We can also set the thinning rate: with <code>n.thin = 2</code> we’ll keep only every 2nd iteration. Thus in total we will have 250 iterations saved per chain ((1000 - 500) / 2).</p>
-<p>The optimal MCMC settings will depend on your specific dataset and model.</p>
+<p>JAGS will start each chain by running adaptive iterations, which are
+used to tune and optimize MCMC performance. We will manually specify the
+number of adaptive iterations (<code>n.adapt = 100</code>). You can also
+try <code>n.adapt = NULL</code>, which will keep running adaptation
+iterations until JAGS reports adaptation is sufficient. In general you
+do not want to skip adaptation.</p>
+<p>Next we need to specify how many regular iterations to run in each
+chain in total. We’ll set this to 1000 (<code>n.iter = 1000</code>).
+We’ll specify the number of burn-in iterations at 500
+(<code>n.burnin = 500</code>). Burn-in iterations are discarded, so here
+we’ll end up with 500 iterations per chain (1000 total - 500 burn-in).
+We can also set the thinning rate: with <code>n.thin = 2</code> we’ll
+keep only every 2nd iteration. Thus in total we will have 250 iterations
+saved per chain ((1000 - 500) / 2).</p>
+<p>The optimal MCMC settings will depend on your specific dataset and
+model.</p>
 </div>
 <div class="section level2">
 <h2 id="run-jags">6. Run JAGS<a class="anchor" aria-label="anchor" href="#run-jags"></a>
 </h2>
-<p>We’re finally ready to run JAGS, via the <code>jags</code> function. We provide our data to the <code>data</code> argument, initial values function to <code>inits</code>, our vector of saved parameters to <code>parameters.to.save</code>, and our model file path to <code>model.file</code>. After that we specify the MCMC settings described above.</p>
+<p>We’re finally ready to run JAGS, via the <code>jags</code> function.
+We provide our data to the <code>data</code> argument, initial values
+function to <code>inits</code>, our vector of saved parameters to
+<code>parameters.to.save</code>, and our model file path to
+<code>model.file</code>. After that we specify the MCMC settings
+described above.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/jags.html">jags</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">jags_data</span>,</span>
 <span>            inits <span class="op">=</span> <span class="va">inits</span>,</span>
@@ -223,7 +264,9 @@
 <span><span class="co"># </span></span>
 <span><span class="co"># Done.</span></span></code></pre></div>
 <p>We should see information and progress bars in the console.</p>
-<p>If we have a long-running model and a powerful computer, we can tell <code>jagsUI</code> to run each chain on a separate core in parallel by setting argument <code>parallel = TRUE</code>:</p>
+<p>If we have a long-running model and a powerful computer, we can tell
+<code>jagsUI</code> to run each chain on a separate core in parallel by
+setting argument <code>parallel = TRUE</code>:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/jags.html">jags</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">jags_data</span>,</span>
 <span>            inits <span class="op">=</span> <span class="va">inits</span>,</span>
@@ -235,7 +278,8 @@
 <span>            n.burnin <span class="op">=</span> <span class="fl">500</span>,</span>
 <span>            n.thin <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>            parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>While this is usually faster, we won’t be able to see progress bars when JAGS runs in parallel.</p>
+<p>While this is usually faster, we won’t be able to see progress bars
+when JAGS runs in parallel.</p>
 </div>
 <div class="section level2">
 <h2 id="examine-output">7. Examine output<a class="anchor" aria-label="anchor" href="#examine-output"></a>
@@ -243,18 +287,18 @@
 <p>Our first step is to look at the output object <code>out</code>:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span></span>
-<span><span class="co"># JAGS output for model '/tmp/Rtmp6BlD4k/fileff0b5ec59764', generated by jagsUI.</span></span>
+<span><span class="co"># JAGS output for model '/tmp/Rtmp32mRJh/fileab4a797205d3', generated by jagsUI.</span></span>
 <span><span class="co"># Estimates based on 3 chains of 1000 iterations,</span></span>
 <span><span class="co"># adaptation = 100 iterations (sufficient),</span></span>
 <span><span class="co"># burn-in = 500 iterations and thin rate = 2,</span></span>
 <span><span class="co"># yielding 750 total samples from the joint posterior. </span></span>
-<span><span class="co"># MCMC ran for 0.001 minutes at time 2024-09-13 14:59:26.759251.</span></span>
+<span><span class="co"># MCMC ran for 0.001 minutes at time 2026-01-29 15:20:58.879265.</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co">#            mean    sd   2.5%    50%  97.5% overlap0 f  Rhat n.eff</span></span>
-<span><span class="co"># alpha    51.854 0.792 50.292 51.812 53.544    FALSE 1 0.999   750</span></span>
-<span><span class="co"># beta      0.035 0.002  0.030  0.035  0.038    FALSE 1 1.000   750</span></span>
-<span><span class="co"># sigma     0.730 0.166  0.485  0.704  1.127    FALSE 1 1.012   202</span></span>
-<span><span class="co"># deviance 33.665 3.145 30.044 32.814 42.193    FALSE 1 1.000   750</span></span>
+<span><span class="co"># alpha    51.845 0.797 50.250 51.819 53.444    FALSE 1 1.005   465</span></span>
+<span><span class="co"># beta      0.035 0.002  0.031  0.035  0.038    FALSE 1 1.005   471</span></span>
+<span><span class="co"># sigma     0.729 0.145  0.508  0.707  1.067    FALSE 1 1.000   750</span></span>
+<span><span class="co"># deviance 33.487 2.871 30.032 32.781 40.779    FALSE 1 1.002   750</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co"># Successful convergence based on Rhat values (all &lt; 1.1). </span></span>
 <span><span class="co"># Rhat is the potential scale reduction factor (at convergence, Rhat=1). </span></span>
@@ -265,10 +309,16 @@
 <span><span class="co"># i.e., our confidence that the parameter is positive or negative.</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co"># DIC info: (pD = var(deviance)/2) </span></span>
-<span><span class="co"># pD = 5 and DIC = 38.619 </span></span>
+<span><span class="co"># pD = 4.1 and DIC = 37.614 </span></span>
 <span><span class="co"># DIC is an estimate of expected predictive error (lower is better).</span></span></code></pre></div>
-<p>We first get some information about the MCMC run. Next we see a table of summary statistics for each saved parameter, including the mean, median, and 95% credible intervals. The <code>overlap0</code> column indicates if the 95% credible interval overlaps 0, and the <code>f</code> column is the proportion of posterior samples with the same sign as the mean.</p>
-<p>The <code>out</code> object is a <code>list</code> with many components:</p>
+<p>We first get some information about the MCMC run. Next we see a table
+of summary statistics for each saved parameter, including the mean,
+median, and 95% credible intervals. The <code>overlap0</code> column
+indicates if the 95% credible interval overlaps 0, and the
+<code>f</code> column is the proportion of posterior samples with the
+same sign as the mean.</p>
+<p>The <code>out</code> object is a <code>list</code> with many
+components:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
 <span><span class="co">#  [1] "sims.list"   "mean"        "sd"          "q2.5"        "q25"        </span></span>
@@ -280,34 +330,48 @@
 <div class="section level3">
 <h3 id="diagnostics">Diagnostics<a class="anchor" aria-label="anchor" href="#diagnostics"></a>
 </h3>
-<p>We should pay special attention to the <code>Rhat</code> and <code>n.eff</code> columns in the output summary, which are MCMC diagnostics. The <code>Rhat</code> (Gelman-Rubin diagnostic) values for each parameter should be close to 1 (typically, &lt; 1.1) if the chains have converged for that parameter. The <code>n.eff</code> value is the effective MCMC sample size and should ideally be close to the number of saved iterations across all chains (here 750, 3 chains * 250 samples per chain). In this case, both diagnostics look good.</p>
-<p>We can also visually assess convergence using the <code>traceplot</code> function:</p>
+<p>We should pay special attention to the <code>Rhat</code> and
+<code>n.eff</code> columns in the output summary, which are MCMC
+diagnostics. The <code>Rhat</code> (Gelman-Rubin diagnostic) values for
+each parameter should be close to 1 (typically, &lt; 1.1) if the chains
+have converged for that parameter. The <code>n.eff</code> value is the
+effective MCMC sample size and should ideally be close to the number of
+saved iterations across all chains (here 750, 3 chains * 250 samples per
+chain). In this case, both diagnostics look good.</p>
+<p>We can also visually assess convergence using the
+<code>traceplot</code> function:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/traceplot.html">traceplot</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></code></pre></div>
-<p><img src="jagsUI_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
-<p>We should see the lines for each chain overlapping and not trending up or down.</p>
+<p><img src="jagsUI_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="700"></p>
+<p>We should see the lines for each chain overlapping and not trending
+up or down.</p>
 </div>
 <div class="section level3">
 <h3 id="posteriors">Posteriors<a class="anchor" aria-label="anchor" href="#posteriors"></a>
 </h3>
-<p>We can quickly visualize the posterior distributions of each parameter using the <code>densityplot</code> function:</p>
+<p>We can quickly visualize the posterior distributions of each
+parameter using the <code>densityplot</code> function:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/densityplot.html">densityplot</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></code></pre></div>
-<p><img src="jagsUI_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
-<p>The traceplots and posteriors can be plotted together using <code>plot</code>:</p>
+<p><img src="jagsUI_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="700"></p>
+<p>The traceplots and posteriors can be plotted together using
+<code>plot</code>:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></code></pre></div>
-<p><img src="jagsUI_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
-<p>We can also generate a posterior plot manually. To do this we’ll need to extract the actual posterior samples for a parameter. These are contained in the <code>sims.list</code> element of <code>out</code>.</p>
+<p><img src="jagsUI_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="" width="700"></p>
+<p>We can also generate a posterior plot manually. To do this we’ll need
+to extract the actual posterior samples for a parameter. These are
+contained in the <code>sims.list</code> element of <code>out</code>.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">post_alpha</span> <span class="op">&lt;-</span> <span class="va">out</span><span class="op">$</span><span class="va">sims.list</span><span class="op">$</span><span class="va">alpha</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">post_alpha</span>, xlab<span class="op">=</span><span class="st">"Value"</span>, main <span class="op">=</span> <span class="st">"alpha posterior"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="jagsUI_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
+<p><img src="jagsUI_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="update">Update<a class="anchor" aria-label="anchor" href="#update"></a>
 </h3>
-<p>If we need more iterations or want to save different parameters, we can use <code>update</code>:</p>
+<p>If we need more iterations or want to save different parameters, we
+can use <code>update</code>:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Now save mu also</span></span>
 <span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">params</span>, <span class="st">"mu"</span><span class="op">)</span></span>
@@ -336,34 +400,34 @@
 <p>The <code>mu</code> parameter is now in the output:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out2</span></span>
-<span><span class="co"># JAGS output for model '/tmp/Rtmp6BlD4k/fileff0b5ec59764', generated by jagsUI.</span></span>
+<span><span class="co"># JAGS output for model '/tmp/Rtmp32mRJh/fileab4a797205d3', generated by jagsUI.</span></span>
 <span><span class="co"># Estimates based on 3 chains of 1300 iterations,</span></span>
 <span><span class="co"># adaptation = 100 iterations (sufficient),</span></span>
 <span><span class="co"># burn-in = 1000 iterations and thin rate = 2,</span></span>
 <span><span class="co"># yielding 450 total samples from the joint posterior. </span></span>
-<span><span class="co"># MCMC ran for 0 minutes at time 2024-09-13 14:59:27.858844.</span></span>
+<span><span class="co"># MCMC ran for 0 minutes at time 2026-01-29 15:20:59.484717.</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co">#            mean    sd   2.5%    50%  97.5% overlap0 f  Rhat n.eff</span></span>
-<span><span class="co"># alpha    51.844 0.747 50.235 51.843 53.341    FALSE 1 1.005   284</span></span>
-<span><span class="co"># beta      0.035 0.002  0.031  0.035  0.039    FALSE 1 1.012   166</span></span>
-<span><span class="co"># sigma     0.735 0.162  0.507  0.709  1.130    FALSE 1 0.998   450</span></span>
-<span><span class="co"># mu[1]    59.987 0.350 59.279 60.001 60.656    FALSE 1 0.999   450</span></span>
-<span><span class="co"># mu[2]    60.861 0.312 60.239 60.873 61.482    FALSE 1 0.998   450</span></span>
-<span><span class="co"># mu[3]    60.813 0.314 60.189 60.825 61.436    FALSE 1 0.998   450</span></span>
-<span><span class="co"># mu[4]    61.736 0.277 61.166 61.752 62.275    FALSE 1 0.997   450</span></span>
-<span><span class="co"># mu[5]    63.279 0.224 62.798 63.291 63.704    FALSE 1 0.998   450</span></span>
-<span><span class="co"># mu[6]    63.905 0.208 63.460 63.917 64.312    FALSE 1 1.000   450</span></span>
-<span><span class="co"># mu[7]    64.544 0.196 64.103 64.556 64.914    FALSE 1 1.002   450</span></span>
-<span><span class="co"># mu[8]    64.465 0.198 64.024 64.477 64.840    FALSE 1 1.002   450</span></span>
-<span><span class="co"># mu[9]    65.659 0.188 65.260 65.665 66.003    FALSE 1 1.008   240</span></span>
-<span><span class="co"># mu[10]   66.414 0.193 66.004 66.416 66.758    FALSE 1 1.012   161</span></span>
-<span><span class="co"># mu[11]   67.234 0.207 66.802 67.235 67.599    FALSE 1 1.016   125</span></span>
-<span><span class="co"># mu[12]   67.296 0.208 66.859 67.295 67.661    FALSE 1 1.016   123</span></span>
-<span><span class="co"># mu[13]   68.622 0.246 68.114 68.616 69.077    FALSE 1 1.020   104</span></span>
-<span><span class="co"># mu[14]   69.313 0.271 68.746 69.311 69.841    FALSE 1 1.021   101</span></span>
-<span><span class="co"># mu[15]   69.855 0.293 69.252 69.850 70.434    FALSE 1 1.021   100</span></span>
-<span><span class="co"># mu[16]   71.131 0.347 70.417 71.129 71.814    FALSE 1 1.021   102</span></span>
-<span><span class="co"># deviance 33.443 2.961 30.076 32.721 41.556    FALSE 1 1.004   450</span></span>
+<span><span class="co"># alpha    51.828 0.771 50.365 51.806 53.435    FALSE 1 1.003   450</span></span>
+<span><span class="co"># beta      0.035 0.002  0.031  0.035  0.038    FALSE 1 1.003   450</span></span>
+<span><span class="co"># sigma     0.730 0.157  0.504  0.700  1.131    FALSE 1 1.027    87</span></span>
+<span><span class="co"># mu[1]    59.985 0.353 59.328 59.982 60.704    FALSE 1 1.003   450</span></span>
+<span><span class="co"># mu[2]    60.860 0.313 60.288 60.860 61.474    FALSE 1 1.003   450</span></span>
+<span><span class="co"># mu[3]    60.812 0.315 60.234 60.812 61.430    FALSE 1 1.003   450</span></span>
+<span><span class="co"># mu[4]    61.736 0.277 61.220 61.732 62.300    FALSE 1 1.003   450</span></span>
+<span><span class="co"># mu[5]    63.281 0.225 62.839 63.278 63.727    FALSE 1 1.002   450</span></span>
+<span><span class="co"># mu[6]    63.909 0.210 63.490 63.911 64.327    FALSE 1 1.002   450</span></span>
+<span><span class="co"># mu[7]    64.549 0.200 64.165 64.547 64.936    FALSE 1 1.002   450</span></span>
+<span><span class="co"># mu[8]    64.470 0.201 64.086 64.469 64.860    FALSE 1 1.002   450</span></span>
+<span><span class="co"># mu[9]    65.666 0.197 65.299 65.656 66.033    FALSE 1 1.003   450</span></span>
+<span><span class="co"># mu[10]   66.422 0.206 66.037 66.420 66.807    FALSE 1 1.004   450</span></span>
+<span><span class="co"># mu[11]   67.243 0.224 66.804 67.238 67.657    FALSE 1 1.005   450</span></span>
+<span><span class="co"># mu[12]   67.305 0.226 66.859 67.299 67.722    FALSE 1 1.005   450</span></span>
+<span><span class="co"># mu[13]   68.634 0.270 68.096 68.629 69.166    FALSE 1 1.005   450</span></span>
+<span><span class="co"># mu[14]   69.326 0.298 68.763 69.321 69.918    FALSE 1 1.005   450</span></span>
+<span><span class="co"># mu[15]   69.868 0.321 69.265 69.864 70.527    FALSE 1 1.005   450</span></span>
+<span><span class="co"># mu[16]   71.147 0.380 70.422 71.141 71.922    FALSE 1 1.004   450</span></span>
+<span><span class="co"># deviance 33.533 2.941 30.202 32.717 40.939    FALSE 1 1.030    82</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co"># Successful convergence based on Rhat values (all &lt; 1.1). </span></span>
 <span><span class="co"># Rhat is the potential scale reduction factor (at convergence, Rhat=1). </span></span>
@@ -374,12 +438,14 @@
 <span><span class="co"># i.e., our confidence that the parameter is positive or negative.</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co"># DIC info: (pD = var(deviance)/2) </span></span>
-<span><span class="co"># pD = 4.4 and DIC = 37.834 </span></span>
+<span><span class="co"># pD = 4.2 and DIC = 37.77 </span></span>
 <span><span class="co"># DIC is an estimate of expected predictive error (lower is better).</span></span></code></pre></div>
-<p>This is a good opportunity to show the <code>whiskerplot</code> function, which plots the mean and 95% CI of parameters in the <code>jagsUI</code> output:</p>
+<p>This is a good opportunity to show the <code>whiskerplot</code>
+function, which plots the mean and 95% CI of parameters in the
+<code>jagsUI</code> output:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/whiskerplot.html">whiskerplot</a></span><span class="op">(</span><span class="va">out2</span>, <span class="st">'mu'</span><span class="op">)</span></span></code></pre></div>
-<p><img src="jagsUI_files/figure-html/unnamed-chunk-18-1.png" width="700"></p>
+<p><img src="jagsUI_files/figure-html/unnamed-chunk-18-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 </div>
   </div>
@@ -399,7 +465,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>
