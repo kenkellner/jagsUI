@@ -76,6 +76,7 @@ expect_error(process_input(data8, params="a", NULL, 2, 1, 100, 50, 2,
 dat <- list(a=1, b=2)
 pars1 <- c("a", "b")
 pars2 <- c("deviance","a", "b")
+pars3 <- c("b", "a", "b")
 
 # DIC = FALSE
 test <- process_input(dat, params=pars1, NULL, 2, 1, 100, 50, 2, 
@@ -96,6 +97,10 @@ expect_equal(pars2, test$params)
 expect_error(process_input(dat, params=c(1,2), NULL, 2, 1, 100, 50, 2, 
                       NULL, DIC=FALSE, quiet=TRUE, parallel=FALSE))
 
+# Duplicate parameters are removed
+test <- process_input(dat, params=pars3, NULL, 2, 1, 100, 50, 2, 
+                      NULL, DIC=FALSE, quiet=TRUE, parallel=FALSE)
+expect_equal(test$params, c("b", "a"))
 
 # MCMC info processing---------------------------------------------------------
 dat <- list(a=1, b=2)

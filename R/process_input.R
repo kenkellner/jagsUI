@@ -73,6 +73,7 @@ check_params <- function(params, DIC){
   if(DIC & (! "deviance" %in% params)){
     params <- c(params, "deviance")
   }
+  params <- unique(params) # issue 55
   params
 }
 
